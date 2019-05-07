@@ -1,0 +1,27 @@
+def build_versions = [:]
+build_versions.min_sdk = 16
+build_versions.target_sdk = 28
+build_versions.build_tools = "28.0.0"
+build_versions.versionCode = 16
+build_versions.versionName = "2.1.1"
+ext.build_versions = build_versions
+
+def versions = [:]
+versions.support = "28.0.0"
+ext.versions = versions
+
+def support = [:]
+support.annotations = "com.android.support:support-annotations:$versions.support"
+support.app_compat = "com.android.support:appcompat-v7:$versions.support"
+support.v13 = "com.android.support:support-v13:$versions.support"
+support.percent = "com.android.support:percent:$versions.support"
+support.recyclerview = "com.android.support:recyclerview-v7:$versions.support"
+support.cardview = "com.android.support:cardview-v7:$versions.support"
+support.design = "com.android.support:design:$versions.support"
+support.v4 = "com.android.support:support-v4:$versions.support"
+support.appcompat_v7= "com.android.support:appcompat-v7:$versions.support"
+support.core_utils = "com.android.support:support-core-utils:$versions.support"
+support.multidex = "com.android.support:multidex:$versions.multidex"
+support.constraint = "com.android.support.constraint:constraint-layout:1.0.2"
+ext.support = support
+

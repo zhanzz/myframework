@@ -1,0 +1,35 @@
+package com.framework.common.image_select.bean;
+
+/**
+ * 图片实体
+ * Created by Nereo on 2015/4/7.
+ */
+public class Image {
+    public String path;
+    public String name;
+    public long time;
+
+    public Image(String path, String name, long time){
+        this.path = path;
+        this.name = name;
+        this.time = time;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        try {
+            Image other = null;
+            if(null != o) {
+                other = (Image) o;
+            }
+            if(null != other) {
+                return this.path.equalsIgnoreCase(other.path);
+            }else{
+                return false;
+            }
+        }catch (ClassCastException e){
+            e.printStackTrace();
+        }
+        return super.equals(o);
+    }
+}

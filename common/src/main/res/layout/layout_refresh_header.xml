@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 下拉刷新 -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/pull_to_refresh_header_arrow"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginRight="5dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/tv_head_tip"/>
+
+    <ImageView
+        android:id="@+id/pull_to_refresh_header_progress"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginRight="5dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/tv_head_tip"/>
+
+    <TextView
+        android:id="@+id/tv_head_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:textColor="#999999"
+        android:textSize="13sp"
+        tool:text="下拉刷新"/>
+
+    <TextView
+        android:id="@+id/pull_to_refresh_header_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/tv_head_tip"
+        android:layout_alignLeft="@+id/tv_head_tip"
+        android:textColor="#999999"
+        android:textSize="12sp"
+        tool:text="04:50:22"/>
+</merge>
+

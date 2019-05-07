@@ -1,0 +1,52 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion build_versions.target_sdk
+
+    defaultConfig {
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+        versionCode build_versions.versionCode
+        versionName build_versions.versionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("Boolean", "DEBUG_ENVIRONMENT", project.DEBUG_ENVIRONMENT)//是否测试环境
+        buildConfigField("String", "GLOBAL_HOST", release_host.GLOBAL_HOST)
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    api support.appcompat_v7
+    api support.constraint
+    api support.recyclerview
+    //网络框架相关
+    api "io.reactivex.rxjava2:rxjava:2.2.0" // 必要rxjava2依赖
+    api "io.reactivex.rxjava2:rxandroid:2.1.0" // 必要rxandrroid依赖，切线程时需要用到
+    api 'com.squareup.retrofit2:retrofit:2.3.0' // 必要retrofit依赖
+    api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0' // 必要依赖，和Rxjava结合必须用到，下面会提到
+    api 'com.squareup.retrofit2:converter-gson:2.3.0' // 必要依赖，解析json字符所用
+    api 'com.squareup.okhttp3:logging-interceptor:3.9.0' //非必要依赖， log依赖，如果需要打印OkHttpLog需要添加
+
+    api 'com.alibaba:fastjson:1.2.48'//
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    //图片加载相关库
+    api 'com.facebook.fresco:fresco:1.13.0'
+    api 'com.facebook.fresco:animated-gif:1.13.0'
+    api "com.facebook.fresco:imagepipeline-okhttp3:1.13.0"
+    //上下拉刷新
+    api 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-24'
+    api 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-24'
+    //recyclerView适配器
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
+}
