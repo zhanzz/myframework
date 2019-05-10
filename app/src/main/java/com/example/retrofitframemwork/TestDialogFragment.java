@@ -4,12 +4,15 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.StaticLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.framework.common.base_mvp.BaseDialog;
 import com.framework.common.base_mvp.BasePresenter;
+import com.framework.common.utils.LogUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,12 +27,6 @@ public class TestDialogFragment extends BaseDialog {
 
     @BindView(R.id.edit)
     MyEdit edit;
-    Unbinder unbinder;
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     @Override
     protected BasePresenter getPresenter() {
@@ -44,16 +41,18 @@ public class TestDialogFragment extends BaseDialog {
     @Override
     public void bindData() {
         edit.setText("4");
+        String str = "我";
+        float width= edit.getPaint().measureText(str);
+        LogUtil.e("width="+width);
+        float width2= edit.getPaint().measureText("1");
+        LogUtil.e("width2="+width2);
+        float width3= edit.getPaint().measureText("日");
+        LogUtil.e("width3="+width3);
     }
 
     @Override
     public void initEvent() {
 
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     public interface ActionListener {
@@ -64,13 +63,5 @@ public class TestDialogFragment extends BaseDialog {
 
     public void setActionListener(ActionListener listener) {
         mListener = listener;
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        if (mListener != null) {
-            mListener.onPrice("7");
-        }
     }
 }

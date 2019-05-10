@@ -53,6 +53,9 @@ public class TestPresenter extends BasePresenter<ITestView> {
 
             @Override
             public void onFailure(int code, String msg) {
+                if(localPage<=1){
+                    getMvpView().showErrorView();
+                }
                 getMvpView().onLoadFail();
             }
         });

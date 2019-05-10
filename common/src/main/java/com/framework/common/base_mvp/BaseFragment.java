@@ -34,7 +34,9 @@ public abstract class BaseFragment extends Fragment implements IBaseView{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(getLayoutId(),container,false);
         mContainer = new FrameLayout(getContext());
-        mContainer.setLayoutParams(rootView.getLayoutParams());
+        if(rootView.getLayoutParams()!=null){
+            mContainer.setLayoutParams(rootView.getLayoutParams());
+        }
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
         mContainer.addView(rootView,params);
         unbinder = ButterKnife.bind(this,mContainer);
@@ -102,7 +104,9 @@ public abstract class BaseFragment extends Fragment implements IBaseView{
         }
     }
 
-    @Override
+    /**
+     * 当点击错误页面重试时会调用此方法
+     */
     public void reloadData() {}
 
     @Override

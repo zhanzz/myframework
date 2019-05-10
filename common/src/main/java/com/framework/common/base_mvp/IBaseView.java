@@ -28,12 +28,7 @@ public interface IBaseView {
 
     void hideLoadingDialog();
 
-    /**
-     * 当点击错误页面重试时会调用此方法
-     */
-    void reloadData();
-
-    public <T> ObservableTransformer<T, T> bindUntilEvent(@NonNull final ActivityLifeCycleEvent event);
+    <T> ObservableTransformer<T, T> bindUntilEvent(@NonNull final ActivityLifeCycleEvent event);
 
     void showToast(String msg);
 

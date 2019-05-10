@@ -12,6 +12,7 @@ import com.example.retrofitframemwork.AppApi;
 import com.example.retrofitframemwork.BuildConfig;
 import com.example.retrofitframemwork.data.UserOperation;
 import com.example.retrofitframemwork.login.view.ILoginView;
+import com.example.retrofitframemwork.utils.Events;
 import com.example.retrofitframemwork.utils.RetorfitUtil;
 import com.framework.common.BaseApplication;
 import com.framework.common.base_mvp.BasePresenter;
@@ -24,6 +25,9 @@ import com.framework.common.utils.RxNet;
 import com.framework.common.callBack.RxNetCallBack;
 import com.framework.model.UploadImgV2Bean;
 import com.framework.model.UserEntity;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.HashMap;
@@ -158,5 +162,15 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
                        getMvpView().showBitmap(bitmap);
                     }
                 });
+    }
+
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Subscribe(threadMode=ThreadMode.MAIN)
+    public void onEvent(Events.LoginOut event){
+        getMvpView().showToast("我收到消息啦");
     }
 }

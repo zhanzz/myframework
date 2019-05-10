@@ -10,7 +10,7 @@ import com.framework.common.BuildConfig;
  * description：
  */
 public class LogUtil {
-    private static String TAG = "Log";
+    private static String TAG = "LogUtil";
     private static boolean isShow = BuildConfig.DEBUG_ENVIRONMENT;
 
     public static void v(String msg){

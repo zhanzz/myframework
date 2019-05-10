@@ -149,7 +149,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         }
     }
 
-    @Override
+    /**
+     * 当点击错误页面重试时会调用此方法
+     */
     public void reloadData() {
 
     }

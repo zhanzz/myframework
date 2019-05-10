@@ -16,15 +16,19 @@ import android.widget.TextView;
 import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.TestDialogFragment;
 import com.example.retrofitframemwork.login.LoginPresenter;
+import com.example.retrofitframemwork.login.presenter.TestPresenter;
 import com.example.retrofitframemwork.login.view.ILoginView;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
+import com.framework.common.data.EventMessage;
 import com.framework.common.image_select.MultiImageSelectorActivity;
 import com.framework.common.manager.CacheDirManager;
 import com.framework.common.utils.ListUtils;
+import com.framework.common.utils.LogUtil;
 import com.framework.model.UserBean;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +62,15 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void initEvent() {
-
+        try {
+            Method method = LoginPresenter.class.getSuperclass().getDeclaredMethod("onReceiveEvent",EventMessage.class);
+            Method method2 = TestPresenter.class.getSuperclass().getDeclaredMethod("onReceiveEvent",EventMessage.class);
+            if(method==method2){
+                LogUtil.i("相同");
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -118,6 +130,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
             case R.id.image:
                 Main2Activity.start(this);
                 //MultiImageSelectorActivity.startMe(this,2,200);
+                //showFragment(mRandom.nextInt());
                 break;
         }
         //Main2Activity.start(this);

@@ -16,16 +16,16 @@ import java.util.List;
 /**
  * @author zhangzhiqiang
  * @date 2019/5/6.
- * description：
+ * description：专用于分页加载
  */
 public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickAdapter<T,K> {
     private String strLoadEndText;
     private SmartRefreshLayout smartRefreshLayout;
+
     public BaseAdapter(RecyclerView recyclerView,int layoutResId) {
         super(layoutResId);
         //做一些统一的处理
         bindToRecyclerView(recyclerView);
-        disableLoadMoreIfNotFullPage();//默认第一次加载不进入回调setOnLoadMoreListener
         setLoadMoreView(new SimpleLoadMoreView(){
             @Override
             public void convert(BaseViewHolder holder) {

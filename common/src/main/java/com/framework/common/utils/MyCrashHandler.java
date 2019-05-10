@@ -24,9 +24,6 @@ public class MyCrashHandler implements Thread.UncaughtExceptionHandler {
     // 当有未截获的异常时，回调此方法
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-        if(ex instanceof BasePresenter.MvpViewNotAttachedException){
-            return;
-        }
         // 传递给保存的UncaughtExceptionHandler
         mDefaultUncaughtExceptionHandler.uncaughtException(thread, ex);
     }

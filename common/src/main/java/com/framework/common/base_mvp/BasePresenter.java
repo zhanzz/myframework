@@ -1,5 +1,12 @@
 package com.framework.common.base_mvp;
 
+import com.framework.common.data.EventMessage;
+import com.framework.common.manager.EventBusUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -22,33 +29,28 @@ public class BasePresenter<T extends IBaseView> implements Presenter<T>{
         proxyView = (T) Proxy.newProxyInstance(
                 view.getClass().getClassLoader(), view.getClass()
                         .getInterfaces(), invocationHandler);
+        if(isRegisterEventBus()){
+            EventBusUtils.register(this);
+        }
     }
 
     @Override
     public void detachView() {
+        if(isRegisterEventBus()){
+            EventBusUtils.unregister(this);
+        }
         if (this.mvpView != null) {
             this.mvpView.clear();
             this.mvpView = null;
         }
     }
 
-    public T getMvpView(){
+    protected T getMvpView(){
         return proxyView;
     }
 
-    public boolean isViewAttached() {
+    protected boolean isViewAttached() {
         return this.mvpView != null && this.mvpView.get() != null;
-    }
-
-    public void checkViewAttached() {
-        if (!isViewAttached()) throw new MvpViewNotAttachedException();
-    }
-
-    public static class MvpViewNotAttachedException extends RuntimeException {
-        public MvpViewNotAttachedException() {
-            super("Please call Presenter.attachView(MvpView) before" +
-                    " requesting data to the Presenter");
-        }
     }
 
     private class MvpViewInvocationHandler implements InvocationHandler {
@@ -66,5 +68,13 @@ public class BasePresenter<T extends IBaseView> implements Presenter<T>{
             }
             return null;
         }
+    }
+
+    /**
+     * 是否需要注册EventBus
+     * @return
+     */
+    protected boolean isRegisterEventBus(){
+        return false;
     }
 }

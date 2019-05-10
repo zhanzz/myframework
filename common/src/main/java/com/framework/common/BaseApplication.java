@@ -20,10 +20,14 @@ import com.framework.common.manager.FrescoMemoryManager;
 import com.framework.common.manager.NetWorkManager;
 import com.framework.common.receiver.NetChangeReceiver;
 import com.framework.common.callBack.EmptyActivityLifecycleCallbacks;
+import com.framework.common.utils.ListUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashSet;
 import java.util.List;
@@ -39,16 +43,6 @@ public class BaseApplication extends Application {
     public static BaseApplication getApp(){
         return mInstance;
     }
-    //static 代码段可以防止内存泄露
-    static {
-        //设置全局的Header构建器
-        SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
-            @Override
-            public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
-                return new CustomRefreshHeader(context);
-            }
-        });
-    }
     @Override
     public void onCreate() {
         super.onCreate();
@@ -56,7 +50,18 @@ public class BaseApplication extends Application {
         //避免多进程多次初始化应用
         if(TextUtils.equals(getProcessName(this),getPackageName())){
             init();
+            //设置全局的Header构建器
+            SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
+                @Override
+                public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
+                    return new CustomRefreshHeader(context);
+                }
+            });
             initFresco();
+            //配置eventbus 只在DEBUG模式下，抛出异常，便于自测，同时又不会导致release环境的app崩溃
+            if(BuildConfig.DEBUG_ENVIRONMENT){
+                EventBus.builder().throwSubscriberException(true).installDefaultEventBus();
+            }
             NetChangeReceiver receiver = new NetChangeReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -88,8 +93,8 @@ public class BaseApplication extends Application {
         int pid = android.os.Process.myPid();
         ActivityManager am = (ActivityManager) cxt.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
-        if (runningApps == null) {
-            return null;
+        if (ListUtils.isEmpty(runningApps)) {
+            return cxt.getPackageName();
         }
         for (ActivityManager.RunningAppProcessInfo procInfo : runningApps) {
             if (procInfo.pid == pid) {
