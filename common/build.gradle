@@ -17,11 +17,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro','retrofit2.pro','fresco.pro'
         }
     }
-
 }
 
 dependencies {
@@ -30,6 +28,11 @@ dependencies {
     api support.appcompat_v7
     api support.constraint
     api support.recyclerview
+    api support.v4
+    api support.app_compat
+    api support.v13
+    api support.design
+    api support.palette_v7
     //网络框架相关
     api "io.reactivex.rxjava2:rxjava:2.2.0" // 必要rxjava2依赖
     api "io.reactivex.rxjava2:rxandroid:2.1.0" // 必要rxandrroid依赖，切线程时需要用到
@@ -40,11 +43,12 @@ dependencies {
 
     api 'com.alibaba:fastjson:1.2.48'//
     implementation 'com.jakewharton:butterknife:8.8.1'
+    api 'com.squareup.okhttp3:okhttp:3.14.1'
     //图片加载相关库
     api 'com.facebook.fresco:fresco:1.13.0'
     api 'com.facebook.fresco:animated-gif:1.13.0'
     api "com.facebook.fresco:imagepipeline-okhttp3:1.13.0"
-    //上下拉刷新
+    //上下拉刷新,SmartRefreshLayout 没有使用到：序列化、反序列化、JNI、反射，所以并不需要添加混淆过滤代码
     api 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-24'
     api 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-24'
     //recyclerView适配器

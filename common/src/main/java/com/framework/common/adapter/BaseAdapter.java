@@ -1,6 +1,7 @@
-package com.framework.common.base_mvp;
+package com.framework.common.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 
@@ -21,7 +22,7 @@ import java.util.List;
 public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickAdapter<T,K> {
     private String strLoadEndText;
     private SmartRefreshLayout smartRefreshLayout;
-
+    private boolean mRealControlMoreEnable=true;
     public BaseAdapter(RecyclerView recyclerView,int layoutResId) {
         super(layoutResId);
         //做一些统一的处理
@@ -49,6 +50,9 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
     public void setOrAddData(@NonNull List<T> data, int pageIndex,int pageSize) {
         if(pageIndex<=1){
             super.setNewData(data);
+            if(!mRealControlMoreEnable){
+                setEnableLoadMore(false);
+            }
         }else if(!ListUtils.isEmpty(data)){
             super.addData(data);
         }
@@ -60,6 +64,14 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
         }
         if(smartRefreshLayout!=null){
             smartRefreshLayout.finishRefresh(true);
+        }
+    }
+
+    @Override
+    public void setNewData(@Nullable List<T> data) {
+        super.setNewData(data);
+        if(!mRealControlMoreEnable){
+            setEnableLoadMore(false);
         }
     }
 
@@ -99,5 +111,9 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
     public interface RefreshListener{
         void onRefresh();
         void onLoadMore();
+    }
+
+    public void setRealControlMoreEnable(boolean mRealControlMoreEnable) {
+        this.mRealControlMoreEnable = mRealControlMoreEnable;
     }
 }

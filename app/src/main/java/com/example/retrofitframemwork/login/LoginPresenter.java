@@ -55,11 +55,13 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
             public void onSuccess(UserEntity data,int code,String msg) {
                 UserOperation.getInstance().setData(data);
                 getMvpView().showToast("登录成功");
-                getMvpView().showToast(msg);
+                //getMvpView().showToast(msg);
             }
 
             @Override
             public void onFailure(int code, String msg) {
+                getMvpView().showErrorView();
+                getMvpView().showToast("登录失败="+msg);
                 Log.e("zhang","fail="+msg);
             }
         });

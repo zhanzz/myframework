@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.TestDialogFragment;
@@ -125,7 +126,8 @@ public class MainActivity extends BaseActivity implements ILoginView {
             case R.id.tv_show:
                 //mPresenter.downLoadFile();
                 //getProcessName(this);
-                mPresenter.login("13695157045","1");
+                //mPresenter.login("13695157045","1");
+                showFragment(0);
                 break;
             case R.id.image:
                 Main2Activity.start(this);
@@ -172,7 +174,8 @@ public class MainActivity extends BaseActivity implements ILoginView {
         frament.setActionListener(new TestDialogFragment.ActionListener() {
             @Override
             public void onPrice(String price) {
-                Log.e("zhang", "position=" + pposition);
+                //Log.e("zhang", "position=" + pposition);
+                Toast.makeText(MainActivity.this,"成功",Toast.LENGTH_SHORT).show();
             }
         });
         frament.showNow(getSupportFragmentManager(), "changePrice");

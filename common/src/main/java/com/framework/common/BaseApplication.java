@@ -74,7 +74,7 @@ public class BaseApplication extends Application {
         Set<RequestListener> requestListeners = new HashSet<>();
         requestListeners.add(new RequestLoggingListener());
         ImagePipelineConfig.Builder builder1 = OkHttpImagePipelineConfigFactory
-                .newBuilder(this, NetWorkManager.getInstance().getOkHttpClient())
+                .newBuilder(this, NetWorkManager.getOkHttpClient())
                 .setDownsampleEnabled(true)//向下采样
                 .setMemoryTrimmableRegistry(FrescoMemoryManager.getInstance());
         if(BuildConfig.DEBUG_ENVIRONMENT){

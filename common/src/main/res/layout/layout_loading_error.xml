@@ -9,6 +9,7 @@
         android:id="@+id/linear_retry"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/app_back_color"
         android:gravity="center"
         android:orientation="vertical"
         tools:visibility="visible">

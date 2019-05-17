@@ -35,6 +35,9 @@ public class NetWorkManager{
     }
 
     public static OkHttpClient getOkHttpClient() {
+        if(okHttpClient==null){
+            NetWorkManager.getInstance().init();
+        }
         return okHttpClient;
     }
 

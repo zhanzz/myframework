@@ -55,6 +55,14 @@ public class TestDialogFragment extends BaseDialog {
 
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if(mListener!=null){
+            mListener.onPrice(edit.getText().toString());
+        }
+        super.onDismiss(dialog);
+    }
+
     public interface ActionListener {
         void onPrice(String price);
     }

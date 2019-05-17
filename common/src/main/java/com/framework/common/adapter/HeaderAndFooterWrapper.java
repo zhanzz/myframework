@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import com.framework.common.R;
-import com.framework.common.base_mvp.BaseAdapter;
 import com.framework.common.loading_view.MySimpleLoadMoreView;
 import com.framework.common.utils.LogUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -37,7 +36,8 @@ public class HeaderAndFooterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
     private boolean mNeedHead = true;//当数据为空时是否需要展示头部视图
     private LoadMoreView mLoadMoreView;
     private boolean mEnableLoadMoreEndClick = false;//当加载没有更多数据后，点击是否要加载更多
-    private boolean mLoadMoreEnable=false;
+    private boolean mLoadMoreEnable=false;//当刷新后会自动置为true（为了智能的加载更多）
+    private boolean mRealControlMoreEnable=true;
     private SmartRefreshLayout smartRefreshLayout;
 
     public HeaderAndFooterWrapper(RecyclerView.Adapter adapter) {
@@ -436,7 +436,7 @@ public class HeaderAndFooterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
      * @return 0 or 1
      */
     public int getLoadMoreViewCount() {
-        if (mOnLoadMoreListener == null || !mLoadMoreEnable) {
+        if (mOnLoadMoreListener == null || !mLoadMoreEnable || !mRealControlMoreEnable) {
             return 0;
         }
         if (mInnerAdapter.getItemCount() == 0) {
@@ -550,5 +550,9 @@ public class HeaderAndFooterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
     public interface RefreshListener{
         void onRefresh();
         void onLoadMore();
+    }
+
+    public void setRealControlMoreEnable(boolean mRealControlMoreEnable) {
+        this.mRealControlMoreEnable = mRealControlMoreEnable;
     }
 }

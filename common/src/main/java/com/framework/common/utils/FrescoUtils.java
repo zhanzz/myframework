@@ -10,14 +10,20 @@ import com.facebook.datasource.BaseDataSubscriber;
 import com.facebook.datasource.DataSource;
 import com.facebook.datasource.DataSubscriber;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.info.ImagePerfData;
+import com.facebook.drawee.backends.pipeline.info.ImagePerfDataListener;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.common.RotationOptions;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.image.CloseableBitmap;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.facebook.imagepipeline.request.Postprocessor;
+
 /**
  * Created by zhangzhiqiang on 2016/9/21.
  */
@@ -34,6 +40,7 @@ public class FrescoUtils {
     public static void showThumb(String url, SimpleDraweeView draweeView, int width, int height){
         if(!TextUtils.isEmpty(url)) {
             ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+                    .setRotationOptions(RotationOptions.autoRotate())
                     .setResizeOptions(new ResizeOptions(width, height))
                     .build();
 
@@ -69,6 +76,7 @@ public class FrescoUtils {
     public static void showThumb(String url, SimpleDraweeView draweeView){
         if (url==null||url.length()==0) return;
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+                .setRotationOptions(RotationOptions.autoRotate())
 //                .setResizeOptions(new ResizeOptions(width, height))
                 .build();
         DraweeController controller = Fresco.newDraweeControllerBuilder()
@@ -80,6 +88,26 @@ public class FrescoUtils {
         draweeView.setController(controller);
     }
 
+    /**
+     * 使用七牛的图片，不需要宽高
+     * @param url
+     * @param draweeView
+     */
+    public static void showThumb(String url, SimpleDraweeView draweeView,Postprocessor postprocessor){
+        if (url==null||url.length()==0) return;
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+                .setPostprocessor(postprocessor)
+                .setRotationOptions(RotationOptions.autoRotate())
+//                .setResizeOptions(new ResizeOptions(width, height))
+                .build();
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(request)
+                .setAutoPlayAnimations(true)
+                .setOldController(draweeView.getController())
+                //.setControllerListener(new BaseControllerListener<ImageInfo>())
+                .build();
+        draweeView.setController(controller);
+    }
 
     public interface Callback{
         void downloadComplete(Bitmap drawable);

@@ -1,12 +1,6 @@
 package com.framework.common.base_mvp;
 
-import com.framework.common.data.EventMessage;
 import com.framework.common.manager.EventBusUtils;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

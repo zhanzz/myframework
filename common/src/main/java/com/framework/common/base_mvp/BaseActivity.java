@@ -16,6 +16,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
+
 import com.framework.common.R;
 import com.framework.common.data.ActivityLifeCycleEvent;
 import com.framework.common.manager.PermissionManager;
@@ -172,7 +174,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
      */
     protected abstract BasePresenter getPresenter();
 
-    protected void addPresenters(){};
+    protected void addPresenters(){}
 
     protected void addToPresenters(BasePresenter child) {
         if(mPresenters==null){
@@ -194,7 +196,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         if(!ListUtils.isEmpty(mPresenters)){
             for(BasePresenter apresenter:mPresenters){
                 if(apresenter!=null){
-                    apresenter.attachView(this);
+                    apresenter.detachView();
                 }
             }
         }

@@ -56,6 +56,7 @@ public class TestPresenter extends BasePresenter<ITestView> {
                 if(localPage<=1){
                     getMvpView().showErrorView();
                 }
+                getMvpView().showToast(msg);
                 getMvpView().onLoadFail();
             }
         });

@@ -21,6 +21,7 @@ support.design = "com.android.support:design:$versions.support"
 support.v4 = "com.android.support:support-v4:$versions.support"
 support.appcompat_v7= "com.android.support:appcompat-v7:$versions.support"
 support.core_utils = "com.android.support:support-core-utils:$versions.support"
+support.palette_v7 = "com.android.support:palette-v7:$versions.support"
 support.multidex = "com.android.support:multidex:$versions.multidex"
 support.constraint = "com.android.support.constraint:constraint-layout:1.0.2"
 ext.support = support

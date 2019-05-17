@@ -16,7 +16,7 @@ public class ToastUtil {
         if(sToast==null){
             synchronized (ToastUtil.class) {
                 if (sToast == null) {
-                    sToast = Toast.makeText(applicationContext,"",Toast.LENGTH_LONG);
+                    sToast = Toast.makeText(applicationContext,"",Toast.LENGTH_SHORT);
                 }
             }
         }
