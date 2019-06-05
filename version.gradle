@@ -8,6 +8,7 @@ ext.build_versions = build_versions
 
 def versions = [:]
 versions.support = "28.0.0"
+versions.butterknife = "9.0.0"
 ext.versions = versions
 
 def support = [:]

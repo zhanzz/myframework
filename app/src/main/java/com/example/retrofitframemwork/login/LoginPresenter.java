@@ -4,24 +4,23 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
-
 import com.example.retrofitframemwork.AppApi;
-import com.example.retrofitframemwork.BuildConfig;
 import com.example.retrofitframemwork.data.UserOperation;
 import com.example.retrofitframemwork.login.view.ILoginView;
 import com.example.retrofitframemwork.utils.Events;
-import com.example.retrofitframemwork.utils.RetorfitUtil;
+import com.framework.common.data.LoadType;
+import com.framework.common.retrofit.RetorfitUtil;
 import com.framework.common.BaseApplication;
+import com.framework.common.BuildConfig;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.callBack.FileCallBack;
 import com.framework.common.callBack.FileUploadCallBack;
 import com.framework.common.image_util.Compressor;
 import com.framework.common.manager.CacheDirManager;
 import com.framework.common.retrofit.SchedulerProvider;
-import com.framework.common.utils.RxNet;
+import com.framework.common.net.RxNet;
 import com.framework.common.callBack.RxNetCallBack;
 import com.framework.model.UploadImgV2Bean;
 import com.framework.model.UserEntity;
@@ -43,6 +42,7 @@ import io.reactivex.functions.Consumer;
  * description：
  */
 public class LoginPresenter extends BasePresenter<ILoginView> {
+
     public void login(String userName,String password){
         Map<String,Object> params = new HashMap<>();
         params.put("UserName",userName);
@@ -50,7 +50,7 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
         params.put("Code","");
 
         RxNet.request(RetorfitUtil.getRetorfitApi(AppApi.class)
-                .loginByResponse(params), getMvpView(),true, new RxNetCallBack<UserEntity>() {
+                .loginByResponse(params), getMvpView(),LoadType.LOAD, new RxNetCallBack<UserEntity>() {
             @Override
             public void onSuccess(UserEntity data,int code,String msg) {
                 UserOperation.getInstance().setData(data);
@@ -75,12 +75,7 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
                 ///data/user/0/com.example.retrofitframemwork/cache/test.apk   cacheDir 不可以安装
                 ///storage/emulated/0/Android/data/com.example.retrofitframemwork/cache/test.apk  ExtraCacheDir  可以安装
                 Log.e("zhang","ok="+file.getAbsolutePath());
-                Uri uri;
-                if (Build.VERSION.SDK_INT > 23) {
-                    uri = FileProvider.getUriForFile(BaseApplication.getApp(), BaseApplication.getApp().getPackageName()+".FileProvider", file);
-                } else {
-                    uri = Uri.fromFile(file);
-                }
+                Uri uri = FileProvider.getUriForFile(BaseApplication.getApp(), BaseApplication.getApp().getPackageName()+".FileProvider", file);
                 //BaseApplication.getApp().grantUriPermission(BaseApplication.getApp().getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

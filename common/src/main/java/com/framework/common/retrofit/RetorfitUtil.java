@@ -1,9 +1,7 @@
-package com.example.retrofitframemwork.utils;
+package com.framework.common.retrofit;
 
-import com.example.retrofitframemwork.AppApi;
-import com.example.retrofitframemwork.BuildConfig;
+import com.framework.common.BuildConfig;
 import com.framework.common.manager.NetWorkManager;
-
 /**
  * @author zhangzhiqiang
  * @date 2019/4/18.
@@ -15,8 +13,8 @@ public class RetorfitUtil {
                 .create(tClass);
     }
 
-    public static AppApi getRetorfitApi(){
-        return NetWorkManager.getInstance().getRetorfit(BuildConfig.GLOBAL_HOST)
-                .create(AppApi.class);
+    public static <T>  T getMallRetorfitApi(Class<T> tClass){
+        return NetWorkManager.getInstance().getRetorfit(BuildConfig.GLOBAL_MALL_HOST)
+                .create(tClass);
     }
 }

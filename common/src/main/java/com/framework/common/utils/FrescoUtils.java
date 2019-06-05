@@ -77,13 +77,11 @@ public class FrescoUtils {
         if (url==null||url.length()==0) return;
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
                 .setRotationOptions(RotationOptions.autoRotate())
-//                .setResizeOptions(new ResizeOptions(width, height))
                 .build();
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setImageRequest(request)
                 .setAutoPlayAnimations(true)
                 .setOldController(draweeView.getController())
-                //.setControllerListener(new BaseControllerListener<ImageInfo>())
                 .build();
         draweeView.setController(controller);
     }

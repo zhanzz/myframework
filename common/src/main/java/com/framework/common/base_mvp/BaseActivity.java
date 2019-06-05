@@ -25,6 +25,7 @@ import com.framework.common.receiver.INetChange;
 import com.framework.common.utils.AppTools;
 import com.framework.common.utils.DeviceUtils;
 import com.framework.common.utils.ListUtils;
+import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.common.widget.TitleView;
@@ -46,6 +47,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     private CompositeDisposable mCompositeDisposable;
     public final PublishSubject<ActivityLifeCycleEvent> lifecycleSubject = PublishSubject.create();
     private View mPartErrorView;
+
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         }
         Intent intent = getIntent();
         if(intent!=null){
-            initData(intent);
+            getParamData(intent);
         }
         bindData();
         initEvent();
@@ -108,7 +111,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     public abstract int getLayoutId();
 
-    public void initData(Intent intent){
+    public void getParamData(Intent intent){
 
     }
 

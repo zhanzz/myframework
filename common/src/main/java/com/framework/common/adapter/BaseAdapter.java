@@ -26,7 +26,6 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
     public BaseAdapter(RecyclerView recyclerView,int layoutResId) {
         super(layoutResId);
         //做一些统一的处理
-        bindToRecyclerView(recyclerView);
         setLoadMoreView(new SimpleLoadMoreView(){
             @Override
             public void convert(BaseViewHolder holder) {
@@ -92,13 +91,15 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
         });
     }
 
-    @Override
-    public void loadMoreFail() {
-        if(!ListUtils.isEmpty(mData)){
-            super.loadMoreFail();
-        }
-        if(smartRefreshLayout!=null){
-            smartRefreshLayout.finishRefresh(false);
+    public void loadMoreFail(int pageIndex) {
+        if(pageIndex<=1){
+            if(smartRefreshLayout!=null){
+                smartRefreshLayout.finishRefresh(false);
+            }
+        }else{
+            if(!ListUtils.isEmpty(mData)){
+                super.loadMoreFail();
+            }
         }
     }
 

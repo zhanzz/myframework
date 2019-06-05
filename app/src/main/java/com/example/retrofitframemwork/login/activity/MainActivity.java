@@ -6,14 +6,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.demo.viewpager_fragment.activity.ExpandRecyclerViewActivity;
+import com.example.demo.viewpager_fragment.activity.PageFragmentActivity;
 import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.TestDialogFragment;
 import com.example.retrofitframemwork.login.LoginPresenter;
@@ -23,9 +28,10 @@ import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.data.EventMessage;
 import com.framework.common.image_select.MultiImageSelectorActivity;
-import com.framework.common.manager.CacheDirManager;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.LogUtil;
+import com.framework.common.utils.UIHelper;
+import com.framework.common.widget.drawable.ImageLoadingDrawable;
 import com.framework.model.UserBean;
 
 import java.io.File;
@@ -57,8 +63,15 @@ public class MainActivity extends BaseActivity implements ILoginView {
     }
 
     @Override
-    public void bindData() {
+    public void getParamData(Intent intent) {
+        super.getParamData(intent);
+    }
 
+    @Override
+    public void bindData() {
+        ImageLoadingDrawable drawable = new ImageLoadingDrawable();
+        image.setImageDrawable(drawable);
+        drawable.setLevel(2000);
     }
 
     @Override
@@ -72,6 +85,8 @@ public class MainActivity extends BaseActivity implements ILoginView {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
+        LogUtil.e("has="+getWindow().hasFeature(Window.FEATURE_ACTIVITY_TRANSITIONS));
+        LogUtil.e("has="+getWindow().hasFeature(Window.FEATURE_CONTENT_TRANSITIONS));
     }
 
     @Override
@@ -130,7 +145,9 @@ public class MainActivity extends BaseActivity implements ILoginView {
                 showFragment(0);
                 break;
             case R.id.image:
-                Main2Activity.start(this);
+                ExpandRecyclerViewActivity.start(this);
+                //PageFragmentActivity.start(this);
+                //Main2Activity.start(this);
                 //MultiImageSelectorActivity.startMe(this,2,200);
                 //showFragment(mRandom.nextInt());
                 break;
@@ -260,5 +277,10 @@ public class MainActivity extends BaseActivity implements ILoginView {
             }
         }
         return null;
+    }
+
+    public static void start(Context context) {
+        Intent starter = new Intent(context, MainActivity.class);
+        context.startActivity(starter);
     }
 }

@@ -34,7 +34,7 @@ public  abstract class ApiSubscriber<T,R> implements Observer<T>,Disposable{
             Result baseResp = (Result) data;
             int code = baseResp.getCode();
 
-            if(code == 1){
+            if(isBusinessSuccess(code)){
                 R model = (R) baseResp.getData();
                 onSuccess(model,baseResp.getCode(),baseResp.getMessage());
             }else{
@@ -75,5 +75,17 @@ public  abstract class ApiSubscriber<T,R> implements Observer<T>,Disposable{
     @Override
     public boolean isDisposed() {
         return isDisposable;
+    }
+
+    /**
+     * 业务成功
+     * @param code 后台返回状态码
+     * @return
+     */
+    private boolean isBusinessSuccess(int code){
+        if(code == 1 || code==0){
+            return true;
+        }
+        return false;
     }
 }

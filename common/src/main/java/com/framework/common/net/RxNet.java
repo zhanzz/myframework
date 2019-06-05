@@ -1,4 +1,4 @@
-package com.framework.common.utils;
+package com.framework.common.net;
 
 import android.graphics.Bitmap;
 
@@ -9,15 +9,16 @@ import com.framework.common.callBack.FileCallBack;
 import com.framework.common.callBack.FileUploadCallBack;
 import com.framework.common.callBack.RxNetCallBack;
 import com.framework.common.data.ActivityLifeCycleEvent;
+import com.framework.common.data.LoadType;
 import com.framework.common.data.Result;
 import com.framework.common.exception.ApiException;
 import com.framework.common.image_util.Compressor;
 import com.framework.common.manager.CacheDirManager;
 import com.framework.common.callBack.LoadCallBack;
 import com.framework.common.manager.NetWorkManager;
-import com.framework.common.net.UploadOnSubscribe;
 import com.framework.common.retrofit.ApiSubscriber;
 import com.framework.common.retrofit.SchedulerProvider;
+import com.framework.common.BaseApi;
 
 import java.util.Map;
 
@@ -38,16 +39,16 @@ public class RxNet {
     /**
      * 一般请求，返回数据带有body
      */
-    public static <T> Disposable request(Observable<Result<T>> observable, final IBaseView view, final boolean isShowLoading, final RxNetCallBack<T> callBack) {
-        if (isShowLoading) {
+    public static <T> Disposable request(Observable<Result<T>> observable, final IBaseView view, final LoadType loadType, final RxNetCallBack<T> callBack) {
+        if (loadType==LoadType.LOAD) {
             view.showLoading();
+        }else if(loadType==LoadType.LOAD_DIALOG){
+            view.showLoadingDialog();
         }
         ApiSubscriber apiSubscriber = new ApiSubscriber<Result<T>, T>() {
             @Override
             protected void onFail(ApiException ex) {
-                if (isShowLoading) {
-                    view.hideLoading();
-                }
+                hideLoad(loadType, view);
                 if (callBack != null) {
                     callBack.onFailure(ex.getCode(), ex.getDisplayMessage());
                 }
@@ -55,18 +56,30 @@ public class RxNet {
 
             @Override
             public void onSuccess(T data, int code, String msg) {
-                if (isShowLoading) {
-                    view.hideLoading();
-                }
+                hideLoad(loadType, view);
                 if (callBack != null) {
                     callBack.onSuccess(data, code, msg);
                 }
+            }
+
+            @Override
+            public void dispose() {
+                super.dispose();
+                hideLoad(loadType, view);
             }
         };
         observable.compose(view.<Result<T>>bindUntilEvent(ActivityLifeCycleEvent.DESTROY))
                 .compose(SchedulerProvider.getInstance().<Result<T>>applySchedulers())
                 .subscribe(apiSubscriber);
         return apiSubscriber;
+    }
+
+    private static void hideLoad(LoadType loadType, IBaseView view) {
+        if (loadType==LoadType.LOAD) {
+            view.hideLoading();
+        }else if(loadType==LoadType.LOAD_DIALOG){
+            view.hideLoadingDialog();
+        }
     }
 
     /**

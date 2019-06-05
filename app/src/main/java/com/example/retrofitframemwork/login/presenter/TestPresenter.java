@@ -2,10 +2,11 @@ package com.example.retrofitframemwork.login.presenter;
 
 import com.example.retrofitframemwork.AppApi;
 import com.example.retrofitframemwork.login.view.ITestView;
-import com.example.retrofitframemwork.utils.RetorfitUtil;
+import com.framework.common.data.LoadType;
+import com.framework.common.retrofit.RetorfitUtil;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.callBack.RxNetCallBack;
-import com.framework.common.utils.RxNet;
+import com.framework.common.net.RxNet;
 import com.framework.model.TestBean;
 
 import java.util.ArrayList;
@@ -40,7 +41,8 @@ public class TestPresenter extends BasePresenter<ITestView> {
         final int localPage = mCurentPage;
         Map<String,Object> params = new HashMap<>();
         params.put("date","2019-05-06");
-        mLasDisposable = RxNet.request(RetorfitUtil.getRetorfitApi().loadPageData(params), getMvpView(), isShowLoading, new RxNetCallBack<TestBean>() {
+        mLasDisposable = RxNet.request(RetorfitUtil.getRetorfitApi(AppApi.class).loadPageData(params),
+                getMvpView(), LoadType.LOAD_DIALOG, new RxNetCallBack<TestBean>() {
             @Override
             public void onSuccess(TestBean data, int code, String msg) {
                 mCurentPage++;

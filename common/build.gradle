@@ -12,7 +12,19 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField("Boolean", "DEBUG_ENVIRONMENT", project.DEBUG_ENVIRONMENT)//是否测试环境
-        buildConfigField("String", "GLOBAL_HOST", release_host.GLOBAL_HOST)
+        def environment = project.NET_ENVIRONMENT
+        switch (environment) {
+            case "RELEASE":
+                //正式环境
+                buildConfigField("String", "GLOBAL_HOST", "\"https://wholesaleapi.zhidianlife.com/\"")
+                buildConfigField("String", "GLOBAL_MALL_HOST", "\"https://s1.zhidianlife.com/\"")
+                break
+            case "TEST":
+                //测试环境
+                buildConfigField("String", "GLOBAL_HOST", "\"http://119.147.171.113:8072/\"")
+                buildConfigField("String", "GLOBAL_MALL_HOST", "\"https://s1.zhidianlife.com/\"")
+                break
+        }
     }
 
     buildTypes {
@@ -42,10 +54,11 @@ dependencies {
     api 'com.squareup.okhttp3:logging-interceptor:3.9.0' //非必要依赖， log依赖，如果需要打印OkHttpLog需要添加
 
     api 'com.alibaba:fastjson:1.2.48'//
-    implementation 'com.jakewharton:butterknife:8.8.1'
+    api 'com.jakewharton:butterknife:8.8.1'
     api 'com.squareup.okhttp3:okhttp:3.14.1'
     //图片加载相关库
     api 'com.facebook.fresco:fresco:1.13.0'
+    api 'me.relex:photodraweeview:1.1.3' //图片缩放
     api 'com.facebook.fresco:animated-gif:1.13.0'
     api "com.facebook.fresco:imagepipeline-okhttp3:1.13.0"
     //上下拉刷新,SmartRefreshLayout 没有使用到：序列化、反序列化、JNI、反射，所以并不需要添加混淆过滤代码
@@ -54,4 +67,6 @@ dependencies {
     //recyclerView适配器
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
     api 'org.greenrobot:eventbus:3.1.1'
+    //https://github.com/hackware1993/MagicIndicator 指示器库
+    api 'com.github.hackware1993:magicIndicator:1.6.0'
 }

@@ -8,8 +8,9 @@ import com.alibaba.fastjson.annotation.JSONField;
  * description：
  */
 public class Result<T>{
-    @JSONField(name = "status")
+    @JSONField(name = "result")
     int code;
+    @JSONField(name = "desc")
     String message;
     T data;
 

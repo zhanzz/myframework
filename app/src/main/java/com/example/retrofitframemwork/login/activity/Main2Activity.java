@@ -1,5 +1,8 @@
 package com.example.retrofitframemwork.login.activity;
 
+import android.animation.TimeInterpolator;
+import android.animation.TypeEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,10 +15,9 @@ import android.support.transition.TransitionManager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.retrofitframemwork.R;
@@ -55,6 +57,10 @@ public class Main2Activity extends BaseActivity implements ITestView {
     TextView llSearch;
     @BindView(R.id.simpleDraweeView)
     SimpleDraweeView simpleDraweeView;
+    @BindView(R.id.test_tv)
+    TextView testTv;
+    @BindView(R.id.test_et)
+    EditText testEt;
     private TestPresenter mPresenter;
     HeaderAndFooterWrapper mHeaderAndFooterAdapter;
 
@@ -98,6 +104,8 @@ public class Main2Activity extends BaseActivity implements ITestView {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
         mPresenter.refreshData(true);
+
+        llSearch.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override
@@ -178,7 +186,81 @@ public class Main2Activity extends BaseActivity implements ITestView {
     @OnClick(R.id.llSearch)
     public void onClick() {
         //reduce();
-        loadBitMap();
+        //loadBitMap();
+        //LogUtil.e(testEt.isFocusable() +";"+ testEt.isFocusableInTouchMode() + "===="+testTv.isFocusable()+";"+testTv.isFocusableInTouchMode());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+//                ValueAnimator valueAnimator = ValueAnimator.ofObject(new MyTypeEvaluator(), new Point(0, 0), new Point(0, 0));
+//                //设置持续时间
+//                valueAnimator.setDuration(2000);
+//                //设置加速时间插值器
+//                valueAnimator.setInterpolator(new MyInperpolator());
+//                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {    //设置监听器
+//                    @Override
+//                    public void onAnimationUpdate(ValueAnimator animation) {
+//                        //将最新计算出的属性值设置给ImageView
+//                        Point point = (Point) animation.getAnimatedValue();
+//                        //ivBall.setX(point.x);
+//                        //ivBall.setY(point.y);
+//
+//                        LogUtil.e(Thread.currentThread().getName());
+//                    }
+//                });
+//                Looper.prepare();
+//                //开启动画
+//                valueAnimator.start();
+                llSearch.setX(0);
+                llSearch.setY(200);
+            }
+        }).start();
+        Main3Activity.start(this);
+    }
+
+    /**
+     * 41      * 自定义时间插值器，这里实现了线性时间插值器
+     * 42
+     */
+    class MyInperpolator implements TimeInterpolator {
+
+        @Override
+        public float getInterpolation(float input) {
+            return input;
+        }
+    }
+
+    /**
+     * 53      * 实现的自己的TypeEvaluator
+     * 54
+     */
+    class MyTypeEvaluator implements TypeEvaluator<Point> {
+
+        @Override
+        public Point evaluate(float fraction, Point startValue, Point endValue) {
+            Point point = new Point();
+            point.x = startValue.x + fraction * 500;
+            point.y = startValue.y + fraction * 500;
+
+            return point;
+        }
+    }
+
+
+    /**
+     * 69      * 保存坐标信息
+     * 70
+     */
+    class Point {
+        float x;
+        float y;
+
+        public Point() {
+        }
+
+        public Point(float x, float y) {
+            this.x = x;
+            this.y = y;
+        }
     }
 
     private void loadBitMap() {
@@ -187,7 +269,7 @@ public class Main2Activity extends BaseActivity implements ITestView {
                     @Override
                     public void process(Bitmap bitmap) {
                         Palette p = Palette.from(bitmap)
-                                .setRegion(0,0,bitmap.getWidth(),bitmap.getHeight()/20)
+                                .setRegion(0, 0, bitmap.getWidth(), bitmap.getHeight() / 20)
                                 .generate();
                         Palette.Swatch color = p.getDominantSwatch();
                         LogUtil.e("color=" + color);

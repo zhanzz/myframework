@@ -47,25 +47,30 @@ public abstract class BaseFragment extends Fragment implements IBaseView{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         lifecycleSubject.onNext(ActivityLifeCycleEvent.CREATE);
+        BasePresenter presenter= getPresenter();
+        if(presenter!=null){
+            presenter.attachView(this);
+        }
         Bundle bundle = getArguments();
         if(bundle!=null){
             getParamData(bundle);
         }
-        BasePresenter presenter= getPresenter();
-        if(presenter!=null){
-            presenter.attachView(this);
+        if(savedInstanceState!=null){
+            getSavedInstanceState(savedInstanceState);
         }
         bindData();
         initEvent();
     }
 
-    protected abstract BasePresenter getPresenter();
+    protected void getSavedInstanceState(Bundle savedInstanceState) {}
 
     public abstract int getLayoutId();
 
     public abstract void bindData();
 
     public abstract void initEvent();
+
+    protected abstract BasePresenter getPresenter();
 
     public void getParamData(Bundle bundle){}
 

@@ -1,4 +1,4 @@
-package com.framework.common.utils;
+package com.framework.common;
 
 import com.framework.common.data.Result;
 import com.framework.common.net.UpLoadFileType;
