@@ -69,4 +69,6 @@ dependencies {
     api 'org.greenrobot:eventbus:3.1.1'
     //https://github.com/hackware1993/MagicIndicator 指示器库
     api 'com.github.hackware1993:magicIndicator:1.6.0'
+    api 'com.android.support:multidex:1.0.3'
+    api 'com.facebook.react:react-native:0.59.9'// From node_modules
 }

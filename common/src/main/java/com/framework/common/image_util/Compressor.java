@@ -2,6 +2,9 @@ package com.framework.common.image_util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
+
+import com.framework.common.utils.LogUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +16,8 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
@@ -122,21 +127,27 @@ public class Compressor {
                 .toList();
     }
 
-    public Observable<Map<String,Object>> compressToFileAsObservable(Map<String,Object> params) {
-        return Observable.just(params)
-                .map(new Function<Map<String,Object>, Map<String,Object>>() {
-                    @Override
-                    public  Map<String,Object> apply(Map<String,Object> map) throws Exception {
-                        for(String key : map.keySet()) {
-                            Object value = map.get(key);
-                            if (value instanceof File) {
-                                File file = compressToFile((File)value,((File)value).getName());
-                                map.put(key,file);
-                            }
+    public Observable<Map<String,Object>> compressToFileAsObservable(final Map<String,Object> params) {
+        return Observable.create(new ObservableOnSubscribe<Map<String, Object>>() {
+            @Override
+            public void subscribe(ObservableEmitter<Map<String, Object>> emitter) throws Exception {
+                Map<String,Object> result = new HashMap<>();
+                for(String key : params.keySet()) {
+                    if(!emitter.isDisposed()){
+                        Object value = params.get(key);
+                        if (value instanceof File) {
+                            File file = compressToFile((File)value,((File)value).getName());
+                            result.put(key,file);
                         }
-                        return map;
+                    }else {
+                        break;
                     }
-                });
+                }
+                if(!emitter.isDisposed()){
+                    emitter.onNext(result);
+                }
+            }
+        });
     }
 
     public Single<List<File>> compressToFileAsObservableSingleV2(List<File> rawFileList, List<String> compressedFileName) {

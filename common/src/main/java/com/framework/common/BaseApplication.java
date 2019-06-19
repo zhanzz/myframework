@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
 import com.facebook.common.logging.FLog;
@@ -68,6 +69,12 @@ public class BaseApplication extends Application {
             registerReceiver(receiver, intentFilter);
             registerActivityLifecycleCallbacks(new MyLifeCallBack());
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private void initFresco() {

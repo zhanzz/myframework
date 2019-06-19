@@ -87,7 +87,6 @@ class ImageUtil {
             bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
-
         }
         try {
             scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight,config);

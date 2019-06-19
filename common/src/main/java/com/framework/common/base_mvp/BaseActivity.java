@@ -187,6 +187,12 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     }
 
     @Override
+    public void finish() {
+        AppTools.hideSoftKey(this);
+        super.finish();
+    }
+
+    @Override
     protected void onDestroy() {
         lifecycleSubject.onNext(ActivityLifeCycleEvent.DESTROY);
         if(mCompositeDisposable!=null){

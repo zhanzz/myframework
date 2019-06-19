@@ -11,9 +11,22 @@
         android:layout_height="@dimen/title_bar_height"
         title:title_name="二级列表" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <com.example.demo.widget.MySmartRefreshLayout
+        android:id="@+id/smartRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:srlHeaderTriggerRate="0.3"
+        app:srlDragRate="0.7"
+        app:srlHeaderMaxDragRate="1">
 
+        <com.example.demo.widget.ActivityRefreshHeader
+            android:id="@+id/refreshHead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.example.demo.widget.MySmartRefreshLayout>
 </LinearLayout>

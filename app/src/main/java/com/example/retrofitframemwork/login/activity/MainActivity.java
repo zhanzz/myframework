@@ -6,8 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -17,8 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.demo.keybord.activity.TestInputActivity;
+import com.example.demo.react_native.RnFlatListActivity;
+import com.example.demo.react_native.RnMainActivity;
 import com.example.demo.viewpager_fragment.activity.ExpandRecyclerViewActivity;
-import com.example.demo.viewpager_fragment.activity.PageFragmentActivity;
 import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.TestDialogFragment;
 import com.example.retrofitframemwork.login.LoginPresenter;
@@ -33,14 +34,12 @@ import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.common.widget.drawable.ImageLoadingDrawable;
 import com.framework.model.UserBean;
-
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -76,17 +75,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void initEvent() {
-        try {
-            Method method = LoginPresenter.class.getSuperclass().getDeclaredMethod("onReceiveEvent",EventMessage.class);
-            Method method2 = TestPresenter.class.getSuperclass().getDeclaredMethod("onReceiveEvent",EventMessage.class);
-            if(method==method2){
-                LogUtil.i("相同");
-            }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        LogUtil.e("has="+getWindow().hasFeature(Window.FEATURE_ACTIVITY_TRANSITIONS));
-        LogUtil.e("has="+getWindow().hasFeature(Window.FEATURE_CONTENT_TRANSITIONS));
+        LogUtil.e("height="+ UIHelper.getDisplayHeight());
     }
 
     @Override
@@ -145,10 +134,13 @@ public class MainActivity extends BaseActivity implements ILoginView {
                 showFragment(0);
                 break;
             case R.id.image:
+//                RnMainActivity.start(this);
+//                RnFlatListActivity.start(this);
+//                TestInputActivity.start(this);
                 ExpandRecyclerViewActivity.start(this);
-                //PageFragmentActivity.start(this);
+//                PageFragmentActivity.start(this);
                 //Main2Activity.start(this);
-                //MultiImageSelectorActivity.startMe(this,2,200);
+//                MultiImageSelectorActivity.startMe(this,5,200);
                 //showFragment(mRandom.nextInt());
                 break;
         }
@@ -254,10 +246,27 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     if (!ListUtils.isEmpty(photoPath)) {
                         Map<String,Object> params = new HashMap<>();
                         params.put("dir","oaimage");
-                        params.put("img",new File(photoPath.get(0)));
+                        for(int i=0;i<photoPath.size();i++){
+                            params.put("img"+i,new File(photoPath.get(i)));
+                        }
                         mPresenter.uploadFile(params);
                         //mPresenter.zipFile(photoPath.get(0));
                     }
+                    Thread d = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                               Bitmap bitmap1= BitmapFactory.decodeFile(photoPath.get(0));
+                                Log.e("zhang",bitmap1==null?"true":"false");
+                            }catch (Exception e){
+                                Log.e("zhang",e.getMessage());
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    d.interrupt();
+                    d.start();
+                    d.interrupt();
                     break;
             }
         }

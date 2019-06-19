@@ -33,4 +33,5 @@ dependencies {
     implementation project(':common')
     implementation project(':model')
     annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
+    api project(path: ':react-native-gesture-handler')
 }

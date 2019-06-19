@@ -9,7 +9,7 @@ android {
         versionCode build_versions.versionCode
         versionName build_versions.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        multiDexEnabled true
         def environment = project.NET_ENVIRONMENT;
         switch (environment) {
             case "RELEASE":
@@ -71,6 +71,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-gesture-handler')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':common')
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'

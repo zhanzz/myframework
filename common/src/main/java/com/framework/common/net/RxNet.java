@@ -118,8 +118,8 @@ public class RxNet {
         }
         //压缩图片的observable
         Observable<Map<String, Object>> mapObservable = new Compressor(BaseApplication.getApp())
-                .setMaxHeight(1920)
-                .setMaxWidth(1080)
+                .setMaxHeight(800)
+                .setMaxWidth(400)
                 .setQuality(80)
                 .setConfig(Bitmap.Config.RGB_565)
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
