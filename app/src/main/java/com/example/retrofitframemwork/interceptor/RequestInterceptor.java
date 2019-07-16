@@ -17,8 +17,10 @@ public class RequestInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request()
                 .newBuilder()
-                .addHeader("appCode", "007")
+                .addHeader("terminalId", "006")
+                .addHeader("app_key","android")
                 .addHeader("os","android")
+                .addHeader("user-agent","android")
                 .addHeader("version", String.valueOf(BuildConfig.VERSION_CODE))
                 .addHeader("Authorization", TextUtils.isEmpty(UserOperation.getInstance().getToken()) ? "" : UserOperation.getInstance().getToken())
                 .build();

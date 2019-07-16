@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="activityAnimation" parent="@android:style/Animation.Activity">
+        <!-- 新Activity 进入 -->
         <item name="android:activityOpenEnterAnimation">@anim/slide_right_in</item>
+        <!-- 旧Activity退出 -->
         <item name="android:activityOpenExitAnimation">@anim/slide_left_out</item>
+        <!-- 旧Activity进入 -->
         <item name="android:activityCloseEnterAnimation">@anim/slide_left_in</item>
+        <!-- 新Activity退出 -->
         <item name="android:activityCloseExitAnimation">@anim/slide_right_out</item>
     </style>
 
@@ -39,5 +44,20 @@
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+
+    <style name="activity_dialog_styles" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@color/transplant</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!--设置windowFrame框为无-->
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <!--是否半透明-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!--背景是否模糊显示-->
+        <item name="android:backgroundDimEnabled">true</item>
     </style>
 </resources>

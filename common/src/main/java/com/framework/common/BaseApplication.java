@@ -23,9 +23,12 @@ import com.framework.common.receiver.NetChangeReceiver;
 import com.framework.common.callBack.EmptyActivityLifecycleCallbacks;
 import com.framework.common.utils.ListUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.DefaultRefreshFooterCreator;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
+import com.scwang.smartrefresh.layout.api.RefreshFooter;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -56,6 +59,15 @@ public class BaseApplication extends Application {
                 @Override
                 public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
                     return new CustomRefreshHeader(context);
+                }
+            });
+            //设置全局的Footer构建器
+            SmartRefreshLayout.setDefaultRefreshFooterCreator(new DefaultRefreshFooterCreator() {
+                @Override
+                public RefreshFooter createRefreshFooter(Context context, RefreshLayout layout) {
+                    //指定为经典Footer，默认是 BallPulseFooter
+                    layout.setEnableLoadMore(false);
+                    return new ClassicsFooter(context).setDrawableSize(20).setFinishDuration(300);
                 }
             });
             initFresco();

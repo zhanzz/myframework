@@ -3,6 +3,7 @@ package com.example.retrofitframemwork;
 import com.framework.common.data.Result;
 import com.framework.model.TestBean;
 import com.framework.model.UserEntity;
+import com.framework.model.VersionInfo;
 
 import java.util.Map;
 import io.reactivex.Observable;
@@ -33,4 +34,7 @@ public interface AppApi {
 
     @POST("v1/Attendance/UserShiftDetails")
     Observable<Result<TestBean>> loadPageData(@Body Map<String,Object> params);
+
+    @POST("https://app.zhidianlife.com/life-app-apis/apis/v1/mall/version/queryLatestVersion")
+    Observable<Result<VersionInfo>> checkUpdate();
 }

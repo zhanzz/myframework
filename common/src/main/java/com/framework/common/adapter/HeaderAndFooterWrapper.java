@@ -1,6 +1,7 @@
 package com.framework.common.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +39,9 @@ public class HeaderAndFooterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
     private boolean mEnableLoadMoreEndClick = false;//当加载没有更多数据后，点击是否要加载更多
     private boolean mLoadMoreEnable=false;//当刷新后会自动置为true（为了智能的加载更多）
     private boolean mRealControlMoreEnable=true;
+    private boolean mCanShowEmptyView = true;//是否允许展示空视图
     private SmartRefreshLayout smartRefreshLayout;
+    private boolean isRecyclerViewHolder=true;//是否回收header footer
 
     public HeaderAndFooterWrapper(RecyclerView.Adapter adapter) {
         mInnerAdapter = adapter;
@@ -82,17 +85,20 @@ public class HeaderAndFooterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mHeaderViews.get(viewType) != null) {
             ViewHolder holder = ViewHolder.createViewHolder(parent.getContext(), mHeaderViews.get(viewType));
+            holder.setIsRecyclable(isRecyclerViewHolder);
             return holder;
         } else if (mFootViews.get(viewType) != null) {
             ViewHolder holder = ViewHolder.createViewHolder(parent.getContext(), mFootViews.get(viewType));
             if (holder.itemView.getParent() != null) {
-                LogUtil.e("重复添加了");
+                ((ViewGroup)holder.itemView.getParent()).removeView(holder.itemView);
             }
+            holder.setIsRecyclable(isRecyclerViewHolder);
             return holder;
         } else if (viewType == ITEM_TYPE_EMPTY) {
             ViewHolder holder;
             if (mEmptyView != null) {
                 holder = ViewHolder.createViewHolder(parent.getContext(), mEmptyView);
+                holder.setIsRecyclable(isRecyclerViewHolder);
             } else {
                 holder = ViewHolder.createViewHolder(parent.getContext(), parent, mEmptyLayoutId);
             }
@@ -109,7 +115,7 @@ public class HeaderAndFooterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
             position = 0;
         }
         if (isEmpty()) {
-            if (isHeaderViewPos(position)) {
+            if (mNeedHead&&isHeaderViewPos(position)) {
                 return mHeaderViews.keyAt(position);
             } else {
                 return ITEM_TYPE_EMPTY;
@@ -187,7 +193,11 @@ public class HeaderAndFooterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private boolean isEmpty() {
-        return (mEmptyView != null || mEmptyLayoutId != 0) && mInnerAdapter.getItemCount() == 0;
+        if(mCanShowEmptyView){
+            return (mEmptyView != null || mEmptyLayoutId != 0) && mInnerAdapter.getItemCount() == 0;
+        }else {
+            return false;
+        }
     }
 
     GridLayoutManager.SpanSizeLookup oldLoopUp;
@@ -554,5 +564,17 @@ public class HeaderAndFooterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
 
     public void setRealControlMoreEnable(boolean mRealControlMoreEnable) {
         this.mRealControlMoreEnable = mRealControlMoreEnable;
+    }
+
+    public void setCanShowEmptyView(boolean canShowEmptyView) {
+        this.mCanShowEmptyView = mCanShowEmptyView;
+    }
+
+    /**
+     * 此方法解决在使用共享缓存池时的异常
+     * @param isRecyclerViewHolder
+     */
+    public void setIsRecyclerHeadAndFooter(boolean isRecyclerViewHolder){
+        this.isRecyclerViewHolder = isRecyclerViewHolder;
     }
 }

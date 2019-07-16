@@ -54,7 +54,7 @@ dependencies {
     api 'com.squareup.okhttp3:logging-interceptor:3.9.0' //非必要依赖， log依赖，如果需要打印OkHttpLog需要添加
 
     api 'com.alibaba:fastjson:1.2.48'//
-    api 'com.jakewharton:butterknife:8.8.1'
+    api "com.jakewharton:butterknife:$versions.butterknife"
     api 'com.squareup.okhttp3:okhttp:3.14.1'
     //图片加载相关库
     api 'com.facebook.fresco:fresco:1.13.0'
@@ -65,10 +65,9 @@ dependencies {
     api 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-24'
     api 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-24'
     //recyclerView适配器
-    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
     api 'org.greenrobot:eventbus:3.1.1'
     //https://github.com/hackware1993/MagicIndicator 指示器库
     api 'com.github.hackware1993:magicIndicator:1.6.0'
     api 'com.android.support:multidex:1.0.3'
-    api 'com.facebook.react:react-native:0.59.9'// From node_modules
 }

@@ -51,6 +51,6 @@ public class Main3Activity extends BaseActivity {
 
     @OnClick(R.id.jump)
     public void onClick() {
-        Main2Activity.start(this);
+        Main4Activity.start(this);
     }
 }

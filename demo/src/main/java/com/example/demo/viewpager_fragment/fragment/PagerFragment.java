@@ -1,9 +1,12 @@
 package com.example.demo.viewpager_fragment.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.demo.R;
@@ -32,7 +35,7 @@ public class PagerFragment extends BaseFragment implements IPagerView {
     SmartRefreshLayout smartRefreshLayout;
     private TestSaveAdapter mAdapter;
     private PagerPresenter mPresenter;
-
+    private RecyclerView.RecycledViewPool mRecyclerViewPool;
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -71,10 +74,16 @@ public class PagerFragment extends BaseFragment implements IPagerView {
     @Override
     public void bindData() {
         mAdapter = new TestSaveAdapter(recyclerView);
+        mAdapter.setIsRecyclerHeadAndFooter(false);
+        TextView tv = new TextView(getContext());
+        tv.setText(mPresenter.getId());
+        mAdapter.addHeaderView(tv);
+        Log.e("zhang",mPresenter.getId()+";"+Integer.toHexString(System.identityHashCode(mAdapter.getHeaderLayout()))+";"+Integer.toHexString(System.identityHashCode(recyclerView)));
         mAdapter.setLoadEndText("暂无更多数据");
         mAdapter.setEmptyView(ViewUtil.createEmptyView(getContext()));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setRecycledViewPool(mRecyclerViewPool);
         if (ListUtils.isEmpty(mPresenter.getData())) {//数据为空发起网络请求
             mPresenter.refreshData(true);
         }else{
@@ -131,6 +140,10 @@ public class PagerFragment extends BaseFragment implements IPagerView {
     @Override
     public void reloadData() {
         mPresenter.refreshData(true);
+    }
+
+    public void setRecyclerViewPool(RecyclerView.RecycledViewPool recyclerViewPool) {
+        mRecyclerViewPool = recyclerViewPool;
     }
 
     public static PagerFragment newInstance(String id, ArrayList<PresellBean.PresellProduct> productList) {

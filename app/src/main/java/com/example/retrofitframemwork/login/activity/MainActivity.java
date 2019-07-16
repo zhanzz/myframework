@@ -1,41 +1,59 @@
 package com.example.retrofitframemwork.login.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.CountDownTimer;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.demo.keybord.activity.TestInputActivity;
-import com.example.demo.react_native.RnFlatListActivity;
-import com.example.demo.react_native.RnMainActivity;
+import com.example.demo.some_test.activity.TestDiffAndHandlerActivity;
+import com.example.demo.some_test.activity.TestServiceAndNoticeActivity;
 import com.example.demo.viewpager_fragment.activity.ExpandRecyclerViewActivity;
+import com.example.demo.viewpager_fragment.activity.PageFragmentActivity;
+import com.example.demo.vlayout.activity.StudyVlayoutActivity;
 import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.TestDialogFragment;
 import com.example.retrofitframemwork.login.LoginPresenter;
-import com.example.retrofitframemwork.login.presenter.TestPresenter;
 import com.example.retrofitframemwork.login.view.ILoginView;
+import com.example.retrofitframemwork.update.activity.UpDateActivity;
+import com.framework.common.BaseApplication;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
-import com.framework.common.data.EventMessage;
+import com.framework.common.data.ConfigOperation;
 import com.framework.common.image_select.MultiImageSelectorActivity;
+import com.framework.common.manager.PermissionManager;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.LogUtil;
+import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.common.widget.drawable.ImageLoadingDrawable;
 import com.framework.model.UserBean;
+import com.framework.model.VersionInfo;
+
 import java.io.File;
-import java.lang.reflect.Method;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +86,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void bindData() {
+        registerBroadcast();
         ImageLoadingDrawable drawable = new ImageLoadingDrawable();
         image.setImageDrawable(drawable);
         drawable.setLevel(2000);
@@ -75,7 +94,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void initEvent() {
-        LogUtil.e("height="+ UIHelper.getDisplayHeight());
+        LogUtil.e("String.format="+ String.format("%.2f",0.336f));
     }
 
     @Override
@@ -128,27 +147,36 @@ public class MainActivity extends BaseActivity implements ILoginView {
     public void onClick(View view){
         switch (view.getId()){
             case R.id.tv_show:
-                //mPresenter.downLoadFile();
+//                passPermission("");
+//                TestServiceAndNoticeActivity.start(this,null);
+//                installApk();
+//                mPresenter.downLoadFile();
                 //getProcessName(this);
                 //mPresenter.login("13695157045","1");
-                showFragment(0);
+//                showFragment(0);
+//                Main2Activity.start(this);
+                SettingActivity.start(this,null);
                 break;
             case R.id.image:
+//                requestNeedPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA);
+                mPresenter.checkUpdate();
+//                TestServiceAndNoticeActivity.start(this,null);
+//                TestDiffAndHandlerActivity.start(this);
+//                StudyVlayoutActivity.start(this);
 //                RnMainActivity.start(this);
 //                RnFlatListActivity.start(this);
 //                TestInputActivity.start(this);
-                ExpandRecyclerViewActivity.start(this);
+//                ExpandRecyclerViewActivity.start(this);
 //                PageFragmentActivity.start(this);
-                //Main2Activity.start(this);
+//                Main2Activity.starts(this);
 //                MultiImageSelectorActivity.startMe(this,5,200);
-                //showFragment(mRandom.nextInt());
+//                showFragment(mRandom.nextInt());
                 break;
         }
-        //Main2Activity.start(this);
 //        mPresenter.downLoadFile();
 //        mPresenter.uploadFile();
 //         重新构造Uri：content://
-//        requestNeedPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        //requestNeedPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         //passPermission("");
         //showFragment(mRandom.nextInt());
 //        TestFragment fragment = TestFragment.newInstance(2);
@@ -174,6 +202,27 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //        },6000);
     }
 
+    private void installApk() {
+        File dir;
+        if(PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        }else{
+            dir = BaseApplication.getApp().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+        }
+        File file = new File(dir.getAbsolutePath(),"framework_test.apk");
+        Uri uri;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            uri = FileProvider.getUriForFile(BaseApplication.getApp(), BaseApplication.getApp().getPackageName() + ".FileProvider", file);
+        } else {
+            uri = Uri.fromFile(file);
+        }
+        Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setDataAndType(uri,"application/vnd.android.package-archive");
+        startActivity(intent);
+    }
+
     private void showFragment(final int position) {
         Log.e("zhang", "ppposition=" + position);
         final int pposition = position;
@@ -194,20 +243,24 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void passPermission(String permission) {
-//        File imagePath = new File(getCacheDir(), "images");
-//        if (!imagePath.exists()) {
-//            imagePath.mkdirs();
-//        }
-//        File newFile = new File(imagePath, "default_image.jpg");
-//        Uri contentUri = FileProvider.getUriForFile(getContext(),
-//                BaseApplication.getApp().getPackageName() + ".FileProvider", newFile);
-//        //Uri contentUri = Uri.fromFile(newFile);//7.0以上应用间只能用content:// 不管私有还是外部存储
-//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
-//        // 授予目录临时共享权限
-////        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
-////                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//        startActivityForResult(intent, 100);
+        if(permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            return;
+        }
+        File imagePath = new File(Environment.getExternalStorageDirectory(), "images");
+        if (!imagePath.exists()) {
+            imagePath.mkdirs();
+        }
+        File newFile = new File(imagePath, "default_image.jpg");
+        Uri contentUri = FileProvider.getUriForFile(getContext(),
+                BaseApplication.getApp().getPackageName() + ".FileProvider", newFile);
+        //android.os.FileUriExposedException
+//        Uri contentUri = Uri.fromFile(newFile);//7.0以上应用间只能用content:// 不管私有内部还是私有外部还是公有外部存储
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+        // 授予目录临时共享权限 //Intent中migrateExtraStreamToClipData有自动添加这两个权限
+//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+//                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        startActivityForResult(intent, 100);
 
 //        UserOperation opration = new UserOperation();
 //        long start = System.currentTimeMillis();
@@ -228,12 +281,17 @@ public class MainActivity extends BaseActivity implements ILoginView {
     }
 
     @Override
+    public void onShowUpdateDialog(VersionInfo bean) {
+        UpDateActivity.start(this,bean);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==Activity.RESULT_OK){
             switch (requestCode){
                 case 100:
-                    File imagePath = new File(getCacheDir(), "images");
+                    File imagePath = new File(Environment.getExternalStorageDirectory(), "images");
                     if (!imagePath.exists()) {
                         imagePath.mkdirs();
                     }
@@ -286,6 +344,48 @@ public class MainActivity extends BaseActivity implements ILoginView {
             }
         }
         return null;
+    }
+
+    MyBroadCastReciver  mReciver;
+    CompleteReceiver mDownReciver;
+    private void registerBroadcast(){
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.frameWork.test");
+        mReciver = new MyBroadCastReciver();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReciver, filter);
+
+        mDownReciver = new CompleteReceiver();
+        registerReceiver(mDownReciver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
+
+    public static class MyBroadCastReciver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ToastUtil.show(context,"收到了通知");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mReciver!=null){
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(mReciver);
+        }
+        if(mDownReciver!=null){
+            unregisterReceiver(mDownReciver);
+        }
+        super.onDestroy();
+    }
+
+    class CompleteReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // get complete download id
+            long completeDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            ConfigOperation operation = new ConfigOperation();
+            if(completeDownloadId==operation.getData().downLoadId){
+                installApk();
+            }
+        }
     }
 
     public static void start(Context context) {

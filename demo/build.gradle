@@ -10,14 +10,6 @@ android {
         versionCode build_versions.versionCode
         versionName build_versions.versionName
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
 }
 
 dependencies {
@@ -32,6 +24,10 @@ dependencies {
 
     implementation project(':common')
     implementation project(':model')
-    annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
-    api project(path: ':react-native-gesture-handler')
+    annotationProcessor "com.jakewharton:butterknife-compiler:$versions.butterknife"
+    implementation('com.alibaba.android:vlayout:1.2.8@aar') {
+        transitive = true
+    }
+    //https://github.com/youth5201314/banner
+    implementation 'com.youth.banner:banner:1.4.10'
 }

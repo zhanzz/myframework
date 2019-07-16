@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.demo">
-
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <application>
         <activity
-            android:name=".keybord.activity.TestInputActivity"
+            android:name=".some_test.activity.TestServiceAndNoticeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".react_native.RnMainActivity"
+            android:name=".some_test.activity.TestDiffAndHandlerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".vlayout.activity.StudyVlayoutActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".keybord.activity.TestInputActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
@@ -28,11 +36,8 @@
             android:name=".viewpager_fragment.activity.ExpandRecyclerViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".react_native.RnFlatListActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
-        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+
+        <service android:name=".service.ForegroundService"/>
     </application>
 
 </manifest>

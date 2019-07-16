@@ -36,4 +36,15 @@
         <attr name="left_text_drawable_right" format="reference"/>
         <attr name="left_text_drawable_left" format="reference"/>
     </declare-styleable>
+
+    <declare-styleable name="ConvenientBanner">
+        <attr format="boolean" name="canLoop"/>
+        <attr name="indicatorSpace" format="dimension"/>
+        <attr name="indicatorMargin" format="dimension"/>
+        <attr name="indicatorMarginLeft" format="dimension"/>
+        <attr name="indicatorMarginTop" format="dimension"/>
+        <attr name="indicatorMarginRight" format="dimension"/>
+        <attr name="indicatorMarginBottom" format="dimension"/>
+    </declare-styleable>
+    <item name="cb_item_tag" type="id"/>
 </resources>

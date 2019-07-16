@@ -11,6 +11,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".login.activity.SettingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"></activity>
+
+        <service
+            android:name=".login.service.UpdateService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".update.activity.UpDateActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/activity_dialog_styles" />
+        <activity
+            android:name=".login.activity.Main4Activity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
         <activity android:name=".login.activity.MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
@@ -21,9 +41,8 @@
         </activity>
         <activity
             android:name=".login.activity.Main2Activity"
-            android:launchMode="singleTask"
-            ></activity>
-        <activity android:name=".login.activity.Main3Activity"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".login.activity.Main3Activity" />
     </application>
 
 </manifest>

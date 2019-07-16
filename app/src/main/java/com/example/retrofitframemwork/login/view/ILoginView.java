@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import com.framework.common.base_mvp.IBaseView;
 import com.framework.model.UserBean;
+import com.framework.model.VersionInfo;
 
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -15,4 +16,5 @@ import io.reactivex.disposables.CompositeDisposable;
 public interface ILoginView extends IBaseView {
     void loginSucess(UserBean bean);
     void showBitmap(Bitmap bitmap);
+    void onShowUpdateDialog(VersionInfo bean);
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/discount_price"
+    android:layout_width="25dp"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:ems="2"
+    android:text="查看更多"
+    android:drawablePadding="3dp"
+    android:textColor="#666666"
+    android:textSize="10sp" />
+

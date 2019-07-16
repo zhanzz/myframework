@@ -48,15 +48,24 @@ public class PermissionManager {
         return false;
     }
 
-    // 判断权限是否被拒绝
-    public boolean lacksPermissions(String permissions) {
-        return lacksPermission(permissions);
-    }
-
-    // 判断是否缺少权限
-    private boolean lacksPermission(String permission) {
+    /**
+     * 权限是否被禁用 true是，false 不是
+     * @param permission
+     * @return
+     */
+    public boolean lacksPermission(String permission) {
         return ContextCompat.checkSelfPermission(BaseApplication.getApp(), permission)
                 == PackageManager.PERMISSION_DENIED;
+    }
+
+    /**
+     * 是否有该权限 true 有，false无
+     * @param permission
+     * @return
+     */
+    public boolean hasPremission(String permission){
+        return ContextCompat.checkSelfPermission(BaseApplication.getApp(), permission)
+                == PackageManager.PERMISSION_GRANTED;
     }
 
     /**

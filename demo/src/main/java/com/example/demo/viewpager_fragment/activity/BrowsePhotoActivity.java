@@ -111,7 +111,6 @@ public class BrowsePhotoActivity extends BaseActivity {
             changeIndicator();
             viewPager.setCurrentItem(mPosition);
         }
-        Activity a;
     }
 
     @Override
@@ -134,7 +133,7 @@ public class BrowsePhotoActivity extends BaseActivity {
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setEnterSharedElementCallback(new SharedElementCallback() {
+            setEnterSharedElementCallback(new SharedElementCallback() {//onMapSharedElements标记当前页面中的共享元素
                 @Override
                 public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                     View view = (View) mAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
@@ -146,9 +145,14 @@ public class BrowsePhotoActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void supportFinishAfterTransition() {//需要更新上一页面的共享元素时调用，上一页面会回调onActivityReenter
+        super.supportFinishAfterTransition();
+    }
+
     private void changeIndicator() {
         StringBuilder builder = new StringBuilder();
-        builder.append(String.valueOf(viewPager.getCurrentItem()+1)).append("/").append(String.valueOf(mPaths.size()));
+        builder.append(viewPager.getCurrentItem()+1).append("/").append(mPaths.size());
         tvIndicator.setText(builder.toString());
     }
 
@@ -165,7 +169,7 @@ public class BrowsePhotoActivity extends BaseActivity {
      */
     public static void start(Activity context,int position,ArrayList<String> paths,View view) {
         Intent starter = new Intent(context, BrowsePhotoActivity.class);
-        starter.putExtra("position",0);
+        starter.putExtra("position",position);
         starter.putExtra("paths",paths);
         if(view!=null){
             context.startActivity(starter,ActivityOptionsCompat.makeSceneTransitionAnimation(context,view,"image").toBundle());

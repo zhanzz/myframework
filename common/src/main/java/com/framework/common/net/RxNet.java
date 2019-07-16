@@ -83,7 +83,7 @@ public class RxNet {
     }
 
     /**
-     * 下载和上传
+     * 下载
      */
 
     public static Disposable downLoadFile(String url, final FileCallBack callBack) {

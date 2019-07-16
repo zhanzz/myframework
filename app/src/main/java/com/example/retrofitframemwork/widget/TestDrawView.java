@@ -37,5 +37,6 @@ public class TestDrawView extends View {
         Paint paint = new Paint();
         paint.setTextSize(30);
         canvas.drawText("我",getWidth()/2,getHeight()/2,paint);
+        //new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP); //先画的dest,后画的src
     }
 }

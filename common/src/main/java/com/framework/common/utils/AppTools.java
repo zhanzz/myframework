@@ -3,11 +3,16 @@ package com.framework.common.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+
+import java.io.File;
 
 /**
  * @author zhangzhiqiang
@@ -38,5 +43,18 @@ public class AppTools {
             InputMethodManager inputmanger = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    //执行时间170ms
+    public static int getApkCode(Context context, String apkPath) {
+        if(!new File(apkPath).exists()){
+            return 0;
+        }
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info = pm.getPackageArchiveInfo(apkPath, 0);
+        if (info != null && info.packageName.equals(context.getPackageName())) {
+            return info.versionCode;
+        }
+        return 0;
     }
 }

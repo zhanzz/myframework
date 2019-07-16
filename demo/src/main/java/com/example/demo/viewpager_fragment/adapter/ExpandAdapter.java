@@ -1,6 +1,8 @@
 package com.example.demo.viewpager_fragment.adapter;
 
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseSectionQuickAdapter;
@@ -32,9 +34,17 @@ public class ExpandAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Ba
     }
 
     @Override
+    protected BaseViewHolder onCreateDefViewHolder(ViewGroup parent, int viewType) {
+        BaseViewHolder viewHolder = super.onCreateDefViewHolder(parent, viewType);
+        Log.e("zhang","onCreateDefViewHolder");
+        return viewHolder;
+    }
+
+    @Override
     protected void convert(final BaseViewHolder helper, MultiItemEntity item) {
         switch (item.getItemType()){
             case 0:
+                Log.e("zhang","bind"+((BigCategory)item).categoryName);
                 helper.setText(R.id.textView,((BigCategory)item).categoryName);
                 helper.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

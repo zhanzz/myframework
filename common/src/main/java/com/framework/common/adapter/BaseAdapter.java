@@ -4,12 +4,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.framework.common.R;
 import com.framework.common.loading_view.SimpleLoadMoreView;
 import com.framework.common.utils.ListUtils;
+import com.framework.common.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -23,6 +26,9 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
     private String strLoadEndText;
     private SmartRefreshLayout smartRefreshLayout;
     private boolean mRealControlMoreEnable=true;
+    private boolean mCanShowEmptyView=true;//是否允许展示空视图
+    private boolean isRecyclerViewHolder=true;//是否回收header footer
+
     public BaseAdapter(RecyclerView recyclerView,int layoutResId) {
         super(layoutResId);
         //做一些统一的处理
@@ -46,7 +52,19 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
         setEnableLoadMore(false);
     }
 
-    public void setOrAddData(@NonNull List<T> data, int pageIndex,int pageSize) {
+    @Override
+    public K onCreateViewHolder(ViewGroup parent, int viewType) {
+        K viewHolder = super.onCreateViewHolder(parent, viewType);
+        if(viewType==HEADER_VIEW||viewType==FOOTER_VIEW||viewType==EMPTY_VIEW){
+            viewHolder.setIsRecyclable(isRecyclerViewHolder);
+            if(viewHolder.itemView.getParent()!=null){
+                ((ViewGroup)viewHolder.itemView.getParent()).removeView(viewHolder.itemView);
+            }
+        }
+        return viewHolder;
+    }
+
+    public void setOrAddData(@NonNull List<T> data, int pageIndex, int pageSize) {
         if(pageIndex<=1){
             super.setNewData(data);
             if(!mRealControlMoreEnable){
@@ -116,5 +134,26 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
 
     public void setRealControlMoreEnable(boolean mRealControlMoreEnable) {
         this.mRealControlMoreEnable = mRealControlMoreEnable;
+    }
+
+    public void setCanShowEmptyView(boolean canShowEmptyView) {
+        this.mCanShowEmptyView = canShowEmptyView;
+    }
+
+    @Override
+    public int getEmptyViewCount() {
+        if (mCanShowEmptyView){
+            return super.getEmptyViewCount();
+        }else {
+            return 0;
+        }
+    }
+
+    /**
+     * 此方法解决在使用共享缓存池时的异常
+     * @param isRecyclerViewHolder
+     */
+    public void setIsRecyclerHeadAndFooter(boolean isRecyclerViewHolder){
+        this.isRecyclerViewHolder = isRecyclerViewHolder;
     }
 }

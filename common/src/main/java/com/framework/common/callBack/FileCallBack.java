@@ -33,7 +33,7 @@ public abstract class FileCallBack{
 
     public void saveFile(ResponseBody response) {
         InputStream is = null;
-        byte[] buf = new byte[2048];
+        byte[] buf = new byte[4096];
         int len = 0;
         FileOutputStream fos = null;
         File file = null;
@@ -41,24 +41,30 @@ public abstract class FileCallBack{
             is = response.byteStream();
             final long total = response.contentLength();
 
-            long sum = 0;
+            long sum = 0,oldSum = 0;
 
             File dir = new File(destFileDir);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
             file = new File(dir, destFileName);
+            if(file.exists()){//先清除旧的文件
+                file.delete();
+            }
             fos = new FileOutputStream(file);
             while ((len = is.read(buf)) != -1) {
                 sum += len;
                 fos.write(buf, 0, len);
                 final long finalSum = sum;
-                Platform.get().defaultCallbackExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        inProgress(finalSum * 1.0f / total, total);
-                    }
-                });
+                if((sum-oldSum)*1.0f/total>0.009){ //调节一下消息的频率
+                    oldSum = sum;
+                    Platform.get().defaultCallbackExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            inProgress(finalSum * 1.0f / total, total);
+                        }
+                    });
+                }
             }
             fos.flush();
 

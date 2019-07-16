@@ -64,7 +64,17 @@ public class BasePrefDao<T> {
 
     public T getFromCacheWithoutKey(){
         String content = tinyDB.getString(clazz.getSimpleName());
-        return GsonUtils.parseFromString(content, clazz);
+        T bean = GsonUtils.parseFromString(content, clazz);
+        if(bean==null){
+            try {
+                bean = clazz.newInstance();//须确保有默认构造方法
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
+        }
+        return bean;
     }
 
     public T getData(){

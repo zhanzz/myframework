@@ -12,9 +12,11 @@ import android.os.Looper;
 import android.support.constraint.ConstraintLayout;
 import android.support.transition.AutoTransition;
 import android.support.transition.TransitionManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -76,6 +78,7 @@ public class Main2Activity extends BaseActivity implements ITestView {
 
     @Override
     public void bindData() {
+        LogUtil.e("bindData");
         //refreshLayout.setFitsSystemWindows(true);
         //mAdapter.setNewData(data);
         refreshLayout.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
@@ -109,6 +112,12 @@ public class Main2Activity extends BaseActivity implements ITestView {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        LogUtil.e("onNewIntent");//startActivities会调用onCreate和onNewIntent
+    }
+
+    @Override
     public void initEvent() {
         mAdapter.setEnableLoadMore(false);
         mAdapter.setRefreshListener(new BaseAdapter.RefreshListener() {
@@ -136,6 +145,15 @@ public class Main2Activity extends BaseActivity implements ITestView {
             mPresenter = new TestPresenter();
         }
         return mPresenter;
+    }
+
+    public static void starts(Context context) {
+        Intent[] intents = new Intent[2];
+        Intent starter = new Intent(context, Main2Activity.class);
+        intents[0] = starter;
+        Intent starter2 = new Intent(context, Main3Activity.class);
+        intents[1] = starter2;
+        context.startActivities(intents); //结论：singleTask,Main2Activity会被记录在栈底，虽然此时还没有启动，但就好像已经在栈底了一样。会清除它之后启动的页面
     }
 
     public static void start(Context context) {
@@ -188,9 +206,9 @@ public class Main2Activity extends BaseActivity implements ITestView {
         //reduce();
         //loadBitMap();
         //LogUtil.e(testEt.isFocusable() +";"+ testEt.isFocusableInTouchMode() + "===="+testTv.isFocusable()+";"+testTv.isFocusableInTouchMode());
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
 //                ValueAnimator valueAnimator = ValueAnimator.ofObject(new MyTypeEvaluator(), new Point(0, 0), new Point(0, 0));
 //                //设置持续时间
 //                valueAnimator.setDuration(2000);
@@ -210,11 +228,15 @@ public class Main2Activity extends BaseActivity implements ITestView {
 //                Looper.prepare();
 //                //开启动画
 //                valueAnimator.start();
-                llSearch.setX(0);
-                llSearch.setY(200);
-            }
-        }).start();
-        Main3Activity.start(this);
+//                llSearch.setX(0);
+//                llSearch.setY(200);
+//            }
+//        }).start();
+        //Main3Activity.start(this);
+        Intent intent = new Intent();
+        intent.setAction("com.frameWork.test");
+        //intent.setClass(this, MainActivity.MyBroadCastReciver.class);//设置了显示，动态注册无法接收
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     /**

@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.example.demo.R;
@@ -17,6 +21,7 @@ import com.example.demo.widget.ActivityRefreshHeader;
 import com.example.demo.widget.MySmartRefreshLayout;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
+import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -25,6 +30,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ExpandRecyclerViewActivity extends BaseActivity implements IExpandRecyclerViewView {
     @BindView(R2.id.recyclerView)
@@ -33,6 +39,8 @@ public class ExpandRecyclerViewActivity extends BaseActivity implements IExpandR
     MySmartRefreshLayout smartRefreshLayout;
     @BindView(R2.id.refreshHead)
     ActivityRefreshHeader refreshHead;
+    @BindView(R2.id.btn_remove)
+    Button btnRemove;
     private ExpandRecyclerViewPresenter mPresenter;
 
     @Override
@@ -46,6 +54,7 @@ public class ExpandRecyclerViewActivity extends BaseActivity implements IExpandR
         //SectionAdapter adapter = new SectionAdapter(list);
         List<MultiItemEntity> multi = mPresenter.getMultiData();
         ExpandAdapter adapter = new ExpandAdapter(multi);
+        //adapter.expandAll();
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(adapter);
     }
@@ -55,18 +64,25 @@ public class ExpandRecyclerViewActivity extends BaseActivity implements IExpandR
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                if(refreshHead.isLoadActivity()){
-                    ToastUtil.show(ExpandRecyclerViewActivity.this,"进入活动页面");
+                if (refreshHead.isLoadActivity()) {
+                    ToastUtil.show(ExpandRecyclerViewActivity.this, "进入活动页面");
                     smartRefreshLayout.finishRefresh();
-                }else{
-                    ToastUtil.show(ExpandRecyclerViewActivity.this,"进入刷新中");
+                } else {
+                    ToastUtil.show(ExpandRecyclerViewActivity.this, "进入刷新中");
                     smartRefreshLayout.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             smartRefreshLayout.finishRefresh();
                         }
-                    },3000);
+                    }, 3000);
                 }
+            }
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
             }
         });
     }
@@ -89,5 +105,12 @@ public class ExpandRecyclerViewActivity extends BaseActivity implements IExpandR
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    @OnClick(R2.id.btn_remove)
+    public void onClick() {
+        TextView v = (TextView) recyclerView.getChildAt(0);
+        Log.e("zhang",v.getText()+";"+v.toString());
+        recyclerView.removeView(v);
     }
 }

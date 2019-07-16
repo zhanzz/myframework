@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.transition.ChangeBounds;
 import android.view.View;
 import android.view.Window;
@@ -44,7 +45,7 @@ public class PageFragmentActivity extends BaseActivity implements IPageFragmentV
     private PageFragmentPresenter mPresenter;
     private List<PresellBean.CategoryItem> mTitleDataList = new ArrayList<>();
     private ArrayList<PresellBean.PresellProduct> mFirstProductList;
-
+    private RecyclerView.RecycledViewPool mRecyclerViewPool;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -60,6 +61,8 @@ public class PageFragmentActivity extends BaseActivity implements IPageFragmentV
 
     @Override
     public void bindData() {
+        mRecyclerViewPool = new RecyclerView.RecycledViewPool();
+        mRecyclerViewPool.setMaxRecycledViews(0,10);
         mPresenter.getCategory();
         CommonNavigator commonNavigator = new CommonNavigator(this);
         commonNavigator.setAdapter(new CommonNavigatorAdapter() {
@@ -115,11 +118,14 @@ public class PageFragmentActivity extends BaseActivity implements IPageFragmentV
     private FragmentStatePagerAdapter mAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
         @Override
         public Fragment getItem(int position) {
+            PagerFragment fragment = null;
             if(position==0){
-                return PagerFragment.newInstance(mTitleDataList.get(position).getId(),mFirstProductList);
+                fragment = PagerFragment.newInstance(mTitleDataList.get(position).getId(),mFirstProductList);
             }else {
-                return PagerFragment.newInstance(mTitleDataList.get(position).getId(),null);
+                fragment = PagerFragment.newInstance(mTitleDataList.get(position).getId(),null);
             }
+            fragment.setRecyclerViewPool(mRecyclerViewPool);
+            return fragment;
         }
 
         @Override
