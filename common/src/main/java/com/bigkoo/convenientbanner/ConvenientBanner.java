@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.PageTransformer;
+import androidx.annotation.DrawableRes;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -281,7 +281,7 @@ public class ConvenientBanner<T> extends FrameLayout {
      * @param transformer
      * @return
      */
-    public ConvenientBanner setPageTransformer(PageTransformer transformer) {
+    public ConvenientBanner setPageTransformer(ViewPager.PageTransformer transformer) {
         viewPager.setPageTransformer(true, transformer);
         return this;
     }

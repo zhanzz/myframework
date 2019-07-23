@@ -17,13 +17,13 @@
 package com.bigkoo.convenientbanner.view;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import com.bigkoo.convenientbanner.ViewPagerScroller;
 import com.bigkoo.convenientbanner.adapter.CBLoopPagerAdapterWrapper;
 import com.bigkoo.convenientbanner.adapter.CBPageAdapter;
 

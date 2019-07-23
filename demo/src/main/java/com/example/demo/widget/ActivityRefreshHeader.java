@@ -1,17 +1,14 @@
 package com.example.demo.widget;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.example.demo.R;
-import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.UIHelper;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshKernel;

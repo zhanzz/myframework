@@ -8,33 +8,37 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Process;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.core.util.Pools;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.demo.some_test.activity.TestDiffAndHandlerActivity;
-import com.example.demo.some_test.activity.TestServiceAndNoticeActivity;
-import com.example.demo.viewpager_fragment.activity.ExpandRecyclerViewActivity;
 import com.example.demo.viewpager_fragment.activity.PageFragmentActivity;
 import com.example.demo.vlayout.activity.StudyVlayoutActivity;
+import com.example.demo.widget.TwoLevelRefreshHeader;
+import com.example.reactnative.home.activity.RnMainActivity;
 import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.TestDialogFragment;
 import com.example.retrofitframemwork.login.LoginPresenter;
+import com.example.retrofitframemwork.login.adapter.HomeAdapter;
 import com.example.retrofitframemwork.login.view.ILoginView;
 import com.example.retrofitframemwork.update.activity.UpDateActivity;
 import com.framework.common.BaseApplication;
@@ -46,34 +50,37 @@ import com.framework.common.manager.PermissionManager;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.ToastUtil;
-import com.framework.common.utils.UIHelper;
 import com.framework.common.widget.drawable.ImageLoadingDrawable;
 import com.framework.model.UserBean;
 import com.framework.model.VersionInfo;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.OnTwoLevelListener;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.header.TwoLevelHeader;
+import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import butterknife.BindView;
-import butterknife.OnClick;
+import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity implements ILoginView {
 
-    @BindView(R.id.tv_show)
-    TextView tvShow;
-
     LoginPresenter mPresenter;
-    @BindView(R.id.image)
-    ImageView image;
 
     Random mRandom = new Random();
-    @BindView(R.id.fragment_container)
-    FrameLayout fragmentContainer;
+    @BindView(R.id.twoLevelHeader)
+    TwoLevelRefreshHeader twoLevelHeader;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+    @BindView(R.id.smartRefreshLayout)
+    SmartRefreshLayout smartRefreshLayout;
 
+    private HomeAdapter mAdapter;
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -84,17 +91,43 @@ public class MainActivity extends BaseActivity implements ILoginView {
         super.getParamData(intent);
     }
 
+    private String[] menus = new String[]{"vlayout","fragmentStatePager","versionUpdate","reactNative","scan","testSome"};
     @Override
     public void bindData() {
         registerBroadcast();
-        ImageLoadingDrawable drawable = new ImageLoadingDrawable();
-        image.setImageDrawable(drawable);
-        drawable.setLevel(2000);
+        mAdapter = new HomeAdapter(recyclerView);
+        mAdapter.setNewData(Arrays.asList(menus));
+        mAdapter.setEnableLoadMore(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(mAdapter);
     }
 
     @Override
     public void initEvent() {
-        LogUtil.e("String.format="+ String.format("%.2f",0.336f));
+        LogUtil.e("String.format=" + String.format("%.2f", 0.336f));
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            switch (mAdapter.getItem(position)){
+                case "vlayout":
+                    StudyVlayoutActivity.start(getContext());
+                    break;
+                case "fragmentStatePager":
+                    PageFragmentActivity.start(getContext());
+                    break;
+                case "versionUpdate":
+                    mPresenter.checkUpdate();
+                    break;
+                case "reactNative":
+                    RnMainActivity.start(getContext());
+                    break;
+                case "scan":
+                    CaptureActivity.startMeForResult(MainActivity.this,120);
+                    break;
+                case "testSome":
+                    TestDiffAndHandlerActivity.start(this);
+                    break;
+            }
+        });
+        twoLevelHeader.setOnTwoLevelListener(refreshLayout -> false);
     }
 
     @Override
@@ -103,10 +136,6 @@ public class MainActivity extends BaseActivity implements ILoginView {
             mPresenter = new LoginPresenter();
         }
         return mPresenter;
-    }
-
-    private void typeThree(Map<String, Object> parmas) {
-
     }
 
     private void typeTwo(Map<String, Object> parmas) {
@@ -143,28 +172,27 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //        });
     }
 
-    @OnClick({R.id.tv_show,R.id.image})
-    public void onClick(View view){
-        switch (view.getId()){
-            case R.id.tv_show:
+
+    public void onClick(View view) {
+        switch (view.getId()) {
+            //case R.id.tv_show:
 //                passPermission("");
 //                TestServiceAndNoticeActivity.start(this,null);
 //                installApk();
 //                mPresenter.downLoadFile();
-                //getProcessName(this);
-                //mPresenter.login("13695157045","1");
+            //getProcessName(this);
+            //mPresenter.login("13695157045","1");
 //                showFragment(0);
 //                Main2Activity.start(this);
-                SettingActivity.start(this,null);
-                break;
+            //SettingActivity.start(this,null);
+            //break;
             case R.id.image:
+//                RnMainActivity.start(this);
 //                requestNeedPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA);
                 mPresenter.checkUpdate();
 //                TestServiceAndNoticeActivity.start(this,null);
 //                TestDiffAndHandlerActivity.start(this);
 //                StudyVlayoutActivity.start(this);
-//                RnMainActivity.start(this);
-//                RnFlatListActivity.start(this);
 //                TestInputActivity.start(this);
 //                ExpandRecyclerViewActivity.start(this);
 //                PageFragmentActivity.start(this);
@@ -204,12 +232,12 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     private void installApk() {
         File dir;
-        if(PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        }else{
+        } else {
             dir = BaseApplication.getApp().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
         }
-        File file = new File(dir.getAbsolutePath(),"framework_test.apk");
+        File file = new File(dir.getAbsolutePath(), "framework_test.apk");
         Uri uri;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             uri = FileProvider.getUriForFile(BaseApplication.getApp(), BaseApplication.getApp().getPackageName() + ".FileProvider", file);
@@ -219,7 +247,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
         Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setDataAndType(uri,"application/vnd.android.package-archive");
+        intent.setDataAndType(uri, "application/vnd.android.package-archive");
         startActivity(intent);
     }
 
@@ -233,7 +261,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
             @Override
             public void onPrice(String price) {
                 //Log.e("zhang", "position=" + pposition);
-                Toast.makeText(MainActivity.this,"成功",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "成功", Toast.LENGTH_SHORT).show();
             }
         });
         frament.showNow(getSupportFragmentManager(), "changePrice");
@@ -243,7 +271,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void passPermission(String permission) {
-        if(permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+        if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             return;
         }
         File imagePath = new File(Environment.getExternalStorageDirectory(), "images");
@@ -277,19 +305,19 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void showBitmap(Bitmap bitmap) {
-        image.setImageBitmap(bitmap);
+        //image.setImageBitmap(bitmap);
     }
 
     @Override
     public void onShowUpdateDialog(VersionInfo bean) {
-        UpDateActivity.start(this,bean);
+        UpDateActivity.start(this, bean);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==Activity.RESULT_OK){
-            switch (requestCode){
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
                 case 100:
                     File imagePath = new File(Environment.getExternalStorageDirectory(), "images");
                     if (!imagePath.exists()) {
@@ -297,15 +325,15 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     }
                     File newFile = new File(imagePath, "default_image.jpg");
                     Bitmap bitmap = BitmapFactory.decodeFile(newFile.getAbsolutePath());
-                    image.setImageBitmap(bitmap);
+                    //image.setImageBitmap(bitmap);
                     break;
                 case 200:
                     List<String> photoPath = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
                     if (!ListUtils.isEmpty(photoPath)) {
-                        Map<String,Object> params = new HashMap<>();
-                        params.put("dir","oaimage");
-                        for(int i=0;i<photoPath.size();i++){
-                            params.put("img"+i,new File(photoPath.get(i)));
+                        Map<String, Object> params = new HashMap<>();
+                        params.put("dir", "oaimage");
+                        for (int i = 0; i < photoPath.size(); i++) {
+                            params.put("img" + i, new File(photoPath.get(i)));
                         }
                         mPresenter.uploadFile(params);
                         //mPresenter.zipFile(photoPath.get(0));
@@ -314,10 +342,10 @@ public class MainActivity extends BaseActivity implements ILoginView {
                         @Override
                         public void run() {
                             try {
-                               Bitmap bitmap1= BitmapFactory.decodeFile(photoPath.get(0));
-                                Log.e("zhang",bitmap1==null?"true":"false");
-                            }catch (Exception e){
-                                Log.e("zhang",e.getMessage());
+                                Bitmap bitmap1 = BitmapFactory.decodeFile(photoPath.get(0));
+                                Log.e("zhang", bitmap1 == null ? "true" : "false");
+                            } catch (Exception e) {
+                                Log.e("zhang", e.getMessage());
                                 e.printStackTrace();
                             }
                         }
@@ -326,13 +354,18 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     d.start();
                     d.interrupt();
                     break;
+                case 120:
+                    String result = data.getStringExtra(CaptureActivity.EXTRA_RESULT);
+                    ToastUtil.show(this,result);
+                    break;
             }
         }
     }
 
     String content = "";
+
     public static String getProcessName(Context cxt) {
-        int pid = android.os.Process.myPid();
+        int pid = Process.myPid();
         ActivityManager am = (ActivityManager) cxt.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
         if (runningApps == null) {
@@ -346,31 +379,39 @@ public class MainActivity extends BaseActivity implements ILoginView {
         return null;
     }
 
-    MyBroadCastReciver  mReciver;
+    MyBroadCastReciver mReciver;
     CompleteReceiver mDownReciver;
-    private void registerBroadcast(){
+
+    private void registerBroadcast() {
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.frameWork.test");
         mReciver = new MyBroadCastReciver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReciver, filter);
 
         mDownReciver = new CompleteReceiver();
-        registerReceiver(mDownReciver,new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        registerReceiver(mDownReciver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
-    public static class MyBroadCastReciver extends BroadcastReceiver{
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
+
+    public static class MyBroadCastReciver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ToastUtil.show(context,"收到了通知");
+            ToastUtil.show(context, "收到了通知");
         }
     }
 
     @Override
     protected void onDestroy() {
-        if(mReciver!=null){
+        if (mReciver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(mReciver);
         }
-        if(mDownReciver!=null){
+        if (mDownReciver != null) {
             unregisterReceiver(mDownReciver);
         }
         super.onDestroy();
@@ -382,7 +423,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
             // get complete download id
             long completeDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             ConfigOperation operation = new ConfigOperation();
-            if(completeDownloadId==operation.getData().downLoadId){
+            if (completeDownloadId == operation.getData().downLoadId) {
                 installApk();
             }
         }

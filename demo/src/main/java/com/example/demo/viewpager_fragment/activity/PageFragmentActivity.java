@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.transition.ChangeBounds;
 import android.view.View;
-import android.view.Window;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.demo.R;
 import com.example.demo.R2;

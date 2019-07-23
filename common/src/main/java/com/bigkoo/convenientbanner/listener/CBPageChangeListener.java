@@ -1,12 +1,8 @@
 package com.bigkoo.convenientbanner.listener;
 
 import android.graphics.drawable.Drawable;
-import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import java.util.ArrayList;
-
+import androidx.viewpager.widget.ViewPager;
 /**
  * Created by Sai on 15/7/29.
  * 翻页指示器适配器

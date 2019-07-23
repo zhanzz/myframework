@@ -10,17 +10,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.Settings;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.example.retrofitframemwork.BuildConfig;
 import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.login.adapter.UpDateAdapter;
 import com.example.retrofitframemwork.login.service.UpdateService;
@@ -33,14 +32,11 @@ import com.framework.common.data.ConfigBean;
 import com.framework.common.data.ConfigOperation;
 import com.framework.common.manager.PermissionManager;
 import com.framework.common.utils.AppTools;
-import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.model.VersionInfo;
 
 import java.io.File;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.OnClick;

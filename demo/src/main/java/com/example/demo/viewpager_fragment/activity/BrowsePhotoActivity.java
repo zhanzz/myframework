@@ -7,10 +7,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import android.transition.ChangeBounds;
 import android.view.View;
 import android.view.ViewGroup;

@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 import android.util.Log;
 
 import com.example.retrofitframemwork.AppApi;
@@ -24,7 +24,6 @@ import com.framework.common.manager.CacheDirManager;
 import com.framework.common.retrofit.SchedulerProvider;
 import com.framework.common.net.RxNet;
 import com.framework.common.callBack.RxNetCallBack;
-import com.framework.common.utils.AppTools;
 import com.framework.model.UploadImgV2Bean;
 import com.framework.model.UserEntity;
 import com.framework.model.VersionInfo;

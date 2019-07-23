@@ -1,13 +1,13 @@
 package com.example.demo.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -17,13 +17,9 @@ import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.LayoutHelper;
 import com.alibaba.android.vlayout.layout.SingleLayoutHelper;
 import com.example.demo.widget.IndicatorView;
-import com.example.demo.widget.MenuItemDecoration;
 import com.framework.common.utils.ListUtils;
-import com.framework.common.utils.LogUtil;
-import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.model.demo.ActivityBean;
-import com.framework.model.demo.TestDiffBean;
 
 import java.util.ArrayList;
 import java.util.List;

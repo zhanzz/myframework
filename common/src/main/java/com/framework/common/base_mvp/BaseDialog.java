@@ -2,9 +2,9 @@ package com.framework.common.base_mvp;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +12,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-
 import com.framework.common.R;
 import com.framework.common.data.ActivityLifeCycleEvent;
 import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
-
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observable;

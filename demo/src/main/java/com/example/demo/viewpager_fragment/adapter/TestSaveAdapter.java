@@ -1,9 +1,7 @@
 package com.example.demo.viewpager_fragment.adapter;
 
-import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.demo.R;
 import com.framework.common.adapter.BaseAdapter;
 import com.framework.common.adapter.MyViewHolder;

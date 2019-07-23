@@ -1,7 +1,7 @@
 package com.framework.common.base_mvp;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 /**
  * 懒加载Fragment
  * 不会在Fragment创建时就就加载数据，1而是只有用户可见时去加载onLoad()，从而不影响App性能

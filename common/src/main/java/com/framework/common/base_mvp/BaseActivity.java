@@ -6,8 +6,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,8 +16,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
-import android.widget.Toast;
-
 import com.framework.common.R;
 import com.framework.common.data.ActivityLifeCycleEvent;
 import com.framework.common.manager.PermissionManager;
@@ -25,14 +23,11 @@ import com.framework.common.receiver.INetChange;
 import com.framework.common.utils.AppTools;
 import com.framework.common.utils.DeviceUtils;
 import com.framework.common.utils.ListUtils;
-import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.common.widget.TitleView;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -289,18 +284,18 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
      * 内容是否延伸到系统状态栏
      * @return
      */
-    public boolean isFitSystemBar(){
+    protected boolean isFitSystemBar(){
         return false;
     }
 
-    public int getSystemBarColor(){
+    protected int getSystemBarColor(){
         return getResources().getColor(R.color.systemBarColor);
     }
 
     /**
      * @param isDark 状态栏文字是否深色
      */
-    public void setStatusDarkBar(boolean isDark) {
+    private void setStatusDarkBar(boolean isDark) {
         //设置状态栏颜色为深色
         DeviceUtils.setStatusBarDarkMode(this, isDark);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

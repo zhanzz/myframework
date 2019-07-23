@@ -5,10 +5,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import android.view.WindowManager;
 
 import com.example.demo.R;

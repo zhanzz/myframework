@@ -17,12 +17,12 @@ import java.util.List;
  * Created by zhangzhiqiang on 2016/6/3.
  */
 public class SecondPageGridViewAdapter extends BaseQuickAdapter<ActivityBean.ActBean, BaseViewHolder> {
-    int mImageWidth,mItemWidth;
+    private int mImageWidth,mItemWidth;
 
     public SecondPageGridViewAdapter(List<ActivityBean.ActBean> datas) {
         super(R.layout.item_second_page_gridview_module,datas);
         int width = UIHelper.getDisplayWidth() - UIHelper.dip2px(20);
-        mItemWidth = width / 5;
+        mItemWidth = (int) (width / 5.0f + 0.5f);
         mImageWidth = mItemWidth -UIHelper.dip2px(22);
     }
 

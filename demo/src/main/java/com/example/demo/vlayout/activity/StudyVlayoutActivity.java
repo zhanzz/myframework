@@ -2,13 +2,9 @@ package com.example.demo.vlayout.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
-
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.android.vlayout.DelegateAdapter;
-import com.alibaba.android.vlayout.LayoutHelper;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
 import com.example.demo.R;
 import com.example.demo.R2;
@@ -26,19 +22,16 @@ import com.example.demo.vlayout.presenter.StudyVlayoutPresenter;
 import com.example.demo.vlayout.view.IStudyVlayoutView;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
-import com.framework.common.utils.ToastUtil;
 import com.framework.model.demo.ActivityBean;
 import com.framework.model.demo.ProductBean;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutView {
     @BindView(R2.id.recyclerView)

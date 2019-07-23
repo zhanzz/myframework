@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.demo">
+
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <application>
         <activity
             android:name=".some_test.activity.TestServiceAndNoticeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".some_test.activity.TestDiffAndHandlerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -37,7 +39,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
 
-        <service android:name=".service.ForegroundService"/>
+        <service android:name=".service.ForegroundService" />
     </application>
 
 </manifest>

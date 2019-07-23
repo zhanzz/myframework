@@ -3,7 +3,7 @@ package com.framework.common.manager;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 
 import com.framework.common.BaseApplication;
 import com.framework.common.utils.ToastUtil;

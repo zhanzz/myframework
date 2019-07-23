@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.multidex.MultiDex;
+import androidx.multidex.MultiDex;
 import android.text.TextUtils;
 
 import com.facebook.common.logging.FLog;
@@ -31,7 +31,6 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashSet;
 import java.util.List;

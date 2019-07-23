@@ -1,6 +1,6 @@
 package com.framework.common.convert;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.framework.common.net.UpLoadFileType;
 

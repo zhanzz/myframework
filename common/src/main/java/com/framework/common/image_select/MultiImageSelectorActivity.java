@@ -4,16 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import com.framework.common.R;
 import com.framework.common.manager.PermissionManager;
 import com.framework.common.utils.AppTools;
 import com.framework.common.utils.ToastUtil;
-
 import java.io.File;
 import java.util.ArrayList;
 /**

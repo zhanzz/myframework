@@ -1,28 +1,21 @@
 package com.example.demo.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import android.text.TextUtils;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.LayoutHelper;
 import com.alibaba.android.vlayout.layout.GridLayoutHelper;
-import com.alibaba.android.vlayout.layout.StaggeredGridLayoutHelper;
 import com.example.demo.R;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.framework.common.adapter.MyViewHolder;
 import com.framework.common.adapter.ViewHolder;
 import com.framework.common.utils.FrescoUtils;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.UIHelper;
 import com.framework.model.demo.ProductBean;
-
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * @author zhangzhiqiang
  * @date 2019/6/26.

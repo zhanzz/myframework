@@ -1,8 +1,9 @@
 package com.framework.common.image_select.view;
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * 自定义ViewPager

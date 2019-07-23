@@ -1,9 +1,7 @@
 package com.example.demo.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
 import android.view.ViewGroup;
-
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.LayoutHelper;
 import com.alibaba.android.vlayout.layout.ColumnLayoutHelper;

@@ -1,13 +1,9 @@
 package com.example.retrofitframemwork.login.adapter;
 
-import android.support.v7.widget.RecyclerView;
-import com.chad.library.adapter.base.BaseQuickAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.retrofitframemwork.R;
 import com.framework.common.adapter.BaseAdapter;
-import com.framework.common.adapter.CommonAdapter;
-import com.framework.common.adapter.ViewHolder;
-
 /**
  * @author zhangzhiqiang
  * @date 2019/5/6.

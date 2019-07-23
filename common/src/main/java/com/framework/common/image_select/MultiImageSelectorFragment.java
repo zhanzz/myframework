@@ -16,12 +16,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.FileProvider;
-import android.support.v4.content.Loader;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,11 +46,9 @@ import com.framework.common.manager.PermissionManager;
 import com.framework.common.utils.AppTools;
 import com.framework.common.utils.FrescoUtils;
 import com.framework.common.utils.ToastUtil;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * 图片选择Fragment
  * Created by Nereo on 2015/4/7.

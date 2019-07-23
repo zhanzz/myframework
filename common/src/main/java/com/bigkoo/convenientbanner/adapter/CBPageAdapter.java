@@ -1,17 +1,16 @@
 package com.bigkoo.convenientbanner.adapter;
 
-import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.viewpager.widget.PagerAdapter;
 import com.bigkoo.convenientbanner.holder.ViewAdapter;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
-
 import java.util.List;
 /**
  * Created by Sai on 15/7/29.
  */
-public class CBPageAdapter<T> extends PagerAdapter{
+public class CBPageAdapter<T> extends PagerAdapter {
     private final RecycleBin recycleBin;
     private boolean cache = false;//是否缓存视图
     protected List<T> mDatas;

@@ -1,10 +1,9 @@
 package com.example.demo.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 import android.view.ViewGroup;
 import com.alibaba.android.vlayout.DelegateAdapter;
@@ -15,7 +14,6 @@ import com.bigkoo.convenientbanner.holder.ViewAdapter;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.example.demo.R;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.ToastUtil;
 import com.framework.model.demo.ActivityBean;
 /**
@@ -41,6 +39,8 @@ public class BannerAdapter extends DelegateAdapter.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         ConvenientBanner banner = new ConvenientBanner(viewGroup.getContext());
+        banner.setCanLoop(true);
+        banner.setPageIndicator(R.drawable.item_select_indicator,R.drawable.item_un_select_indicator);
         return new BannerViewHolder(banner);
     }
 
@@ -54,8 +54,6 @@ public class BannerAdapter extends DelegateAdapter.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
         final ConvenientBanner banner = (ConvenientBanner) viewHolder.itemView;
-        banner.setCanLoop(true);
-        banner.setPageIndicator(R.drawable.item_select_indicator,R.drawable.item_un_select_indicator);
         banner.setPages(new ViewAdapter<ActivityBean.ActBean,SimpleDraweeView>() {
             @Override
             public SimpleDraweeView createView(Context context,int position) {

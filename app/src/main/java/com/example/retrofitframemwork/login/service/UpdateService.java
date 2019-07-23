@@ -1,6 +1,5 @@
 package com.example.retrofitframemwork.login.service;
 
-import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,10 +13,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
-import android.os.Environment;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.FileProvider;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.FileProvider;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -26,9 +24,7 @@ import android.widget.Toast;
 import com.example.retrofitframemwork.R;
 import com.framework.common.BaseApplication;
 import com.framework.common.callBack.FileCallBack;
-import com.framework.common.manager.PermissionManager;
 import com.framework.common.net.RxNet;
-import com.framework.common.utils.AppTools;
 import com.framework.common.utils.LogUtil;
 
 import java.io.File;

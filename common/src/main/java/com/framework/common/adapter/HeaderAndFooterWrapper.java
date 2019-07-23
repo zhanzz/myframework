@@ -1,16 +1,15 @@
 package com.framework.common.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.util.SparseArrayCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.collection.SparseArrayCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import com.framework.common.R;
 import com.framework.common.loading_view.MySimpleLoadMoreView;
-import com.framework.common.utils.LogUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;

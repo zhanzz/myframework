@@ -3,13 +3,11 @@ package com.framework.common.manager;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 
 import com.framework.common.BaseApplication;
 import com.framework.common.utils.ListUtils;
-import com.framework.common.utils.LogUtil;
 
 import java.io.File;
 

@@ -1,12 +1,10 @@
 package com.example.demo.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.LayoutHelper;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
@@ -14,7 +12,6 @@ import com.alibaba.android.vlayout.layout.FixLayoutHelper;
 import com.alibaba.android.vlayout.layout.ScrollFixLayoutHelper;
 import com.example.demo.R;
 import com.framework.common.utils.UIHelper;
-
 /**
  * @author zhangzhiqiang
  * @date 2019/7/1.

@@ -1,8 +1,7 @@
 package com.framework.common.adapter;
 
-import android.support.annotation.IdRes;
+import androidx.annotation.IdRes;
 import android.view.View;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.facebook.drawee.view.SimpleDraweeView;

@@ -3,10 +3,9 @@ package com.example.demo.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -81,7 +80,7 @@ public class IndicatorView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if(Math.abs(1-mRate)>0.0001){ //可滚动
+        if((mRate-1)>0.01){ //可滚动
             RectF rect = new RectF(0,0,getWidth(),mIndicatorHeight);
             canvas.drawRoundRect(rect,100,100,mBgPaint);
             RectF rectBar = new RectF(offset*getWidth(),0,getWidth()*(mRate+offset),mIndicatorHeight);

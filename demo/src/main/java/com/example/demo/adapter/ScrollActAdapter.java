@@ -1,20 +1,18 @@
 package com.example.demo.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.LayoutHelper;
 import com.alibaba.android.vlayout.layout.SingleLayoutHelper;
 import com.example.demo.widget.MoveRecyclerView;
 import com.framework.common.utils.UIHelper;
 import com.framework.model.demo.ActivityBean;
-
 import java.util.List;
-
 /**
  * @author zhangzhiqiang
  * @date 2019/6/26.

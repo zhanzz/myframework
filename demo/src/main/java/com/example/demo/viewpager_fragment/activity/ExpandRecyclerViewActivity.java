@@ -3,11 +3,11 @@ package com.example.demo.viewpager_fragment.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -21,7 +21,6 @@ import com.example.demo.widget.ActivityRefreshHeader;
 import com.example.demo.widget.MySmartRefreshLayout;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
-import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
