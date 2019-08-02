@@ -96,6 +96,8 @@ public class MyPhotoDraweeView extends PhotoDraweeView {
                     getController().onTouchEvent(eventUp);
                     eventDown.recycle();
                     eventUp.recycle();
+                }else {
+                    performClick();
                 }
             }
         });

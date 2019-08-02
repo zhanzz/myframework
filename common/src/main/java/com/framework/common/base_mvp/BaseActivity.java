@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -33,6 +34,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
@@ -269,6 +271,12 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             mCompositeDisposable = new CompositeDisposable();
         }
         return mCompositeDisposable;
+    }
+
+    @Override
+    public Boolean addCompositeDisposable(Disposable disposable) {
+        getCompositeDisposable().add(disposable);
+        return true;
     }
 
     public boolean isDestroy(){

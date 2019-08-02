@@ -8,6 +8,7 @@ import com.framework.common.data.ActivityLifeCycleEvent;
 
 import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * @author zhangzhiqiang
@@ -37,4 +38,10 @@ public interface IBaseView {
     @Nullable Context getContext();
 
     @Nullable CompositeDisposable getCompositeDisposable();
+
+    /**
+     * 将取消交给生命周期处理
+     * @return 添加是否成功，如果为否说明页面已结束，需手动处理结束
+     */
+    @Nullable Boolean addCompositeDisposable(Disposable disposable);
 }

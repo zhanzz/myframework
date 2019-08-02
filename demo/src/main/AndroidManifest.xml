@@ -6,6 +6,10 @@
 
     <application>
         <activity
+            android:name=".some_test.activity.BrowseAnimActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".some_test.activity.TestServiceAndNoticeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
@@ -32,8 +36,7 @@
         <activity
             android:name=".viewpager_fragment.activity.BrowsePhotoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/FullActivityTheme" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".viewpager_fragment.activity.ExpandRecyclerViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

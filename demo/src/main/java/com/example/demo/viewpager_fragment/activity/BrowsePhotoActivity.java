@@ -1,7 +1,6 @@
 package com.example.demo.viewpager_fragment.activity;
 
 import android.app.Activity;
-import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -9,6 +8,8 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.app.SharedElementCallback;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -56,6 +57,11 @@ public class BrowsePhotoActivity extends BaseActivity {
     }
 
     @Override
+    protected int getSystemBarColor() {
+        return 0xff000000;
+    }
+
+    @Override
     public int getLayoutId() {
         return R.layout.activity_browse_photo;
     }
@@ -71,7 +77,7 @@ public class BrowsePhotoActivity extends BaseActivity {
         mRoteDrawable = getResources().getDrawable(R.drawable.load_more_quan);
         if(!ListUtils.isEmpty(mPaths)){
             mAdapter = new PagerAdapter() {
-                private Map<Integer,PhotoDraweeView>  mCache = new HashMap<>();
+                private List<PhotoDraweeView>  mCache = new ArrayList<>();
 
                 @Override
                 public int getCount() {
@@ -86,11 +92,13 @@ public class BrowsePhotoActivity extends BaseActivity {
                 @NonNull
                 @Override
                 public Object instantiateItem(@NonNull ViewGroup container, int position) {
-                    PhotoDraweeView view = mCache.get(position);
+                    PhotoDraweeView view = ListUtils.isEmpty(mCache) ? null:mCache.get(0);
                     if(view==null){
                         view  = new MyPhotoDraweeView(container.getContext());
-                        mCache.put(position,view);
+                    }else {
+                        mCache.remove(0);
                     }
+                    view.setTag(position);
                     GenericDraweeHierarchy hierarchy = view.getHierarchy();
 
                     MyAutoRotateDrawable drawable = new MyAutoRotateDrawable(mRoteDrawable,1000);
@@ -100,12 +108,19 @@ public class BrowsePhotoActivity extends BaseActivity {
                     if(view.getParent()==null){
                         container.addView(view);
                     }
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onBackPressed();
+                        }
+                    });
                     return view;
                 }
 
                 @Override
                 public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-                    container.removeView(mCache.get(position));
+                    container.removeView((View) object);
+                    mCache.add((PhotoDraweeView) object);
                 }
             };
             viewPager.setAdapter(mAdapter);
@@ -137,7 +152,7 @@ public class BrowsePhotoActivity extends BaseActivity {
             setEnterSharedElementCallback(new SharedElementCallback() {//onMapSharedElements标记当前页面中的共享元素
                 @Override
                 public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                    View view = (View) mAdapter.instantiateItem(viewPager, viewPager.getCurrentItem());
+                    View view = viewPager.findViewWithTag(viewPager.getCurrentItem());
                     names.clear();
                     sharedElements.clear();
                     sharedElements.put("image", view);
@@ -176,6 +191,23 @@ public class BrowsePhotoActivity extends BaseActivity {
             context.startActivity(starter,ActivityOptionsCompat.makeSceneTransitionAnimation(context,view,"image").toBundle());
         }else {
             context.startActivity(starter);
+        }
+    }
+
+    /**
+     *
+     * @param fragment
+     * @param position 初始时浏览第几张图片
+     * @param paths 图片列表
+     */
+    public static void start(Fragment fragment, int position, ArrayList<String> paths, View view) {
+        Intent starter = new Intent(fragment.getContext(), BrowsePhotoActivity.class);
+        starter.putExtra("position",position);
+        starter.putExtra("paths",paths);
+        if(view!=null){
+            fragment.startActivity(starter,ActivityOptionsCompat.makeSceneTransitionAnimation(fragment.getActivity(),view,"image").toBundle());
+        }else {
+            fragment.startActivity(starter);
         }
     }
 }

@@ -57,6 +57,9 @@ public class BasePresenter<T extends IBaseView> implements Presenter<T>{
 
         @Override
         public Object invoke(Object arg0, Method method, Object[] arg2) throws Throwable {
+            if(method.getName().equals("addCompositeDisposable")){
+                return null;
+            }
             if (isViewAttached()) {
                 return method.invoke(mvpView, arg2);
             }

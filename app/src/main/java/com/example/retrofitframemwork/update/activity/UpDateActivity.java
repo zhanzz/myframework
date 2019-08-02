@@ -127,8 +127,7 @@ public class UpDateActivity extends BaseActivity implements IUpDateView {
             ToastUtil.show(this,"存储不可用");
             return;
         }
-        File apkFile = new File(apkFileDir,APK_FILE_NAME);
-        if (!checkoutNeedDownLoad(apkFile.getAbsolutePath())) {
+        if (mVersionInfo.isDownLoad()) {
             installApk();
         } else {
             Intent intent = new Intent(this, UpdateService.class);

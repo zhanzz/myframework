@@ -5,10 +5,17 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.content.pm.SigningInfo;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import androidx.multidex.MultiDex;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -22,6 +29,8 @@ import com.framework.common.manager.NetWorkManager;
 import com.framework.common.receiver.NetChangeReceiver;
 import com.framework.common.callBack.EmptyActivityLifecycleCallbacks;
 import com.framework.common.utils.ListUtils;
+import com.framework.common.utils.LogUtil;
+import com.framework.common.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshFooterCreator;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreator;
@@ -32,6 +41,9 @@ import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -131,6 +143,31 @@ public class BaseApplication extends Application {
         @Override
         public void onActivityDestroyed(Activity activity) {
             com.framework.common.manager.ActivityManager.getInstance().removeActivity(activity);
+        }
+    }
+
+    private void checkSign(){
+        PackageInfo pkgInfo;
+        try {
+            pkgInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        SigningInfo signingInfo = pkgInfo.signingInfo;
+        List<String> shas = new ArrayList<>();
+        for (Signature signature : signingInfo.getApkContentsSigners()) {
+            try {
+                String sha = Base64.encodeToString(MessageDigest.getInstance("SHA").digest(signature.toByteArray()), Base64.NO_WRAP);
+                shas.add(sha);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+        }
+        if(!ListUtils.isEmpty(shas)){
+            if(!shas.contains("kRZ4/I7w9OYdkQvsyU6SDnkNXzw=")){ //不包含我们的签名，则退出应用
+
+            }
         }
     }
 }

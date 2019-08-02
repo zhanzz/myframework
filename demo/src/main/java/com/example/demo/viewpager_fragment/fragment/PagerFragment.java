@@ -1,11 +1,17 @@
 package com.example.demo.viewpager_fragment.fragment;
 
+import android.content.Intent;
+import android.graphics.Matrix;
+import android.graphics.RectF;
+import android.os.Build;
 import android.os.Bundle;
-
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.app.SharedElementCallback;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +33,8 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import butterknife.BindView;
 
 public class PagerFragment extends BaseFragment implements IPagerView {
@@ -79,7 +87,6 @@ public class PagerFragment extends BaseFragment implements IPagerView {
         TextView tv = new TextView(getContext());
         tv.setText(mPresenter.getId());
         mAdapter.addHeaderView(tv);
-        Log.e("zhang",mPresenter.getId()+";"+Integer.toHexString(System.identityHashCode(mAdapter.getHeaderLayout()))+";"+Integer.toHexString(System.identityHashCode(recyclerView)));
         mAdapter.setLoadEndText("暂无更多数据");
         mAdapter.setEmptyView(ViewUtil.createEmptyView(getContext()));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -116,10 +123,22 @@ public class PagerFragment extends BaseFragment implements IPagerView {
                     PresellBean.PresellProduct bean= mAdapter.getData().get(position);
                     ArrayList<String> list = new ArrayList();
                     list.add(bean.getProductAdsPic());
-                    BrowsePhotoActivity.start(getActivity(),0,list,iv);
+                    BrowsePhotoActivity.start(PagerFragment.this,0,list,iv);
                 }
             }
         });
+
+        setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public Parcelable onCaptureSharedElementSnapshot(View sharedElement, Matrix viewToGlobalMatrix, RectF screenBounds) {
+                sharedElement.setVisibility(View.VISIBLE);
+                return super.onCaptureSharedElementSnapshot(sharedElement, viewToGlobalMatrix, screenBounds);
+            }
+        });
+    }
+
+    public void onReenter(int resultCode,Intent data) {
+        // Do whatever with the data here
     }
 
     @Override

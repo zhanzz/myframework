@@ -18,6 +18,15 @@ public class VersionInfo implements Serializable {
     int hotcode;
     List<String> list;
     int popup; //0不弹，1才弹
+    boolean isDownLoad;//本地字段，是否已经下载过本版本
+
+    public boolean isDownLoad() {
+        return isDownLoad;
+    }
+
+    public void setDownLoad(boolean downLoad) {
+        isDownLoad = downLoad;
+    }
 
     public int getPopup() {
         return popup;

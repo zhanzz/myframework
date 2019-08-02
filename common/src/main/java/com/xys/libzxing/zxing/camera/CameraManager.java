@@ -167,7 +167,7 @@ public final class CameraManager {
   }
 
   /**
-   * Convenience method for {@link com.google.zxing.client.android.CaptureActivity}
+   * Convenience method for {@link com.xys.libzxing.zxing.activity.CaptureActivity}
    *
    * @param newSetting if {@code true}, light should be turned on if currently off. And vice versa.
    */
@@ -267,16 +267,26 @@ public final class CameraManager {
         // Called early, before init even finished
         return null;
       }
+      //横屏
 //      rect.left = rect.left * cameraResolution.x / screenResolution.x;
 //      rect.right = rect.right * cameraResolution.x / screenResolution.x;
 //      rect.top = rect.top * cameraResolution.y / screenResolution.y;
 //      rect.bottom = rect.bottom * cameraResolution.y / screenResolution.y;
-      rect.left = rect.left * cameraResolution.y / screenResolution.x;
-      rect.right = rect.right * cameraResolution.y / screenResolution.x;
-      rect.top = rect.top * cameraResolution.x / screenResolution.y;
-      rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y;
+        //竖屏第一种方式
+//      rect.left = rect.left * cameraResolution.y / screenResolution.x;
+//      rect.right = rect.right * cameraResolution.y / screenResolution.x;
+//      rect.top = rect.top * cameraResolution.x / screenResolution.y;
+//      rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y;
+      //竖屏第二种方式
+      if(framingRectInPreview==null){
+        framingRectInPreview = new Rect();
+      }
+      framingRectInPreview.left = rect.top * cameraResolution.x / screenResolution.y;
+      framingRectInPreview.right = rect.bottom * cameraResolution.x / screenResolution.y;
+      framingRectInPreview.bottom = rect.right * cameraResolution.y / screenResolution.x;
+      framingRectInPreview.top = rect.left * cameraResolution.y / screenResolution.x;
 
-      framingRectInPreview = rect;
+      //framingRectInPreview = rect;
     }
     return framingRectInPreview;
   }
@@ -344,7 +354,7 @@ public final class CameraManager {
     }
     // Go ahead and assume it's YUV rather than die.
     return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
-                                        rect.width(), rect.height(), false);
+                                        rect.width(), rect.height(), true);//reverseHorizontal为true第二种方式
   }
 
 }

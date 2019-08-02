@@ -1,18 +1,25 @@
 package com.example.retrofitframemwork.login;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.core.content.FileProvider;
+
+import android.os.Environment;
 import android.util.Log;
 
 import com.example.retrofitframemwork.AppApi;
 import com.example.retrofitframemwork.data.UserOperation;
 import com.example.retrofitframemwork.login.view.ILoginView;
+import com.example.retrofitframemwork.update.activity.UpDateActivity;
 import com.example.retrofitframemwork.utils.Events;
 import com.framework.common.data.LoadType;
+import com.framework.common.data.Result;
+import com.framework.common.manager.PermissionManager;
 import com.framework.common.retrofit.RetorfitUtil;
 import com.framework.common.BaseApplication;
 import com.framework.common.BuildConfig;
@@ -24,6 +31,8 @@ import com.framework.common.manager.CacheDirManager;
 import com.framework.common.retrofit.SchedulerProvider;
 import com.framework.common.net.RxNet;
 import com.framework.common.callBack.RxNetCallBack;
+import com.framework.common.utils.AppTools;
+import com.framework.common.utils.ToastUtil;
 import com.framework.model.UploadImgV2Bean;
 import com.framework.model.UserEntity;
 import com.framework.model.VersionInfo;
@@ -35,6 +44,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -117,9 +129,37 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
             public void onSuccess(VersionInfo versionBean, int code, String msg) {
                 if (null != versionBean) {
                     int lastVersionCode = versionBean.getVersioncode();
-                    if ((lastVersionCode > BuildConfig.VERSION_CODE && versionBean.getPopup() == 1)){
-                        //缓存的版本比当前的版本要高
-                        getMvpView().onShowUpdateDialog(versionBean);
+                    //远程的版本比当前的版本要高
+                    if ((lastVersionCode > BuildConfig.VERSION_CODE && versionBean.getPopup() == 1)) {
+                        Disposable disposable = Observable.create(new ObservableOnSubscribe<Boolean>() {
+                            @Override
+                            public void subscribe(ObservableEmitter<Boolean> emitter){
+                                File apkFileDir = null;
+                                if (PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                    apkFileDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                                } else if (getMvpView().getContext() != null) {
+                                    apkFileDir = getMvpView().getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+                                }
+                                if (apkFileDir == null) {
+                                    return;
+                                }
+                                File apkFile = new File(apkFileDir, UpDateActivity.APK_FILE_NAME);
+                                int code = AppTools.getApkCode(BaseApplication.getApp(), apkFile.getAbsolutePath());
+                                int serviceCode = versionBean.getVersioncode();
+                                emitter.onNext(serviceCode > code);
+                            }
+                        }).compose(SchedulerProvider.getInstance().applySchedulers())
+                                .subscribe(new Consumer<Boolean>() {
+                                    @Override
+                                    public void accept(Boolean aBoolean){
+                                        versionBean.setDownLoad(aBoolean);
+                                        getMvpView().onShowUpdateDialog(versionBean);
+                                    }
+                                });
+                        Boolean isOk = getMvpView().addCompositeDisposable(disposable);
+                        if (isOk==null|| !isOk) {
+                            disposable.dispose();
+                        }
                     }
                 }
             }

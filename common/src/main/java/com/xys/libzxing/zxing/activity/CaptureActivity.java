@@ -78,6 +78,7 @@ public class CaptureActivity extends BaseActivity implements SurfaceHolder.Callb
 
     private Rect mCropRect = null;
     private boolean isHasSurface = false;
+    private int mScanWidth,mScanHeight;
 
     public Handler getHandler() {
         return handler;
@@ -105,6 +106,7 @@ public class CaptureActivity extends BaseActivity implements SurfaceHolder.Callb
         int width = (int) (getResources().getDisplayMetrics().widthPixels * 50 / 75f);
         ViewGroup.LayoutParams params = scanCropView.getLayoutParams();
         params.width = params.height = width;
+        mScanWidth = mScanHeight = width;
         scanLine = findViewById(R.id.capture_scan_line);
 
         inactivityTimer = new InactivityTimer(this);
@@ -137,6 +139,13 @@ public class CaptureActivity extends BaseActivity implements SurfaceHolder.Callb
     }
 
     @Override
+    public void failPermission(String permission) {
+        if(Manifest.permission.CAMERA.equals(permission)){
+            finish();
+        }
+    }
+
+    @Override
     public void initEvent() {
 
     }
@@ -158,7 +167,7 @@ public class CaptureActivity extends BaseActivity implements SurfaceHolder.Callb
         // wrong size and partially
         // off screen.
         cameraManager = new CameraManager(getApplication());
-
+        cameraManager.setManualFramingRect(mScanWidth,mScanHeight);
         handler = null;
 
         if (isHasSurface) {

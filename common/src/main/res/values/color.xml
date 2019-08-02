@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="systemBarColor">#ffffff</color>
     <color name="white">#ffffff</color>
+    <color name="black">#000</color>
     <color name="app_back_color">#f3f3f3</color>
     <color name="transplant">#00000000</color>
 </resources>

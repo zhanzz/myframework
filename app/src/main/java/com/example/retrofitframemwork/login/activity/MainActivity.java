@@ -8,6 +8,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.content.pm.SigningInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -16,6 +20,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Process;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,6 +47,7 @@ import com.example.retrofitframemwork.login.adapter.HomeAdapter;
 import com.example.retrofitframemwork.login.view.ILoginView;
 import com.example.retrofitframemwork.update.activity.UpDateActivity;
 import com.framework.common.BaseApplication;
+import com.framework.common.BuildConfig;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.data.ConfigOperation;
@@ -60,6 +66,9 @@ import com.scwang.smartrefresh.layout.header.TwoLevelHeader;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import java.io.File;
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -299,6 +308,21 @@ public class MainActivity extends BaseActivity implements ILoginView {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void loginSucess(UserBean bean) {
 
     }
@@ -314,7 +338,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {//先于restart调用
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
