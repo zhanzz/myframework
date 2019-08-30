@@ -31,6 +31,7 @@ public class BottomProductAdapter extends DelegateAdapter.Adapter<ViewHolder>{
     @Override
     public LayoutHelper onCreateLayoutHelper() {
         GridLayoutHelper helper = new GridLayoutHelper(2);
+        helper.setAutoExpand(false);//不自动展开
         helper.setGap(UIHelper.dip2px(5));
         helper.setVGap(UIHelper.dip2px(5));
         return helper;

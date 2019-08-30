@@ -39,6 +39,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -54,6 +55,7 @@ import com.xys.libzxing.zxing.utils.CaptureActivityHandler;
 import com.xys.libzxing.zxing.utils.InactivityTimer;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * This activity opens the camera and does the actual scanning on a background
@@ -128,21 +130,20 @@ public class CaptureActivity extends BaseActivity implements SurfaceHolder.Callb
 
     @Override
     public void bindData() {
-        requestNeedPermissions(Manifest.permission.CAMERA);
+        requestNeedPermissions(PermissionManager.CAMERA_CODE,Manifest.permission.CAMERA);
     }
 
     @Override
-    public void passPermission(String permission) {
+    public void passPermission(@NonNull List<String> permissions, int requestCode) {
         if (isHasSurface) {
             initCamera(scanPreview.getHolder());
         }
     }
 
+
     @Override
-    public void failPermission(String permission) {
-        if(Manifest.permission.CAMERA.equals(permission)){
-            finish();
-        }
+    public void failPermission(@NonNull List<String> permissions, int requestCode) {
+        finish();
     }
 
     @Override

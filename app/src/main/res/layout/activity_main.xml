@@ -13,10 +13,16 @@
         android:layout_height="@dimen/title_bar_height"
         title:title_name="标题" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/smartRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <com.example.demo.widget.TwoLevelRefreshHeader
             android:id="@+id/twoLevelHeader"
@@ -32,10 +38,11 @@
 
         </com.example.demo.widget.TwoLevelRefreshHeader>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

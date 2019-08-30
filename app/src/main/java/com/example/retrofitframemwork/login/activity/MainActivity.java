@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Process;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -35,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.example.demo.contact.activity.PhoneListActivity;
 import com.example.demo.some_test.activity.TestDiffAndHandlerActivity;
 import com.example.demo.viewpager_fragment.activity.PageFragmentActivity;
 import com.example.demo.vlayout.activity.StudyVlayoutActivity;
@@ -66,6 +69,7 @@ import com.scwang.smartrefresh.layout.header.TwoLevelHeader;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -74,8 +78,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.exceptions.CompositeException;
+import io.reactivex.exceptions.Exceptions;
+import io.reactivex.functions.Consumer;
+import io.reactivex.internal.functions.ObjectHelper;
+import io.reactivex.plugins.RxJavaPlugins;
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 public class MainActivity extends BaseActivity implements ILoginView {
 
@@ -88,8 +99,10 @@ public class MainActivity extends BaseActivity implements ILoginView {
     RecyclerView recyclerView;
     @BindView(R.id.smartRefreshLayout)
     SmartRefreshLayout smartRefreshLayout;
-
+    @BindView(R.id.image)
+    ImageView image;
     private HomeAdapter mAdapter;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -100,7 +113,10 @@ public class MainActivity extends BaseActivity implements ILoginView {
         super.getParamData(intent);
     }
 
-    private String[] menus = new String[]{"vlayout","fragmentStatePager","versionUpdate","reactNative","scan","testSome"};
+    private String[] menus = new String[]{"vlayout", "fragmentStatePager", "versionUpdate",
+            "reactNative", "scan", "testSome", "takePicture","downloadApkAndInstall","selectImage"
+    ,"phones","testNetLink","startOtherActivity","SlidingPaneLayout"};
+
     @Override
     public void bindData() {
         registerBroadcast();
@@ -109,13 +125,29 @@ public class MainActivity extends BaseActivity implements ILoginView {
         mAdapter.setEnableLoadMore(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
+        OverScrollDecoratorHelper.setUpOverScroll(recyclerView,OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
+
+//        String url = "file://asdfs/saf/test.txt";
+//        File file;
+//        /*
+//        fileName=test.txt;filePath=/data/user/0/com.example.retrofitframemwork/cache/test.txt7702278795384564477.tmp
+//         */
+//        try {
+//            String fileName = Uri.parse(url).getLastPathSegment();
+//            file = File.createTempFile(fileName, null, getCacheDir());
+//            LogUtil.e("fileName="+fileName+";filePath="+file.getAbsolutePath());
+//        } catch (IOException e) {
+//            // Error while creating file
+//        }
     }
 
     @Override
     public void initEvent() {
-        LogUtil.e("String.format=" + String.format("%.2f", 0.336f));
+        LogUtil.e("onCreate=" + getClass().getSimpleName() + ";pid=" + Process.myPid());
+        //0.34
+        //LogUtil.e("String.format=" + String.format("%.2f", 0.336f));
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
-            switch (mAdapter.getItem(position)){
+            switch (mAdapter.getItem(position)) {
                 case "vlayout":
                     StudyVlayoutActivity.start(getContext());
                     break;
@@ -129,10 +161,56 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     RnMainActivity.start(getContext());
                     break;
                 case "scan":
-                    CaptureActivity.startMeForResult(MainActivity.this,120);
+                    CaptureActivity.startMeForResult(MainActivity.this, 120);
                     break;
                 case "testSome":
                     TestDiffAndHandlerActivity.start(this);
+                    break;
+                case "takePicture":
+                    requestNeedPermissions(Manifest.permission.CAMERA);
+                    break;
+                case "downloadApkAndInstall":
+                    mPresenter.downLoadFile();
+                    break;
+                case "selectImage":
+                    MultiImageSelectorActivity.startMe(this,5,200);
+                    break;
+                case "phones":
+                    PhoneListActivity.start(this,null);
+                    break;
+                case "testNetLink":
+                    mPresenter.testLineRequest();
+                    break;
+                case "startOtherActivity"://属于不同的进程
+                    LogUtil.e("start=pid="+Process.myPid());
+                    //ComponentName cn = new ComponentName("com.nanchen.rxjava2examples", "com.nanchen.rxjava2examples.module.rxjava2.operators.item.RxCreateActivity");
+                    Intent intent = new Intent("xx");
+                    intent.addCategory("android.intent.category.DEFAULT");
+                    //intent.setComponent(cn);
+                    startActivity(intent);
+                    break;
+                case "SlidingPaneLayout":
+//                    RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+//                        @Override
+//                        public void accept(Throwable throwable) throws Exception {
+//                            LogUtil.e("zhang","有错误了"+throwable.getMessage());
+//                        }
+//                    });
+                    //Main4Activity.start(this);
+//                    Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//                        @Override
+//                        public void uncaughtException(Thread t, Throwable e) {
+//                            LogUtil.e("zhang","线程自已的处理器"+e.getMessage());
+//                        }
+//                    });
+//                    try {
+//                        ObjectHelper.requireNonNull(null, "The mapper returned a null ObservableSource");
+//                    } catch (Throwable t) {
+//                        //Exceptions.throwIfFatal(t);
+//                        RxJavaPlugins.onError(new CompositeException(t, t));
+//                        t.printStackTrace();
+//                    }
+                    Main4Activity.start(this);
                     break;
             }
         });
@@ -148,6 +226,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
     }
 
     private void typeTwo(Map<String, Object> parmas) {
+        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
 //        NetWorkManager.getInstance().getRetorfit(AppInterfaceValue.HOST)
 //                .create(AppApi.class)
 //                .loginByRxJava(parmas)
@@ -210,7 +289,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //                showFragment(mRandom.nextInt());
                 break;
         }
-//        mPresenter.downLoadFile();
+//
 //        mPresenter.uploadFile();
 //         重新构造Uri：content://
         //requestNeedPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -279,26 +358,36 @@ public class MainActivity extends BaseActivity implements ILoginView {
     TestDialogFragment frament;
 
     @Override
-    public void passPermission(String permission) {
-        if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            return;
+    public void passPermission(@NonNull List<String> permissions, int requestCode) {
+        if (permissions.contains(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
         }
-        File imagePath = new File(Environment.getExternalStorageDirectory(), "images");
-        if (!imagePath.exists()) {
-            imagePath.mkdirs();
-        }
-        File newFile = new File(imagePath, "default_image.jpg");
-        Uri contentUri = FileProvider.getUriForFile(getContext(),
-                BaseApplication.getApp().getPackageName() + ".FileProvider", newFile);
-        //android.os.FileUriExposedException
-//        Uri contentUri = Uri.fromFile(newFile);//7.0以上应用间只能用content:// 不管私有内部还是私有外部还是公有外部存储
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
-        // 授予目录临时共享权限 //Intent中migrateExtraStreamToClipData有自动添加这两个权限
+        if (permissions.contains(Manifest.permission.CAMERA)) {
+            File imagePath = new File(getCacheDir(), "images");
+            if (!imagePath.exists()) {
+                imagePath.mkdirs();
+            }
+            File newFile = new File(imagePath, "default_image.jpg");
+            Uri contentUri = null;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                //android.os.FileUriExposedException
+                contentUri = Uri.fromFile(newFile);//7.0以上应用间只能用content:// 不管私有内部还是私有外部还是公有外部存储
+            } else {
+                contentUri = FileProvider.getUriForFile(this,
+                        BaseApplication.getApp().getPackageName() + ".FileProvider", newFile);
+            }
+            /**
+             * Uri.fromFile 对于拍照程序和安装程序都不可以我们应用访问私有内部存储
+             * FileProvider对于拍照程序可以我们应用访问私有内部存储（而安装程序却不可以）
+             */
+
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+            // 授予目录临时共享权限 //Intent中migrateExtraStreamToClipData有自动添加这两个权限
 //        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
 //                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        startActivityForResult(intent, 100);
-
+            startActivityForResult(intent, 100);
+        }
 //        UserOperation opration = new UserOperation();
 //        long start = System.currentTimeMillis();
 //        for(int i=0;i<100;i++){
@@ -343,13 +432,13 @@ public class MainActivity extends BaseActivity implements ILoginView {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case 100:
-                    File imagePath = new File(Environment.getExternalStorageDirectory(), "images");
+                    File imagePath = new File(getCacheDir(), "images");
                     if (!imagePath.exists()) {
                         imagePath.mkdirs();
                     }
                     File newFile = new File(imagePath, "default_image.jpg");
                     Bitmap bitmap = BitmapFactory.decodeFile(newFile.getAbsolutePath());
-                    //image.setImageBitmap(bitmap);
+                    image.setImageBitmap(bitmap);
                     break;
                 case 200:
                     List<String> photoPath = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
@@ -359,28 +448,14 @@ public class MainActivity extends BaseActivity implements ILoginView {
                         for (int i = 0; i < photoPath.size(); i++) {
                             params.put("img" + i, new File(photoPath.get(i)));
                         }
-                        mPresenter.uploadFile(params);
-                        //mPresenter.zipFile(photoPath.get(0));
+                        File file = new File(photoPath.get(0));
+                        Bitmap fbitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                        image.setImageBitmap(fbitmap);
                     }
-                    Thread d = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Bitmap bitmap1 = BitmapFactory.decodeFile(photoPath.get(0));
-                                Log.e("zhang", bitmap1 == null ? "true" : "false");
-                            } catch (Exception e) {
-                                Log.e("zhang", e.getMessage());
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                    d.interrupt();
-                    d.start();
-                    d.interrupt();
                     break;
                 case 120:
                     String result = data.getStringExtra(CaptureActivity.EXTRA_RESULT);
-                    ToastUtil.show(this,result);
+                    ToastUtil.show(this, result);
                     break;
             }
         }
@@ -413,14 +488,16 @@ public class MainActivity extends BaseActivity implements ILoginView {
         LocalBroadcastManager.getInstance(this).registerReceiver(mReciver, filter);
 
         mDownReciver = new CompleteReceiver();
+        //getName ==>com.example.retrofitframemwork.login.activity.MainActivity$CompleteReceiver
+        //getSimpleName ==> CompleteReceiver
+        LogUtil.e("zhang",mDownReciver.getClass().getName());
         registerReceiver(mDownReciver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
+        LogUtil.e("onCreate="+getClass().getSimpleName());
     }
 
     public static class MyBroadCastReciver extends BroadcastReceiver {
@@ -438,6 +515,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
         if (mDownReciver != null) {
             unregisterReceiver(mDownReciver);
         }
+        LogUtil.e("调用了onDestroy="+getClass().getSimpleName());
         super.onDestroy();
     }
 

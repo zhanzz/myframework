@@ -6,10 +6,14 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.text.ParseException;
-
 import retrofit2.HttpException;
 
 public class CustomException {
+
+    /**
+     * 操作取消
+     */
+    public static final int DISPOSED = 999;
 
     /**
      * 未知错误

@@ -23,6 +23,7 @@
         </provider>
 
         <activity android:name=".image_select.MultiImageSelectorActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"/>
         <activity android:name="com.xys.libzxing.zxing.activity.CaptureActivity"
             android:screenOrientation="portrait"/>

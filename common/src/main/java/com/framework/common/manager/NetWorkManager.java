@@ -76,7 +76,7 @@ public class NetWorkManager{
             retrofit = new Retrofit.Builder()
                     .client(okHttpClient)
                     .baseUrl(hostName)
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())//创建同步的转换工厂
                     .addConverterFactory(FileConverterFactory.create())
                     .addConverterFactory(FastJsonConverterFactory.create())
                     .build();

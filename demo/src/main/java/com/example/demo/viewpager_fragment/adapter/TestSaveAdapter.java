@@ -19,5 +19,6 @@ public class TestSaveAdapter extends BaseAdapter<PresellBean.PresellProduct,MyVi
     @Override
     protected void convert(MyViewHolder helper, PresellBean.PresellProduct item) {
         helper.setImage(R.id.itemIcon,item.getProductAdsPic());
+        helper.setText(R.id.itemName,item.getProductName());
     }
 }

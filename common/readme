@@ -1,0 +1,7 @@
+RxNet 网络请求+上传+下载图片
+ConvenientBanner  图片（还可支持其它类型）无限循环轮播
+stickyItemDecoration recyclerView分组浮动
+zxing 扫一扫
+OverScrollDecoratorHelper 支持类型ios的越界回弹
+MultiImageSelectorActivity  图片选择封装
+BaseAdapter 支持上下接加载的封装

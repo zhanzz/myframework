@@ -3,8 +3,14 @@
     package="com.example.demo">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!--读取手机联系人-->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <application>
+        <activity
+            android:name=".contact.activity.PhoneListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".some_test.activity.BrowseAnimActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

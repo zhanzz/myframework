@@ -83,6 +83,7 @@ public class PagerFragment extends BaseFragment implements IPagerView {
     @Override
     public void bindData() {
         mAdapter = new TestSaveAdapter(recyclerView);
+        mAdapter.setRealControlMoreEnable(true);
         mAdapter.setIsRecyclerHeadAndFooter(false);
         TextView tv = new TextView(getContext());
         tv.setText(mPresenter.getId());

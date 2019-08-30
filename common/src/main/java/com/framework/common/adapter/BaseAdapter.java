@@ -23,7 +23,7 @@ import java.util.List;
 public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickAdapter<T,K> {
     private String strLoadEndText;
     private SmartRefreshLayout smartRefreshLayout;
-    private boolean mRealControlMoreEnable=true;
+    private boolean mRealControlMoreEnable;
     private boolean mCanShowEmptyView=true;//是否允许展示空视图
     private boolean isRecyclerViewHolder=true;//是否回收header footer
 
@@ -47,7 +47,6 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
                 }
             }
         },recyclerView);
-        disableLoadMoreIfNotFullPage();
         setEnableLoadMore(false);
     }
 
@@ -123,6 +122,7 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
     private RefreshListener mRefreshListener;
 
     public void setRefreshListener(RefreshListener refreshListener){
+        mRealControlMoreEnable = true;
         mRefreshListener = refreshListener;
     }
 

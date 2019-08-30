@@ -1,9 +1,7 @@
 package com.framework.common.image_select.utils;
 
 import android.content.Context;
-import android.os.Environment;
 
-import com.framework.common.BaseApplication;
 import com.framework.common.manager.CacheDirManager;
 
 import java.io.File;
@@ -15,8 +13,12 @@ import java.util.Locale;
  * 文件操作类
  * Created by Nereo on 2015/4/8.
  */
-public class FileUtils {
-
+public class FileManager {
+    /**
+     * For example, photos captured by your app or other downloaded files should be saved as public files.
+     * @param context
+     * @return
+     */
     public static File createTmpFile(Context context) {
         File pic = CacheDirManager.getCameraCacheDir();
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA).format(new Date());
@@ -50,7 +52,7 @@ public class FileUtils {
     //删除无效的压缩的文件
     public static void deleteCachePic() {
         try {
-            FileUtils.deleteAllFiles(CacheDirManager.getCameraCacheDir());
+            FileManager.deleteAllFiles(CacheDirManager.getCameraCacheDir());
         } catch (Exception e) {
             e.printStackTrace();
         }

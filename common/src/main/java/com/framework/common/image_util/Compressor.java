@@ -137,7 +137,11 @@ public class Compressor {
                         Object value = params.get(key);
                         if (value instanceof File) {
                             File file = compressToFile((File)value,((File)value).getName());
-                            result.put(key,file);
+                            if(file!=null){
+                                result.put(key,file);
+                            }else {
+                                result.put(key,value);
+                            }
                         }
                     }else {
                         break;

@@ -2,8 +2,12 @@ package com.example.retrofitframemwork.login.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+
+import androidx.slidingpanelayout.widget.SlidingPaneLayout;
 
 import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.login.presenter.Main4Presenter;
@@ -18,6 +22,8 @@ import butterknife.OnClick;
 public class Main4Activity extends BaseActivity implements IMain4View {
     @BindView(R.id.btn_4jump)
     Button btn4jump;
+    @BindView(R.id.slidingPanelLayout)
+    SlidingPaneLayout slidingPanelLayout;
     private Main4Presenter mPresenter;
 
     @Override
@@ -27,6 +33,23 @@ public class Main4Activity extends BaseActivity implements IMain4View {
 
     @Override
     public void bindData() {
+        slidingPanelLayout.setSliderFadeColor(Color.TRANSPARENT);//设置面板的侧滑渐变色
+        slidingPanelLayout.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                //
+            }
+
+            @Override
+            public void onPanelOpened(View panel) {
+
+            }
+
+            @Override
+            public void onPanelClosed(View panel) {
+
+            }
+        });
 
     }
 

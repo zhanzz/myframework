@@ -31,6 +31,12 @@ public class LogUtil {
         }
     }
 
+    public static void e(String tag,String msg){
+        if(isShow){
+            Log.e(tag,msg);
+        }
+    }
+
     public static void i(String msg){
         if(isShow){
             Log.i(TAG,msg);

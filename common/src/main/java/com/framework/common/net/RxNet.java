@@ -12,6 +12,7 @@ import com.framework.common.data.ActivityLifeCycleEvent;
 import com.framework.common.data.LoadType;
 import com.framework.common.data.Result;
 import com.framework.common.exception.ApiException;
+import com.framework.common.exception.CustomException;
 import com.framework.common.image_util.Compressor;
 import com.framework.common.manager.CacheDirManager;
 import com.framework.common.callBack.LoadCallBack;
@@ -45,11 +46,11 @@ public class RxNet {
         }else if(loadType==LoadType.LOAD_DIALOG){
             view.showLoadingDialog();
         }
-        ApiSubscriber apiSubscriber = new ApiSubscriber<Result<T>, T>() {
+        ApiSubscriber apiSubscriber = new ApiSubscriber<T>() {
             @Override
             protected void onFail(ApiException ex) {
                 hideLoad(loadType, view);
-                if (callBack != null) {
+                if (callBack != null && ex.getCode()!= CustomException.DISPOSED) {
                     callBack.onFailure(ex.getCode(), ex.getDisplayMessage());
                 }
             }
@@ -60,12 +61,6 @@ public class RxNet {
                 if (callBack != null) {
                     callBack.onSuccess(data, code, msg);
                 }
-            }
-
-            @Override
-            public void dispose() {
-                super.dispose();
-                hideLoad(loadType, view);
             }
         };
         observable.compose(view.<Result<T>>bindUntilEvent(ActivityLifeCycleEvent.DESTROY))
@@ -93,14 +88,14 @@ public class RxNet {
                 .observeOn(SchedulerProvider.getInstance().io())
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
-                    public void accept(ResponseBody responseBody) throws Exception {
+                    public void accept(ResponseBody responseBody){
                         if (callBack != null) {
                             callBack.saveFile(responseBody);
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable){
                         if (callBack != null) {
                             callBack.onFail(throwable);
                         }

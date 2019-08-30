@@ -12,13 +12,12 @@ import java.lang.reflect.Proxy;
  */
 public class BasePresenter<T extends IBaseView> implements Presenter<T>{
     private WeakReference<T> mvpView;
-    protected T proxyView;
+    private T proxyView;
 
-    @SuppressWarnings("unchecked")
     @Override
     public void attachView(T view) {
         this.mvpView = new WeakReference<T>(view);
-        MvpViewInvocationHandler invocationHandler = new MvpViewInvocationHandler(this.mvpView.get());
+        MvpViewInvocationHandler invocationHandler = new MvpViewInvocationHandler();
         // 在这里采用动态代理
         proxyView = (T) Proxy.newProxyInstance(
                 view.getClass().getClassLoader(), view.getClass()
@@ -49,19 +48,12 @@ public class BasePresenter<T extends IBaseView> implements Presenter<T>{
 
     private class MvpViewInvocationHandler implements InvocationHandler {
 
-        private IBaseView mvpView;
-
-        public MvpViewInvocationHandler(IBaseView mvpView) {
-            this.mvpView = mvpView;
-        }
+        private MvpViewInvocationHandler() {}
 
         @Override
         public Object invoke(Object arg0, Method method, Object[] arg2) throws Throwable {
-            if(method.getName().equals("addCompositeDisposable")){
-                return null;
-            }
             if (isViewAttached()) {
-                return method.invoke(mvpView, arg2);
+                return method.invoke(mvpView.get(), arg2);
             }
             return null;
         }

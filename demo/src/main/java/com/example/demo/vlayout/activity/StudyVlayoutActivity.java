@@ -136,6 +136,7 @@ public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutV
         smartRefreshLayout.resetNoMoreData();
         adapters.add(12,new ScrollTopAdapter());
         adapters.add(13,new StikyAdapter());
+
         mPresenter.getMoreProducts();
         delegateAdapter.setAdapters(adapters);
         delegateAdapter.notifyDataSetChanged();

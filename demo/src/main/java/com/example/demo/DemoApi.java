@@ -19,7 +19,6 @@ import retrofit2.http.POST;
  * description：
  */
 public interface DemoApi {
-
     @POST("promotion/api/mobile/v1/promotion/preOrderProducts")
     Observable<Result<PresellBean>> loadCategoryData(@Body Map<String,Object> params);
 

@@ -28,6 +28,7 @@ import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.common.widget.TitleView;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
@@ -217,7 +218,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
                 Observable<ActivityLifeCycleEvent> compareLifecycleObservable =
                         lifecycleSubject.filter(new Predicate<ActivityLifeCycleEvent>() {
                             @Override
-                            public boolean test(ActivityLifeCycleEvent activityEvent) throws Exception {
+                            public boolean test(ActivityLifeCycleEvent activityEvent){
                                 return activityEvent.equals(event);
                             }
                         }).take(1);
@@ -318,45 +319,53 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         }
     }
 
-    public void requestNeedPermissions(String ... permission) {
+    public void requestNeedPermissions(int requestCode, String... permission) {
         if (AppTools.isMarshmallowOrHigher()) {
             if (ListUtils.isEmpty(permission)) {
                 return;
             }
             if (PermissionManager.getInstance().lacksPermissions(permission)) {
-                requestPermissions(permission, REQUEST_CODE);
+                requestPermissions(permission, requestCode);
             } else {
-                for (String per : permission) {
-                    passPermission(per);
-                }
+                passPermission(Arrays.asList(permission),requestCode);
             }
         } else {
-            for (String per : permission) {
-                passPermission(per);
-            }
+            passPermission(Arrays.asList(permission),requestCode);
         }
+    }
+
+    public void requestNeedPermissions(String... permission) {
+        //默认code
+        requestNeedPermissions(260,permission);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE) {
-            for (int i = 0; i < permissions.length; i++) {
-                String permission = permissions[i];
-                int grantResult = grantResults[i];
-                if (PackageManager.PERMISSION_GRANTED == grantResult) {
-                    passPermission(permission);
-                } else {
-                    failPermission(permission);
-                    PermissionManager.getInstance().toastTip(this, permission);
-                }
+        List<String> passPermission = new ArrayList<>(),failPermission = new ArrayList<>();
+        for (int i = 0; i < permissions.length; i++) {
+            String permission = permissions[i];
+            int grantResult = grantResults[i];
+            if (PackageManager.PERMISSION_GRANTED == grantResult) {
+                passPermission.add(permission);
+            } else {
+                failPermission.add(permission);
+                PermissionManager.getInstance().toastTip(getContext(), permission);
             }
+        }
+        if(!ListUtils.isEmpty(passPermission)){
+            passPermission(passPermission,requestCode);
+        }
+        if(!ListUtils.isEmpty(failPermission)){
+            failPermission(failPermission,requestCode);
         }
     }
 
-    public void failPermission(String permission){}
+    public void failPermission(@NonNull List<String> permissions,int requestCode) {
+    }
 
-    public void passPermission(String permission){}
+    public void passPermission(@NonNull List<String> permissions,int requestCode) {
+    }
 
     @Override
     public void onNetChange(boolean isConnect) {

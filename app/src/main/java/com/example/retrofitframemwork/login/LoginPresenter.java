@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.annotation.MainThread;
 import androidx.core.content.FileProvider;
 
 import android.os.Environment;
@@ -19,7 +20,9 @@ import com.example.retrofitframemwork.update.activity.UpDateActivity;
 import com.example.retrofitframemwork.utils.Events;
 import com.framework.common.data.LoadType;
 import com.framework.common.data.Result;
+import com.framework.common.exception.ApiException;
 import com.framework.common.manager.PermissionManager;
+import com.framework.common.retrofit.ApiSubscriber;
 import com.framework.common.retrofit.RetorfitUtil;
 import com.framework.common.BaseApplication;
 import com.framework.common.BuildConfig;
@@ -47,9 +50,15 @@ import java.util.Map;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author zhangzhiqiang
@@ -133,7 +142,7 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
                     if ((lastVersionCode > BuildConfig.VERSION_CODE && versionBean.getPopup() == 1)) {
                         Disposable disposable = Observable.create(new ObservableOnSubscribe<Boolean>() {
                             @Override
-                            public void subscribe(ObservableEmitter<Boolean> emitter){
+                            public void subscribe(ObservableEmitter<Boolean> emitter) {
                                 File apkFileDir = null;
                                 if (PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                                     apkFileDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
@@ -151,13 +160,13 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
                         }).compose(SchedulerProvider.getInstance().applySchedulers())
                                 .subscribe(new Consumer<Boolean>() {
                                     @Override
-                                    public void accept(Boolean aBoolean){
+                                    public void accept(Boolean aBoolean) {
                                         versionBean.setDownLoad(aBoolean);
                                         getMvpView().onShowUpdateDialog(versionBean);
                                     }
                                 });
                         Boolean isOk = getMvpView().addCompositeDisposable(disposable);
-                        if (isOk==null|| !isOk) {
+                        if (isOk == null || !isOk) {
                             disposable.dispose();
                         }
                     }
@@ -197,11 +206,6 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
         }
     }
 
-    @Override
-    public void detachView() {
-        super.detachView();
-    }
-
     public void zipFile(final String filePath) {
         new Compressor(BaseApplication.getApp())
                 .setMaxHeight(1920)
@@ -237,5 +241,47 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(Events.LoginOut event) {
         getMvpView().showToast("我收到消息啦");
+    }
+
+    public void testLineRequest() {
+        getMvpView().showLoading();
+        Map<String, Object> params = new HashMap<>();
+        params.put("UserName", "13695157045");
+        params.put("Password", "11");
+        params.put("Code", "");
+        Disposable disposable = RetorfitUtil.getRetorfitApi(AppApi.class)
+                .loginByResponse(params)
+                .compose(SchedulerProvider.getInstance().applySchedulers())
+                .doOnNext(userEntityResult -> {
+
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(userEntityResult -> {
+                    if (userEntityResult != null && userEntityResult.getCode() == 0) {//登录成功
+                        return RetorfitUtil.getRetorfitApi(AppApi.class)
+                                .checkUpdate();
+                    }else if(userEntityResult != null){
+                        return Observable.error(new ApiException(userEntityResult.getCode(),userEntityResult.getMessage()));
+                    }
+                    //return null;//不可以为null
+                    return Observable.empty();
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new ApiSubscriber<VersionInfo>() {
+                    @Override
+                    protected void onFail(ApiException ex) {
+                        getMvpView().hideLoading();
+                    }
+
+                    @Override
+                    public void onSuccess(VersionInfo data, int code, String msg) {
+                        getMvpView().hideLoading();
+                        getMvpView().onShowUpdateDialog(data);
+                    }
+                });
+        Boolean isOk = getMvpView().addCompositeDisposable(disposable);
+        if(!isOk){
+            disposable.dispose();
+        }
     }
 }

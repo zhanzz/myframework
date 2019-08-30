@@ -19,8 +19,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * File Utils
@@ -725,5 +728,17 @@ public class FileUtils {
             }
         }
         return file;
+    }
+
+    /**
+     * 根据系统时间、前缀、后缀产生一个文件
+     */
+    public static File createFile(File folder, String prefix, String suffix) {
+        if (!folder.exists() || !folder.isDirectory()) {
+            folder.mkdirs();
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA);
+        String filename = prefix + dateFormat.format(new Date(System.currentTimeMillis())) + suffix;
+        return new File(folder, filename);
     }
 }

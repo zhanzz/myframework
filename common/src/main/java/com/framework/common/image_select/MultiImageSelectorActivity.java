@@ -1,5 +1,6 @@
 package com.framework.common.image_select;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -7,22 +8,27 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import com.framework.common.R;
+import com.framework.common.base_mvp.BaseActivity;
+import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.manager.PermissionManager;
 import com.framework.common.utils.AppTools;
 import com.framework.common.utils.ToastUtil;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 多图选择
  * Created by Nereo on 2015/4/7.
  */
-public class MultiImageSelectorActivity extends FragmentActivity implements MultiImageSelectorFragment.Callback{
+public class MultiImageSelectorActivity extends BaseActivity implements MultiImageSelectorFragment.Callback{
 
     private static final String[] LOCAL_PERMISSION = {
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
     };
     /** 最大图片选择次数，int类型，默认9 */
     public static final String EXTRA_SELECT_COUNT = "max_select_count";
@@ -47,17 +53,27 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
     private boolean isShow;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_default);
+    public int getLayoutId() {
+        return R.layout.activity_default;
+    }
 
-        Intent intent = getIntent();
+    @Override
+    public void getParamData(Intent intent) {
         mDefaultCount = intent.getIntExtra(EXTRA_SELECT_COUNT, 9);
         mode = intent.getIntExtra(EXTRA_SELECT_MODE, MODE_MULTI);
         isShow = intent.getBooleanExtra(EXTRA_SHOW_CAMERA, true);
         if(mode == MODE_MULTI && intent.hasExtra(EXTRA_DEFAULT_SELECTED_LIST)) {
             resultList = intent.getStringArrayListExtra(EXTRA_DEFAULT_SELECTED_LIST);
         }
+    }
+
+    @Override
+    public void bindData() {
+        requestNeedPermissions(LOCAL_PERMISSION);
+    }
+
+    @Override
+    public void initEvent() {
         // 返回按钮
         findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +82,6 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
                 finish();
             }
         });
-
         // 完成按钮
         mSubmitButton = (Button) findViewById(R.id.commit);
         if(resultList == null || resultList.size()<=0){
@@ -91,15 +106,16 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
                 }
             }
         });
-        if(AppTools.isMarshmallowOrHigher()){
-            if(PermissionManager.getInstance().lacksPermissions(LOCAL_PERMISSION)){
-                requestPermissions(LOCAL_PERMISSION, PermissionManager.WRITE_EXTERNAL_STORAGE_CODE);
-            }else{
-                init();
-            }
-        }else{
-            init();
-        }
+    }
+
+    @Override
+    protected BasePresenter getPresenter() {
+        return null;
+    }
+
+    @Override
+    public void passPermission(@NonNull List<String> permissions, int requestCode) {
+        init();
     }
 
     private void init(){
@@ -112,25 +128,6 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.image_grid, Fragment.instantiate(this, MultiImageSelectorFragment.class.getName(), bundle))
                 .commitAllowingStateLoss();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PermissionManager.WRITE_EXTERNAL_STORAGE_CODE) {
-            for (int i = 0; i < permissions.length; i++) {
-                String permission = permissions[i];
-                int grantResult = grantResults[i];
-                if (permission.equals(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    if (PackageManager.PERMISSION_GRANTED == grantResult) {
-                        init();
-                    } else {
-                        ToastUtil.show(this,
-                                PermissionManager.getInstance().toDescription(android.Manifest.permission.WRITE_EXTERNAL_STORAGE));
-                    }
-                }
-            }
-        }
     }
 
     @Override

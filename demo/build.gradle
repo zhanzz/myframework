@@ -29,4 +29,7 @@ dependencies {
     }
     //https://github.com/youth5201314/banner
     implementation 'com.youth.banner:banner:1.4.10'
+    implementation 'com.kevin:common:1.1'
+    runtimeOnly 'com.kevin:common:1.0'
+    implementation 'com.glide.load:common:1.4'
 }

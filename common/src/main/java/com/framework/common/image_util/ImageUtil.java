@@ -27,6 +27,9 @@ class ImageUtil {
             fileOutputStream = new FileOutputStream(destinationPath);
             // write the compressed bitmap at the destination specified by destinationPath.
             Bitmap bitmap = decodeSampledBitmapFromFile(imageFile, reqWidth, reqHeight,config);
+            if(bitmap==null){ //可能不是图片文件，则原路返回file
+                return imageFile;
+            }
             bitmap.compress(compressFormat, quality, fileOutputStream);
             if(!bitmap.isRecycled()){
                 bitmap.recycle();
@@ -52,6 +55,10 @@ class ImageUtil {
 
         int actualHeight = options.outHeight;
         int actualWidth = options.outWidth;
+
+        if(actualHeight<=0||actualWidth<=0){
+            return null;
+        }
 
         float imgRatio = (float) actualWidth / (float) actualHeight;
         float maxRatio = reqWidth / reqHeight;

@@ -41,7 +41,7 @@ public class TestDiffAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        LogUtil.e("onCreateViewHolder");
+        //LogUtil.e("onCreateViewHolder");
         TextView textView = new TextView(viewGroup.getContext());
         RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UIHelper.dip2px(40));
         textView.setLayoutParams(params);
@@ -51,7 +51,7 @@ public class TestDiffAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        LogUtil.e("onBindViewHolder");
+        //LogUtil.e("onBindViewHolder");
         ((TextView)viewHolder.itemView).setText(getItem(i).getContent());
     }
 
