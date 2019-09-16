@@ -86,6 +86,8 @@ public class PagerFragment extends BaseFragment implements IPageBaseView<Presell
 
     @Override
     public void bindData() {
+        //testMerge添加的测试提交
+        int x = 4;
         mAdapter = new TestSaveAdapter(recyclerView);
         mAdapter.setRealControlMoreEnable(true);
         mAdapter.setIsRecyclerHeadAndFooter(false);
