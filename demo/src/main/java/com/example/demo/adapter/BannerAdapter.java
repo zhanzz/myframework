@@ -13,6 +13,7 @@ import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.ViewAdapter;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.example.demo.R;
+import com.example.demo.vlayout.activity.StudyVlayoutActivity;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.framework.common.utils.ToastUtil;
 import com.framework.model.demo.ActivityBean;

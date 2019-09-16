@@ -9,7 +9,10 @@ import java.text.ParseException;
 import retrofit2.HttpException;
 
 public class CustomException {
-
+    /**
+     * 返回的数据为null
+     */
+    public static final int EMPTY_DATA = 998;
     /**
      * 操作取消
      */

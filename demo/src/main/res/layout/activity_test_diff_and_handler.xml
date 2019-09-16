@@ -1,62 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.framework.common.widget.TitleView xmlns:title="http://schemas.android.com/apk/res-auto"
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_height"
-        title:title_name="标题" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <include layout="@layout/test_include_merge"/>
+        <com.framework.common.widget.TitleView xmlns:title="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_bar_height"
+            title:title_name="标题" />
 
-    <TextView
-        android:visibility="visible"
-        android:id="@+id/tv_anim"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="48"
-        android:textColor="@color/black"/>
+        <include layout="@layout/test_include_merge" />
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/iv_anim"
-        android:layout_width="100dp"
-        android:layout_height="100dp"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="100dp">
         <TextView
-            android:id="@+id/tv_context"
+            android:id="@+id/tv_anim"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="48"
+            android:textColor="@color/black"
+            android:visibility="visible" />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_anim"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <TextView
+                android:id="@+id/tv_context"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center_vertical"
+                android:text="hello world" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/iv_inbitmap"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+
+        <ImageView
+            android:id="@+id/iv_inbitmap2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp" />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:visibility="gone" />
+
+        <com.example.demo.widget.LogTv
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="hello world"
-            android:layout_gravity="left|center_vertical"/>
-    </FrameLayout>
+            android:text="@string/app_name"
+            android:textColor="#5fff8f"
+            android:textSize="15sp" />
 
-    <ImageView
-        android:id="@+id/iv_inbitmap"
-        android:layout_width="100dp"
-        android:layout_height="100dp" />
-
-    <ImageView
-        android:id="@+id/iv_inbitmap2"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="10dp"/>
-
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:visibility="gone"
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+        <com.example.demo.widget.ViewAreaShowData
+            android:layout_width="100dp"
+            android:layout_height="120dp" />
+    </LinearLayout>
+</ScrollView>

@@ -14,6 +14,7 @@ import com.example.demo.R;
 import com.example.demo.R2;
 import com.framework.common.base_mvp.BaseDialog;
 import com.framework.common.base_mvp.BasePresenter;
+import com.framework.common.utils.UIHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +39,7 @@ public class TestInputFragment extends BaseDialog {
     @Override
     protected void setLayoutParams(WindowManager.LayoutParams params) {
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = UIHelper.dip2px(100);
         params.gravity = Gravity.BOTTOM;
     }
 
@@ -53,14 +55,14 @@ public class TestInputFragment extends BaseDialog {
 
     @Override
     public void initEvent() {
-        edit.requestFocus();
-        edit.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InputMethodManager mInputMethodManager = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
-                mInputMethodManager.showSoftInput(edit, 0);
-            }
-        },300);
+//        edit.requestFocus();
+//        edit.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                InputMethodManager mInputMethodManager = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
+//                mInputMethodManager.showSoftInput(edit, 0);
+//            }
+//        },300);
 
     }
 
@@ -69,19 +71,5 @@ public class TestInputFragment extends BaseDialog {
         TestInputFragment fragment = new TestInputFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        unbinder = ButterKnife.bind(this, rootView);
-        return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 }

@@ -2,7 +2,7 @@ package com.example.retrofitframemwork.interceptor;
 
 import android.text.TextUtils;
 
-import com.example.retrofitframemwork.data.UserOperation;
+import com.framework.common.data.operation.UserOperation;
 import com.framework.common.BuildConfig;
 
 import java.io.IOException;

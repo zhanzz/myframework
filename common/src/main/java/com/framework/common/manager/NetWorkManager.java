@@ -20,7 +20,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
  */
 public class NetWorkManager{
 
-    private static NetWorkManager mInstance;
+    private volatile static NetWorkManager mInstance;
     private static Map<String,Retrofit> retrofitMap=new HashMap<>();
     private static OkHttpClient okHttpClient;
     public static NetWorkManager getInstance() {

@@ -37,13 +37,13 @@ import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
+import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 
 public abstract class BaseActivity extends AppCompatActivity implements IBaseView,INetChange{
-    private static final int REQUEST_CODE = 1000;
     protected List<BasePresenter> mPresenters;
     private CompositeDisposable mCompositeDisposable;
-    public final PublishSubject<ActivityLifeCycleEvent> lifecycleSubject = PublishSubject.create();
+    public final BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
     private View mPartErrorView;
 
     @SuppressWarnings("unchecked")

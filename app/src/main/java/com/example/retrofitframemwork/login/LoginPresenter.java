@@ -7,19 +7,17 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 
-import androidx.annotation.MainThread;
 import androidx.core.content.FileProvider;
 
 import android.os.Environment;
 import android.util.Log;
 
 import com.example.retrofitframemwork.AppApi;
-import com.example.retrofitframemwork.data.UserOperation;
+import com.framework.common.data.operation.UserOperation;
 import com.example.retrofitframemwork.login.view.ILoginView;
 import com.example.retrofitframemwork.update.activity.UpDateActivity;
-import com.example.retrofitframemwork.utils.Events;
+import com.framework.common.manager.Events;
 import com.framework.common.data.LoadType;
-import com.framework.common.data.Result;
 import com.framework.common.exception.ApiException;
 import com.framework.common.manager.PermissionManager;
 import com.framework.common.retrofit.ApiSubscriber;
@@ -35,7 +33,6 @@ import com.framework.common.retrofit.SchedulerProvider;
 import com.framework.common.net.RxNet;
 import com.framework.common.callBack.RxNetCallBack;
 import com.framework.common.utils.AppTools;
-import com.framework.common.utils.ToastUtil;
 import com.framework.model.UploadImgV2Bean;
 import com.framework.model.UserEntity;
 import com.framework.model.VersionInfo;
@@ -50,14 +47,10 @@ import java.util.Map;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**

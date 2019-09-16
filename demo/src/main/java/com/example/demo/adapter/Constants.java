@@ -13,4 +13,5 @@ public class Constants {
     public static final int TYPE_BOOTOM_PRODUCT = 5;
     public static final int TYPE_FIX_IMG = 6;
     public static final int TYPE_MENU = 7;
+    public static final int TYPE_LOAD_MORE = 8;
 }

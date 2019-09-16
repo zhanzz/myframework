@@ -36,6 +36,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.demo.contact.activity.PhoneListActivity;
 import com.example.demo.some_test.activity.TestDiffAndHandlerActivity;
@@ -115,7 +116,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     private String[] menus = new String[]{"vlayout", "fragmentStatePager", "versionUpdate",
             "reactNative", "scan", "testSome", "takePicture","downloadApkAndInstall","selectImage"
-    ,"phones","testNetLink","startOtherActivity","SlidingPaneLayout"};
+    ,"phones","testNetLink","startOtherActivity","SlidingPaneLayout","testArouter"};
 
     @Override
     public void bindData() {
@@ -184,9 +185,12 @@ public class MainActivity extends BaseActivity implements ILoginView {
                 case "startOtherActivity"://属于不同的进程
                     LogUtil.e("start=pid="+Process.myPid());
                     //ComponentName cn = new ComponentName("com.nanchen.rxjava2examples", "com.nanchen.rxjava2examples.module.rxjava2.operators.item.RxCreateActivity");
-                    Intent intent = new Intent("xx");
-                    intent.addCategory("android.intent.category.DEFAULT");
                     //intent.setComponent(cn);
+                    /**
+                     * 隐式跳转总结： 清单文件中 action与category(默认的)必须存在，如果有data，则intent中必须相对应
+                     */
+                    Intent intent = new Intent("xxx");
+                    intent.setData(Uri.parse("testscheme:123456"));
                     startActivity(intent);
                     break;
                 case "SlidingPaneLayout":
@@ -211,6 +215,16 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //                        t.printStackTrace();
 //                    }
                     Main4Activity.start(this);
+                    break;
+                case "testArouter":
+                    // 1. 应用内简单的跳转(通过URL跳转在'进阶用法'中)
+                    ARouter.getInstance().build("/test/activity").navigation();
+                    // 2. 跳转并携带参数
+//                    ARouter.getInstance().build("/test/1")
+//                            .withLong("key1", 666L)
+//                            .withString("key3", "888")
+//                            .withObject("key4", new UserBean())
+//                            .navigation();
                     break;
             }
         });

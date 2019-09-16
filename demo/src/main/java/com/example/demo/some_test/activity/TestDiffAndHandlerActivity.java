@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,6 +40,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
 import com.example.demo.R2;
+import com.example.demo.keybord.fragment.TestInputFragment;
+import com.example.demo.some_test.adapter.ListAdapter;
 import com.example.demo.some_test.adapter.TestDiffAdapter;
 import com.example.demo.some_test.presenter.TestDiffAndHandlerPresenter;
 import com.example.demo.some_test.view.ITestDiffAndHandlerView;
@@ -84,6 +87,8 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
     ImageView ivInbitmap;
     @BindView(R2.id.iv_inbitmap2)
     ImageView ivInbitmap2;
+    @BindView(R2.id.listView)
+    ListView listView;
     private TestDiffAndHandlerPresenter mPresenter;
     private TestDiffAdapter mAdapter;
 
@@ -130,12 +135,13 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         });
         testBitmap();
     }
-
+    int a = android.R.drawable.arrow_down_float;
     Bitmap bitmap;
+
     private void testBitmap() {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.RGB_565;
-        bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.bg_red_packet);
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_red_packet);
         ivInbitmap.setImageBitmap(bitmap);
     }
 
@@ -204,7 +210,9 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         adSwitchTask = new AdSwitchTask(btnChange);
 
         testGhostView();
-        ivAnim.setImageURI("http://imgsrc.baidu.com/imgad/pic/item/d000baa1cd11728bdf999dd4c2fcc3cec2fd2c8b.jpg");
+        ivAnim.setImageURI("res:///" + R.drawable.menu_bg);
+
+        listView.setAdapter(new ListAdapter());
     }
 
     private void testGhostView() {
@@ -285,8 +293,14 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         return mPresenter;
     }
 
-    @OnClick(R2.id.btn_change)
-    public void onClick() {
+    @OnClick({R2.id.btn_change,R2.id.image})
+    public void onClick(View view) {
+        //switch (view.getId()){
+            //case R2.id.btn_change:
+                //break;
+        //}
+        TestInputFragment dialog = TestInputFragment.newInstance();
+        dialog.showNow(getSupportFragmentManager(),"");
 //        List<TestDiffBean> old = mAdapter.getDatas();
 //        List<TestDiffBean> newList = new ArrayList<>(old);
 //        for(int i=5,count=10;i<count;i++){
@@ -314,7 +328,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
             public void run() {
                 ivInbitmap.requestLayout();
             }
-        },3000);
+        }, 3000);
     }
 
     private File newFile;

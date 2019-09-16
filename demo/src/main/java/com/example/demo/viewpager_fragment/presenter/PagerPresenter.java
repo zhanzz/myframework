@@ -21,7 +21,7 @@ import io.reactivex.disposables.Disposable;
  * description：
  */
 public class PagerPresenter extends BasePresenter<IPagerView> {
-    public final static int PAGE_SIZE=5;
+    public final static int PAGE_SIZE=10;
     private int pageIndex = 1;
     private String id;
     private ArrayList<PresellBean.PresellProduct> mData;
@@ -36,7 +36,7 @@ public class PagerPresenter extends BasePresenter<IPagerView> {
     }
 
     private void getProducts(boolean isLoading){
-        final Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("pageSize",PAGE_SIZE);
         params.put("startPage",pageIndex);
         params.put("activityId",id);

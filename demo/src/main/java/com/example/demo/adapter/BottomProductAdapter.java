@@ -82,9 +82,9 @@ public class BottomProductAdapter extends DelegateAdapter.Adapter<ViewHolder>{
 //            diffResult.dispatchUpdatesTo(this);
 
             mList.addAll(list);
-            notifyItemRangeInserted(mList.size()-list.size(),list.size());
+//            notifyItemRangeInserted(mList.size()-list.size(),list.size());
 
-            //notifyDataSetChanged();
+            notifyDataSetChanged();
         }
     }
 

@@ -1,17 +1,17 @@
 package com.framework.common.retrofit;
 
-import android.util.Log;
-
 import com.framework.common.data.Result;
+import com.framework.common.data.operation.UserOperation;
 import com.framework.common.exception.ApiException;
 import com.framework.common.exception.CustomException;
+import com.framework.common.manager.EventBusUtils;
+import com.framework.common.manager.Events;
+
 import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.exceptions.CompositeException;
 import io.reactivex.exceptions.Exceptions;
 import io.reactivex.internal.disposables.DisposableHelper;
-import io.reactivex.plugins.RxJavaPlugins;
 /**
  * Subscriber基类,可以在这里处理client网络连接状况
  * （比如没有，没有4g，没有联网，加载框处理等）
@@ -25,6 +25,7 @@ public  abstract class ApiSubscriber<R> extends AtomicReference<Disposable> impl
             try {
                 onFail(CustomException.handleException(e));
             } catch (Throwable t) {
+                t.printStackTrace();
             }
         }
     }
@@ -33,16 +34,20 @@ public  abstract class ApiSubscriber<R> extends AtomicReference<Disposable> impl
     public void onNext(Result<R> data) {
         if (!isDisposed()) {
             try {
-                if(data == null)
+                if(data == null){
+                    onFail(new ApiException(CustomException.EMPTY_DATA,"返回数据为空"));
                     return;
-                Result baseResp = data;
-                int code = baseResp.getCode();
-
+                }
+                int code = data.getCode();
                 if(isBusinessSuccess(code)){
-                    R model = (R) baseResp.getData();
-                    onSuccess(model,baseResp.getCode(),baseResp.getMessage());
+                    R model = data.getData();
+                    onSuccess(model,data.getCode(),data.getMessage());
                 }else{
-                    onFail(new ApiException(code,baseResp.getMessage()));
+                    if(isLoginExpired(code)&& UserOperation.getInstance().isLogin()){
+                        UserOperation.getInstance().setToken("");
+                        EventBusUtils.post(new Events.LoginOut());
+                    }
+                    onFail(new ApiException(code,data.getMessage()));
                 }
             } catch (Throwable e) {
                 Exceptions.throwIfFatal(e);
@@ -50,6 +55,10 @@ public  abstract class ApiSubscriber<R> extends AtomicReference<Disposable> impl
                 onError(e);
             }
         }
+    }
+
+    private boolean isLoginExpired(int code) {
+        return code==5;
     }
 
     @Override

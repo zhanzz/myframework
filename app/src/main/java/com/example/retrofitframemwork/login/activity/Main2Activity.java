@@ -25,7 +25,7 @@ import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.login.adapter.TestAdapter;
 import com.example.retrofitframemwork.login.presenter.TestPresenter;
 import com.example.retrofitframemwork.login.view.ITestView;
-import com.example.retrofitframemwork.utils.Events;
+import com.framework.common.manager.Events;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.framework.common.adapter.BaseAdapter;
@@ -122,7 +122,6 @@ public class Main2Activity extends BaseActivity implements ITestView {
         mAdapter.setRefreshListener(new BaseAdapter.RefreshListener() {
             @Override
             public void onRefresh() {
-                EventBusUtils.post(new Events.LoginOut());
                 mPresenter.refreshData(false);
             }
 

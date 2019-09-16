@@ -18,6 +18,13 @@
         android:layout_height="wrap_content"
         android:text="我是4jump"/>
 
+    <ImageView
+        android:id="@+id/iv_matrix"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:scaleType="matrix"
+        android:src="@drawable/ic_empty_product" />
+
     <androidx.slidingpanelayout.widget.SlidingPaneLayout
         android:id="@+id/slidingPanelLayout"
         android:layout_width="match_parent"
@@ -50,4 +57,22 @@
             android:text="这是内容"
             android:textSize="24sp" />
     </androidx.slidingpanelayout.widget.SlidingPaneLayout>
+
+    <com.example.retrofitframemwork.widget.TestViewDrag
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="我是one"
+            android:background="#ff0"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="我是two"
+            android:background="#f0f"/>
+    </com.example.retrofitframemwork.widget.TestViewDrag>
 </LinearLayout>

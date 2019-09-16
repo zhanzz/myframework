@@ -2,10 +2,16 @@ package com.example.demo.vlayout.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.view.View;
+
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.android.vlayout.DelegateAdapter;
+import com.alibaba.android.vlayout.LayoutViewFactory;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
+import com.alibaba.android.vlayout.layout.BaseLayoutHelper;
 import com.example.demo.R;
 import com.example.demo.R2;
 import com.example.demo.adapter.BannerAdapter;
@@ -13,6 +19,7 @@ import com.example.demo.adapter.BottomProductAdapter;
 import com.example.demo.adapter.ColumAdapter;
 import com.example.demo.adapter.Constants;
 import com.example.demo.adapter.FloatAdapter;
+import com.example.demo.adapter.LoadMoreAdapter;
 import com.example.demo.adapter.MenuAdapter;
 import com.example.demo.adapter.OnePlusMoreAdapter;
 import com.example.demo.adapter.ScrollActAdapter;
@@ -20,6 +27,7 @@ import com.example.demo.adapter.ScrollTopAdapter;
 import com.example.demo.adapter.StikyAdapter;
 import com.example.demo.vlayout.presenter.StudyVlayoutPresenter;
 import com.example.demo.vlayout.view.IStudyVlayoutView;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.model.demo.ActivityBean;
@@ -42,6 +50,8 @@ public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutV
     DelegateAdapter delegateAdapter;
     RecyclerView.RecycledViewPool mScrollActViewPool;
     private BottomProductAdapter mBottomProductAdapter;
+    private LoadMoreAdapter mLoadMoreAdapter;
+    private ScrollTopAdapter mScrollTopAdapter;
     @Override
     public int getLayoutId() {
         return R.layout.activity_study_vlayout;
@@ -54,12 +64,20 @@ public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutV
 
 
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(this);
+        layoutManager.setLayoutViewFactory(new LayoutViewFactory() {
+            @Override
+            public View generateLayoutView(@NonNull Context context) {
+                return new SimpleDraweeView(context);
+            }
+        });
         recyclerView.setLayoutManager(layoutManager);
         RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
         viewPool.setMaxRecycledViews(Constants.TYPE_BOOTOM_PRODUCT, 10);
         recyclerView.setRecycledViewPool(viewPool);
 
         mBottomProductAdapter = new BottomProductAdapter();
+        mLoadMoreAdapter = new LoadMoreAdapter();
+        mScrollTopAdapter = new ScrollTopAdapter();
         delegateAdapter = new DelegateAdapter(layoutManager, true);
         recyclerView.setAdapter(delegateAdapter);
         mPresenter.getHomeData(true);
@@ -79,6 +97,18 @@ public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutV
             }
         });
         smartRefreshLayout.setEnableLoadMore(false);
+        mLoadMoreAdapter.setRequestLoadMoreListener(new LoadMoreAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                mPresenter.getMoreProducts();
+            }
+        });
+        mScrollTopAdapter.setActioinListener(new ScrollTopAdapter.ActionListener() {
+            @Override
+            public void onClickTop() {
+                recyclerView.scrollToPosition(0);
+            }
+        });
     }
 
     @Override
@@ -131,11 +161,13 @@ public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutV
                     break;
             }
         }
-        smartRefreshLayout.setEnableLoadMore(true);
+        mLoadMoreAdapter.setLoadMoreEnable(true);
+        //smartRefreshLayout.setEnableLoadMore(true);
         adapters.add(mBottomProductAdapter);
-        smartRefreshLayout.resetNoMoreData();
-        adapters.add(12,new ScrollTopAdapter());
+        //smartRefreshLayout.resetNoMoreData();
+        adapters.add(12,mScrollTopAdapter);
         adapters.add(13,new StikyAdapter());
+        adapters.add(mLoadMoreAdapter);
 
         mPresenter.getMoreProducts();
         delegateAdapter.setAdapters(adapters);
@@ -146,15 +178,18 @@ public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutV
     public void onProductList(List<ProductBean> data, int mCurrentPage) {
         mBottomProductAdapter.addProduct(data,mCurrentPage);
         if(data.size()<mPresenter.PAGE_SIZE){
-            smartRefreshLayout.finishLoadMoreWithNoMoreData();
+            //smartRefreshLayout.finishLoadMoreWithNoMoreData();
+            mLoadMoreAdapter.loadMoreEnd(false);
         }else{
-            smartRefreshLayout.finishLoadMore(true);
+            //smartRefreshLayout.finishLoadMore(true);
+            mLoadMoreAdapter.loadMoreComplete();
         }
     }
 
     @Override
     public void onProductFail(int mCurrentPage) {
-        smartRefreshLayout.finishLoadMore(false);
+        //smartRefreshLayout.finishLoadMore(false);
+        mLoadMoreAdapter.loadMoreFail();
     }
 
     public static void start(Context context) {

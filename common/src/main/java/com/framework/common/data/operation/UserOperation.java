@@ -1,8 +1,8 @@
-package com.example.retrofitframemwork.data;
+package com.framework.common.data.operation;
 
-import com.framework.common.base_mvp.BasePresenter;
+import android.text.TextUtils;
+
 import com.framework.common.data.sharedPreference.BasePrefDao;
-import com.framework.common.manager.NetWorkManager;
 import com.framework.model.UserBean;
 import com.framework.model.UserEntity;
 
@@ -17,7 +17,8 @@ public class UserOperation extends BasePrefDao<UserEntity> {
         super(CACHE_NAME,1);
     }
 
-    private static UserOperation instance;
+    private volatile static UserOperation instance;
+    private UserEntity mUserEntity;
 
     public static UserOperation getInstance() {
         if (instance == null) {
@@ -30,11 +31,38 @@ public class UserOperation extends BasePrefDao<UserEntity> {
         return instance;
     }
 
+    @Override
+    public UserEntity getData() {
+        if(mUserEntity==null){
+            mUserEntity = super.getData();
+        }
+        if(mUserEntity==null){
+            mUserEntity = new UserEntity();
+        }
+        return mUserEntity;
+    }
+
+    @Override
+    public void setData(UserEntity data) {
+        mUserEntity = data;
+        super.setData(data);
+    }
+
     public String getToken() {
         UserEntity entity = getData();
         if(entity!=null){
             return entity.getToken();
         }
         return "";
+    }
+
+    public boolean isLogin(){
+        return !TextUtils.isEmpty(getData().getToken());
+    }
+
+    public void setToken(String token) {
+        UserEntity entity = getData();
+        entity.setToken(token);
+        setData(entity);
     }
 }

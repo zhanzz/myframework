@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.slidingpanelayout.widget.SlidingPaneLayout;
 
@@ -24,6 +25,8 @@ public class Main4Activity extends BaseActivity implements IMain4View {
     Button btn4jump;
     @BindView(R.id.slidingPanelLayout)
     SlidingPaneLayout slidingPanelLayout;
+    @BindView(R.id.iv_matrix)
+    ImageView ivMatrix;
     private Main4Presenter mPresenter;
 
     @Override
@@ -50,7 +53,6 @@ public class Main4Activity extends BaseActivity implements IMain4View {
 
             }
         });
-
     }
 
     @Override
@@ -66,13 +68,6 @@ public class Main4Activity extends BaseActivity implements IMain4View {
         return mPresenter;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
-
     @OnClick(R.id.btn_4jump)
     public void onClick() {
         Main2Activity.start(this);
@@ -81,5 +76,12 @@ public class Main4Activity extends BaseActivity implements IMain4View {
     public static void start(Context context) {
         Intent starter = new Intent(context, Main4Activity.class);
         context.startActivity(starter);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

@@ -12,6 +12,7 @@ import com.facebook.datasource.DataSubscriber;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.info.ImagePerfData;
 import com.facebook.drawee.backends.pipeline.info.ImagePerfDataListener;
+import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -20,6 +21,7 @@ import com.facebook.imagepipeline.common.RotationOptions;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.image.CloseableBitmap;
 import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.facebook.imagepipeline.request.Postprocessor;
@@ -56,6 +58,25 @@ public class FrescoUtils {
         }
     }
 
+    public static void showImage(String url, SimpleDraweeView draweeView, int width, int height,BaseControllerListener<ImageInfo> listener){
+        if(!TextUtils.isEmpty(url)) {
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+                    .setRotationOptions(RotationOptions.autoRotate())
+                    .setResizeOptions(new ResizeOptions(width, height))
+                    .build();
+
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setAutoPlayAnimations(true)
+                    .setOldController(draweeView.getController())
+                    .setControllerListener(listener)
+                    .build();
+            draweeView.setController(controller);
+        }else {
+            draweeView.setImageURI(Uri.EMPTY);
+        }
+    }
+
 
     /**
      * 宽高的单位是px
@@ -69,7 +90,7 @@ public class FrescoUtils {
     }
 
     /**
-     * 使用七牛的图片，不需要宽高
+     * 不使用七牛的图片，不需要宽高
      * @param url
      * @param draweeView
      */

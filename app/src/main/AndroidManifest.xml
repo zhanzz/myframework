@@ -35,15 +35,23 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".login.activity.Main2Activity"
             android:launchMode="singleTask" />
-        <activity android:name=".login.activity.Main3Activity" />
+        <activity android:name=".login.activity.Main3Activity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="xxx"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="testscheme"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

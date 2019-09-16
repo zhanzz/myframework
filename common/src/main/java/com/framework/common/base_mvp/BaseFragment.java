@@ -30,6 +30,7 @@ import io.reactivex.ObservableTransformer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
+import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -39,7 +40,7 @@ import io.reactivex.subjects.PublishSubject;
  */
 public abstract class BaseFragment extends Fragment implements IBaseView, View.OnClickListener {
     private Unbinder unbinder;
-    public final PublishSubject<ActivityLifeCycleEvent> lifecycleSubject = PublishSubject.create();
+    public final BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
     private FrameLayout mContainer;
     private CompositeDisposable mCompositeDisposable;
 
@@ -54,6 +55,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView, View.O
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mContainer.addView(rootView, params);
         unbinder = ButterKnife.bind(this, mContainer);
+        resetCompositeDisposable();
         return mContainer;
     }
 
@@ -208,6 +210,13 @@ public abstract class BaseFragment extends Fragment implements IBaseView, View.O
     public Boolean addCompositeDisposable(Disposable disposable) {
         getCompositeDisposable().add(disposable);
         return true;
+    }
+
+    private void resetCompositeDisposable() {
+        if(mCompositeDisposable!=null){
+            mCompositeDisposable.dispose();
+            mCompositeDisposable = null;
+        }
     }
 
     @Override

@@ -21,11 +21,14 @@ import com.example.demo.R2;
 import com.example.demo.viewpager_fragment.activity.BrowsePhotoActivity;
 import com.example.demo.viewpager_fragment.adapter.TestSaveAdapter;
 import com.example.demo.viewpager_fragment.presenter.PagerPresenter;
+import com.example.demo.viewpager_fragment.presenter.TestPagerPresenter;
 import com.example.demo.viewpager_fragment.view.IPagerView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.framework.common.adapter.BaseAdapter;
 import com.framework.common.base_mvp.BaseFragment;
 import com.framework.common.base_mvp.BasePresenter;
+import com.framework.common.base_mvp.IPageBaseView;
+import com.framework.common.data.LoadType;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.ViewUtil;
 import com.framework.model.demo.PresellBean;
@@ -37,32 +40,32 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-public class PagerFragment extends BaseFragment implements IPagerView {
+public class PagerFragment extends BaseFragment implements IPageBaseView<PresellBean> {
     @BindView(R2.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R2.id.smartRefreshLayout)
     SmartRefreshLayout smartRefreshLayout;
     private TestSaveAdapter mAdapter;
-    private PagerPresenter mPresenter;
+    private TestPagerPresenter mPresenter;
     private RecyclerView.RecycledViewPool mRecyclerViewPool;
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("mData", (Serializable) mAdapter.getData());
-        outState.putInt("pageIndex",mPresenter.getPageIndex());
+        outState.putInt("pageIndex",mPresenter.getCurrentPage());
     }
 
     @Override
     protected void getSavedInstanceState(Bundle savedInstanceState) {
         ArrayList<PresellBean.PresellProduct> data = (ArrayList<PresellBean.PresellProduct>) savedInstanceState.getSerializable("mData");
         mPresenter.setData(data);
-        mPresenter.setPageIndex(savedInstanceState.getInt("pageIndex",1));
+        mPresenter.setCurrentPage(savedInstanceState.getInt("pageIndex",1));
     }
 
     @Override
     protected BasePresenter getPresenter() {
         if(mPresenter==null){
-            mPresenter = new PagerPresenter();
+            mPresenter = new TestPagerPresenter(10);
         }
         return mPresenter;
     }
@@ -71,6 +74,7 @@ public class PagerFragment extends BaseFragment implements IPagerView {
     public void getParamData(Bundle bundle) {
         mPresenter.setId(bundle.getString("id"));
         if(ListUtils.isEmpty(mPresenter.getData())){
+            mPresenter.setCurrentPage(2);
             mPresenter.setData((ArrayList<PresellBean.PresellProduct>) bundle.getSerializable("productList"));
         }
     }
@@ -94,7 +98,7 @@ public class PagerFragment extends BaseFragment implements IPagerView {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setRecycledViewPool(mRecyclerViewPool);
         if (ListUtils.isEmpty(mPresenter.getData())) {//数据为空发起网络请求
-            mPresenter.refreshData(true);
+            mPresenter.getFirst(LoadType.LOAD);
         }else{
             mAdapter.setNewData(mPresenter.getData());
             recyclerView.setAdapter(mAdapter);
@@ -107,12 +111,12 @@ public class PagerFragment extends BaseFragment implements IPagerView {
         mAdapter.setRefreshListener(new BaseAdapter.RefreshListener() {
             @Override
             public void onRefresh() {
-                mPresenter.refreshData(false);
+                mPresenter.getFirst(LoadType.NONE);
             }
 
             @Override
             public void onLoadMore() {
-                mPresenter.getMoreList();
+                mPresenter.getMore();
             }
         });
 
@@ -143,16 +147,16 @@ public class PagerFragment extends BaseFragment implements IPagerView {
     }
 
     @Override
-    public void onProductList(List<PresellBean.PresellProduct> list, int pageIndex) {
-        mAdapter.setOrAddData(list,pageIndex,mPresenter.PAGE_SIZE);
+    public void onPageData(PresellBean data, int currentPage, int pageSize) {
+        mAdapter.setOrAddData(data.getProductList(),currentPage,pageSize);
         if(recyclerView.getAdapter()==null){
             recyclerView.setAdapter(mAdapter);
         }
     }
 
     @Override
-    public void onFailList(int pageIndex) {
-        mAdapter.loadMoreFail(pageIndex);
+    public void onPageFail(int code, String msg, int currentPage) {
+        mAdapter.loadMoreFail(currentPage);
         if(ListUtils.isEmpty(mAdapter.getData())){
             showErrorView();
         }
@@ -160,7 +164,7 @@ public class PagerFragment extends BaseFragment implements IPagerView {
 
     @Override
     public void reloadData() {
-        mPresenter.refreshData(true);
+        mPresenter.getFirst(LoadType.LOAD);
     }
 
     public void setRecyclerViewPool(RecyclerView.RecycledViewPool recyclerViewPool) {

@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.LayoutHelper;
 import com.alibaba.android.vlayout.layout.SingleLayoutHelper;
+import com.example.demo.R;
 import com.example.demo.widget.IndicatorView;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.UIHelper;
@@ -59,6 +60,7 @@ public class MenuAdapter extends DelegateAdapter.Adapter <MenuAdapter.MenuViewHo
         helper.setBgColor(0xffffffff);
         helper.setPadding(UIHelper.dip2px(10), UIHelper.dip2px(8),UIHelper.dip2px(10), 0);
         helper.setAspectRatio(rate);
+        helper.setLayoutViewHelper(new BgListener("res:///"+ R.drawable.menu_bg,UIHelper.getDisplayWidth(), (int) (UIHelper.getDisplayWidth()/rate)));
         return helper;
     }
 

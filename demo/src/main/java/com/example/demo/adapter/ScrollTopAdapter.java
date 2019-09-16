@@ -42,6 +42,14 @@ public class ScrollTopAdapter extends DelegateAdapter.Adapter<ScrollTopAdapter.F
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         viewHolder.itemView.setLayoutParams(params);
         ((ImageView)viewHolder.itemView).setImageResource(R.drawable.ic_scroll_to_top);
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.onClickTop();
+                }
+            }
+        });
     }
 
     @Override
@@ -59,5 +67,15 @@ public class ScrollTopAdapter extends DelegateAdapter.Adapter<ScrollTopAdapter.F
         public FixImageViewHolder(@NonNull View itemView) {
             super(itemView);
         }
+    }
+
+    public void setActioinListener(ActionListener listener){
+        mListener = listener;
+    }
+
+    private ActionListener mListener;
+
+    public interface ActionListener{
+        void onClickTop();
     }
 }

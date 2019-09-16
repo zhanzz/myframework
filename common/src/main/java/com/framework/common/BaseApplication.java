@@ -10,8 +10,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.content.pm.SigningInfo;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkRequest;
+import android.os.Build;
 import android.os.Bundle;
+
 import androidx.multidex.MultiDex;
+
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -26,6 +31,7 @@ import com.facebook.imagepipeline.listener.RequestLoggingListener;
 import com.framework.common.loading_view.CustomRefreshHeader;
 import com.framework.common.manager.FrescoMemoryManager;
 import com.framework.common.manager.NetWorkManager;
+import com.framework.common.receiver.INetChange;
 import com.framework.common.receiver.NetChangeReceiver;
 import com.framework.common.callBack.EmptyActivityLifecycleCallbacks;
 import com.framework.common.utils.ListUtils;
@@ -55,15 +61,17 @@ import java.util.Set;
  */
 public class BaseApplication extends Application {
     private static BaseApplication mInstance;
-    public static BaseApplication getApp(){
+
+    public static BaseApplication getApp() {
         return mInstance;
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
         mInstance = this;
         //避免多进程多次初始化应用
-        if(TextUtils.equals(getProcessName(this),getPackageName())){
+        if (TextUtils.equals(getProcessName(this), getPackageName())) {
             init();
             //设置全局的Header构建器
             SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
@@ -83,14 +91,57 @@ public class BaseApplication extends Application {
             });
             initFresco();
             //配置eventbus 只在DEBUG模式下，抛出异常，便于自测，同时又不会导致release环境的app崩溃
-            if(BuildConfig.DEBUG_ENVIRONMENT){
+            if (BuildConfig.DEBUG_ENVIRONMENT) {
                 EventBus.builder().throwSubscriberException(true).installDefaultEventBus();
             }
-            NetChangeReceiver receiver = new NetChangeReceiver();
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-            registerReceiver(receiver, intentFilter);
-            registerActivityLifecycleCallbacks(new MyLifeCallBack());
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+                manager.registerDefaultNetworkCallback(new ConnectivityManager.NetworkCallback() {
+                    @Override
+                    public void onLost(Network network) {
+                        onNetWorkChange(false);
+                    }
+
+                    @Override
+                    public void onAvailable(Network network) {
+                        onNetWorkChange(true);
+                    }
+                });
+            }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+                manager.requestNetwork(new NetworkRequest.Builder().build(),
+                        new ConnectivityManager.NetworkCallback() {
+                            @Override
+                            public void onAvailable(Network network) {
+                                onNetWorkChange(true);
+                            }
+
+                            @Override
+                            public void onLost(Network network) {
+                                onNetWorkChange(false);
+                            }
+                        });
+            }else{
+                NetChangeReceiver receiver = new NetChangeReceiver();
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+                registerReceiver(receiver, intentFilter);
+                registerActivityLifecycleCallbacks(new MyLifeCallBack());
+            }
+        }
+    }
+
+    private void onNetWorkChange(boolean hasNet) {
+        Activity activity = com.framework.common.manager.ActivityManager.getInstance().getLastActivity();
+        if(activity instanceof INetChange){
+            INetChange iNetChange = (INetChange) activity;
+            if (hasNet) {
+                iNetChange.onNetChange(true);
+            } else {
+                iNetChange.onNetChange(false);
+            }
         }
     }
 
@@ -107,15 +158,15 @@ public class BaseApplication extends Application {
                 .newBuilder(this, NetWorkManager.getOkHttpClient())
                 .setDownsampleEnabled(true)//向下采样
                 .setMemoryTrimmableRegistry(FrescoMemoryManager.getInstance());
-        if(BuildConfig.DEBUG_ENVIRONMENT){
+        if (BuildConfig.DEBUG_ENVIRONMENT) {
             builder1.setRequestListeners(requestListeners);
             FLog.setMinimumLoggingLevel(FLog.VERBOSE);
         }
         ImagePipelineConfig config = builder1.build();
-        Fresco.initialize(this,config);
+        Fresco.initialize(this, config);
     }
 
-    public void init(){
+    public void init() {
 
     }
 
@@ -146,7 +197,7 @@ public class BaseApplication extends Application {
         }
     }
 
-    private void checkSign(){
+    private void checkSign() {
         PackageInfo pkgInfo;
         try {
             pkgInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
@@ -164,8 +215,8 @@ public class BaseApplication extends Application {
                 e.printStackTrace();
             }
         }
-        if(!ListUtils.isEmpty(shas)){
-            if(!shas.contains("kRZ4/I7w9OYdkQvsyU6SDnkNXzw=")){ //不包含我们的签名，则退出应用
+        if (!ListUtils.isEmpty(shas)) {
+            if (!shas.contains("kRZ4/I7w9OYdkQvsyU6SDnkNXzw=")) { //不包含我们的签名，则退出应用
 
             }
         }

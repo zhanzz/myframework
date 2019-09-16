@@ -2,6 +2,8 @@ package com.framework.common.net;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.Nullable;
+
 import com.framework.common.BaseApplication;
 import com.framework.common.BuildConfig;
 import com.framework.common.base_mvp.IBaseView;
@@ -11,6 +13,7 @@ import com.framework.common.callBack.RxNetCallBack;
 import com.framework.common.data.ActivityLifeCycleEvent;
 import com.framework.common.data.LoadType;
 import com.framework.common.data.Result;
+import com.framework.common.data.operation.UserOperation;
 import com.framework.common.exception.ApiException;
 import com.framework.common.exception.CustomException;
 import com.framework.common.image_util.Compressor;
@@ -40,7 +43,11 @@ public class RxNet {
     /**
      * 一般请求，返回数据带有body
      */
-    public static <T> Disposable request(Observable<Result<T>> observable, final IBaseView view, final LoadType loadType, final RxNetCallBack<T> callBack) {
+    public static @Nullable
+    <T> Disposable request(Observable<Result<T>> observable, final IBaseView view, final LoadType loadType, final RxNetCallBack<T> callBack) {
+        if(loadType.ordinal()>2 && !UserOperation.getInstance().isLogin()){
+            return null;
+        }
         if (loadType==LoadType.LOAD) {
             view.showLoading();
         }else if(loadType==LoadType.LOAD_DIALOG){
