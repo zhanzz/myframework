@@ -29,7 +29,8 @@
             android:visibility="visible"
             android:id="@+id/stickyHeadContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp">
             <include layout="@layout/item_contact_head"/>
         </com.oubowu.stickyitemdecoration.StickyHeadContainer>
     </FrameLayout>
