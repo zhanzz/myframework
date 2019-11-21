@@ -2,8 +2,10 @@ package com.example.retrofitframemwork.login.activity;
 
 import android.animation.TimeInterpolator;
 import android.animation.TypeEvaluator;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.login.adapter.TestAdapter;
 import com.example.retrofitframemwork.login.presenter.TestPresenter;
 import com.example.retrofitframemwork.login.view.ITestView;
+import com.example.retrofitframemwork.receiver.StaticBroadCastReceiver;
 import com.framework.common.manager.Events;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.BasePostprocessor;
@@ -64,7 +67,7 @@ public class Main2Activity extends BaseActivity implements ITestView {
     EditText testEt;
     private TestPresenter mPresenter;
     HeaderAndFooterWrapper mHeaderAndFooterAdapter;
-
+    boolean change;
     @Override
     public int getLayoutId() {
         return R.layout.activity_main2;
@@ -77,6 +80,7 @@ public class Main2Activity extends BaseActivity implements ITestView {
 
     @Override
     public void bindData() {
+        registerReceiver(true);
         LogUtil.e("bindData");
         //refreshLayout.setFitsSystemWindows(true);
         //mAdapter.setNewData(data);
@@ -109,6 +113,23 @@ public class Main2Activity extends BaseActivity implements ITestView {
 
         llSearch.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
+
+    private void registerReceiver(boolean isRegister) {
+        if(isRegister){
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("com.frameWork.test");
+            LocalBroadcastManager.getInstance(this).registerReceiver(receiver,filter);
+        }else {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        }
+    }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            abortBroadcast();
+        }
+    };
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -231,10 +252,24 @@ public class Main2Activity extends BaseActivity implements ITestView {
 //            }
 //        }).start();
         //Main3Activity.start(this);
+        /**
+         * （BroadCastReceiver）在清单文件中声明了组件，则可以使用显示或隐式启动，否则只有隐式启动
+         */
+        //Intent intent = new Intent();
+        //intent.setAction("com.frameWork.test");
+        /*设置了显示，动态注册无法接收
+         */
+        //intent.setClass(this, MainActivity.MyBroadCastReciver.class);
+        //LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        //sendBroadcast(intent);
         Intent intent = new Intent();
         intent.setAction("com.frameWork.test");
-        //intent.setClass(this, MainActivity.MyBroadCastReciver.class);//设置了显示，动态注册无法接收
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        //if(change){
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        //}else {
+            //sendBroadcast(intent);
+        //}
+        change = !change;
     }
 
     /**
@@ -309,5 +344,11 @@ public class Main2Activity extends BaseActivity implements ITestView {
 
     public boolean isMainThread() {
         return Looper.getMainLooper() == Looper.myLooper();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        registerReceiver(false);
     }
 }

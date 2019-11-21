@@ -60,7 +60,11 @@ public class MenuAdapter extends DelegateAdapter.Adapter <MenuAdapter.MenuViewHo
         helper.setBgColor(0xffffffff);
         helper.setPadding(UIHelper.dip2px(10), UIHelper.dip2px(8),UIHelper.dip2px(10), 0);
         helper.setAspectRatio(rate);
-        helper.setLayoutViewHelper(new BgListener("res:///"+ R.drawable.menu_bg,UIHelper.getDisplayWidth(), (int) (UIHelper.getDisplayWidth()/rate)));
+        String url = mItemBean.getBackgroundImgUrl();
+        if(TextUtils.isEmpty(url)){
+            url = "res:///"+ R.drawable.menu_bg;//测试背景url
+        }
+        helper.setLayoutViewHelper(new BgListener(url,UIHelper.getDisplayWidth(), (int) (UIHelper.getDisplayWidth()/rate)));
         return helper;
     }
 

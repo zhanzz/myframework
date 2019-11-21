@@ -1,0 +1,79 @@
+[1/12] Building C object CMakeFiles/bspatch.dir/bspatch.c.o
+[2/12] Building C object CMakeFiles/bspatch.dir/source/bzlib.c.o
+[3/12] Building C object CMakeFiles/bspatch.dir/source/blocksort.c.o
+[4/12] Building C object CMakeFiles/bspatch.dir/source/bsdiff.c.o
+[5/12] Building C object CMakeFiles/bspatch.dir/source/compress.c.o
+[6/12] Building C object CMakeFiles/bspatch.dir/source/decompress.c.o
+[7/12] Building C object CMakeFiles/bspatch.dir/source/crctable.c.o
+[8/12] Building CXX object CMakeFiles/bspatch.dir/source/err.cpp.o
+[9/12] Building C object CMakeFiles/bspatch.dir/source/huffman.c.o
+[10/12] Building CXX object CMakeFiles/bspatch.dir/Patch.cpp.o
+[11/12] Building C object CMakeFiles/bspatch.dir/source/randtable.c.o
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source\bsdiff.c:271:43: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'const char *' [-Wint-conversion]
+                errx(1, "BZ2_bzWriteOpen, bz2err = %d", bz2err);
+                                                        ^~~~~~
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source/../header/err.h:10:42: note: passing argument to parameter here
+void errx(int, const char *, const char *);
+                                         ^
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source\bsdiff.c:337:41: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'const char *' [-Wint-conversion]
+                                errx(1, "BZ2_bzWrite, bz2err = %d", bz2err);
+                                                                    ^~~~~~
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source/../header/err.h:10:42: note: passing argument to parameter here
+void errx(int, const char *, const char *);
+                                         ^
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source\bsdiff.c:342:41: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'const char *' [-Wint-conversion]
+                                errx(1, "BZ2_bzWrite, bz2err = %d", bz2err);
+                                                                    ^~~~~~
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source/../header/err.h:10:42: note: passing argument to parameter here
+void errx(int, const char *, const char *);
+                                         ^
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source\bsdiff.c:347:41: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'const char *' [-Wint-conversion]
+                                errx(1, "BZ2_bzWrite, bz2err = %d", bz2err);
+                                                                    ^~~~~~
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source/../header/err.h:10:42: note: passing argument to parameter here
+void errx(int, const char *, const char *);
+                                         ^
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source\bsdiff.c:356:44: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'const char *' [-Wint-conversion]
+                errx(1, "BZ2_bzWriteClose, bz2err = %d", bz2err);
+                                                         ^~~~~~
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source/../header/err.h:10:42: note: passing argument to parameter here
+void errx(int, const char *, const char *);
+                                         ^
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source\bsdiff.c:365:43: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'const char *' [-Wint-conversion]
+                errx(1, "BZ2_bzWriteOpen, bz2err = %d", bz2err);
+                                                        ^~~~~~
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source/../header/err.h:10:42: note: passing argument to parameter here
+void errx(int, const char *, const char *);
+                                         ^
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source\bsdiff.c:368:39: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'const char *' [-Wint-conversion]
+                errx(1, "BZ2_bzWrite, bz2err = %d", bz2err);
+                                                    ^~~~~~
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source/../header/err.h:10:42: note: passing argument to parameter here
+void errx(int, const char *, const char *);
+                                         ^
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source\bsdiff.c:371:44: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'const char *' [-Wint-conversion]
+                errx(1, "BZ2_bzWriteClose, bz2err = %d", bz2err);
+                                                         ^~~~~~
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source/../header/err.h:10:42: note: passing argument to parameter here
+void errx(int, const char *, const char *);
+                                         ^
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source\bsdiff.c:380:43: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'const char *' [-Wint-conversion]
+                errx(1, "BZ2_bzWriteOpen, bz2err = %d", bz2err);
+                                                        ^~~~~~
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source/../header/err.h:10:42: note: passing argument to parameter here
+void errx(int, const char *, const char *);
+                                         ^
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source\bsdiff.c:383:39: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'const char *' [-Wint-conversion]
+                errx(1, "BZ2_bzWrite, bz2err = %d", bz2err);
+                                                    ^~~~~~
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source/../header/err.h:10:42: note: passing argument to parameter here
+void errx(int, const char *, const char *);
+                                         ^
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source\bsdiff.c:386:44: warning: incompatible integer to pointer conversion passing 'int' to parameter of type 'const char *' [-Wint-conversion]
+                errx(1, "BZ2_bzWriteClose, bz2err = %d", bz2err);
+                                                         ^~~~~~
+E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\source/../header/err.h:10:42: note: passing argument to parameter here
+void errx(int, const char *, const char *);
+                                         ^
+11 warnings generated.
+[12/12] Linking CXX shared library E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\src\main\jniLibs\x86\libbspatch.so

@@ -1,0 +1,23 @@
+# ninja log v5
+67	855	0	CMakeFiles/bspatch.dir/source/crctable.c.o	efb47bb8d08f82ad
+75	959	0	CMakeFiles/bspatch.dir/source/randtable.c.o	d6a8b2fa76f56d45
+83	1101	0	CMakeFiles/bspatch.dir/Patch.cpp.o	5847cac833d998cb
+50	1180	0	CMakeFiles/bspatch.dir/bspatch.c.o	c6601c870c73f9fd
+42	1185	0	CMakeFiles/bspatch.dir/source/bsdiff.c.o	905e09f2d6ac459a
+856	1185	0	CMakeFiles/bspatch.dir/source/err.cpp.o	b48808c77a3aa15c
+91	1187	0	CMakeFiles/bspatch.dir/source/huffman.c.o	eebc53bc6aac92e9
+35	1347	0	CMakeFiles/bspatch.dir/source/bzlib.c.o	9bcbbcf39bc8baa0
+26	1434	0	CMakeFiles/bspatch.dir/source/blocksort.c.o	98dbc355ef737774
+106	1569	0	CMakeFiles/bspatch.dir/source/compress.c.o	de3a23fafcccdf90
+58	2700	0	CMakeFiles/bspatch.dir/source/decompress.c.o	cdb73a5550e16ddd
+2700	3432	0	E:/rn_study/rxjava_retorfit/android/demo/build/intermediates/cmake/release/obj/arm64-v8a/libbspatch.so	648f57327303d456
+2	4229	0	CMakeFiles/bspatch.dir/bspatch.c.o	c6601c870c73f9fd
+4172	4366	0	CMakeFiles/bspatch.dir/bzip/randtable.c.o	de4f73e61da9fcb4
+4160	4367	0	CMakeFiles/bspatch.dir/bzip/crctable.c.o	1292c66fbf3f324d
+1467	4672	0	CMakeFiles/bspatch.dir/Patch.cpp.o	5847cac833d998cb
+4141	4740	0	CMakeFiles/bspatch.dir/bzip/huffman.c.o	80a20ff9cec94360
+4126	4828	0	CMakeFiles/bspatch.dir/bzip/bzlib.c.o	1c5804d84ef1a35e
+4133	4968	0	CMakeFiles/bspatch.dir/bzip/blocksort.c.o	8984630cbbc1cdfe
+4192	5097	0	CMakeFiles/bspatch.dir/bzip/compress.c.o	ba380b565ff11943
+4151	5967	0	CMakeFiles/bspatch.dir/bzip/decompress.c.o	3ae6102db433b0db
+5967	6184	0	E:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/jniLibs/arm64-v8a/libbspatch.so	df61f42345e36799

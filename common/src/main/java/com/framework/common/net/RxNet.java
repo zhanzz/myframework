@@ -16,13 +16,14 @@ import com.framework.common.data.Result;
 import com.framework.common.data.operation.UserOperation;
 import com.framework.common.exception.ApiException;
 import com.framework.common.exception.CustomException;
+import com.framework.common.image_select.utils.FileManager;
 import com.framework.common.image_util.Compressor;
-import com.framework.common.manager.CacheDirManager;
 import com.framework.common.callBack.LoadCallBack;
 import com.framework.common.manager.NetWorkManager;
 import com.framework.common.retrofit.ApiSubscriber;
 import com.framework.common.retrofit.SchedulerProvider;
 import com.framework.common.BaseApi;
+import com.framework.common.utils.Platform;
 
 import java.util.Map;
 
@@ -83,31 +84,28 @@ public class RxNet {
             view.hideLoadingDialog();
         }
     }
-
     /**
      * 下载
      */
 
     public static Disposable downLoadFile(String url, final FileCallBack callBack) {
-        return NetWorkManager.getInstance().getRetorfit(BuildConfig.GLOBAL_HOST).create(BaseApi.class)
+        DownLoadObserver observer = new DownLoadObserver<ResponseBody>(callBack) {
+            @Override
+            protected void onFail(final ApiException ex) {
+                Platform.get().defaultCallbackExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        callBack.onFail(ex);
+                    }
+                });
+            }
+        };
+        NetWorkManager.getInstance().getRetorfit(BuildConfig.GLOBAL_HOST).create(BaseApi.class)
                 .downloadFile(url)
                 .subscribeOn(SchedulerProvider.getInstance().io())
                 .observeOn(SchedulerProvider.getInstance().io())
-                .subscribe(new Consumer<ResponseBody>() {
-                    @Override
-                    public void accept(ResponseBody responseBody){
-                        if (callBack != null) {
-                            callBack.saveFile(responseBody);
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable){
-                        if (callBack != null) {
-                            callBack.onFail(throwable);
-                        }
-                    }
-                });
+                .subscribe(observer);
+        return observer;
     }
 
     /**
@@ -125,7 +123,7 @@ public class RxNet {
                 .setQuality(80)
                 .setConfig(Bitmap.Config.RGB_565)
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                .setDestinationDirectoryPath(CacheDirManager.getTempFileDir().getAbsolutePath())
+                .setDestinationDirectoryPath(FileManager.getTempFileDir().getAbsolutePath())
                 .compressToFileAsObservable(params);
 
         UploadOnSubscribe uploadOnSubscribe = new UploadOnSubscribe();
@@ -152,22 +150,15 @@ public class RxNet {
                 if(callBack!=null){
                     callBack.parseBody(t);
                 }
-                CacheDirManager.deleteTempFile();
+                FileManager.deleteTempFile();
             }
 
             @Override
-            public void onError(Throwable e) {
-                super.onError(e);
+            protected void onFail(ApiException ex) {
                 if(callBack!=null){
-                    callBack.onFail(e.getMessage());
+                    callBack.onFail(ex.getMessage());
                 }
-                CacheDirManager.deleteTempFile();
-            }
-
-            @Override
-            public void dispose() {
-                super.dispose();
-                CacheDirManager.deleteTempFile();
+                FileManager.deleteTempFile();
             }
         };
         Observable.merge(Observable.create(uploadOnSubscribe),observable)

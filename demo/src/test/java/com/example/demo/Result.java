@@ -6,6 +6,16 @@ package com.example.demo;
  * description：
  */
 public class Result<T> {
+   public String result;
    public int code;
+   private boolean isGiveaway;
    public T data;
+
+   public boolean isGiveaway() {
+      return isGiveaway;
+   }
+
+   public void setGiveaway(boolean giveaway) {
+      isGiveaway = giveaway;
+   }
 }

@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.core.util.Pools;
+import androidx.databinding.DataBindingUtil;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,16 +40,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.demo.contact.activity.PhoneListActivity;
+import com.example.demo.db.activity.TestSqliteDataBaseActivity;
+import com.example.demo.incremental_updating.activity.PatchActivity;
+import com.example.demo.incremental_updating.activity.TestAddActivity;
+import com.example.demo.pagelist.activity.PageListActivity;
+import com.example.demo.some_test.activity.ActivityPermissionActivity;
 import com.example.demo.some_test.activity.TestDiffAndHandlerActivity;
+import com.example.demo.study_bluetooth.activity.BlueToothActivity;
 import com.example.demo.viewpager_fragment.activity.PageFragmentActivity;
 import com.example.demo.vlayout.activity.StudyVlayoutActivity;
 import com.example.demo.widget.TwoLevelRefreshHeader;
+import com.example.demo.window.activity.StudyWindowActivity;
 import com.example.reactnative.home.activity.RnMainActivity;
 import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.TestDialogFragment;
 import com.example.retrofitframemwork.login.LoginPresenter;
 import com.example.retrofitframemwork.login.adapter.HomeAdapter;
 import com.example.retrofitframemwork.login.view.ILoginView;
+import com.example.retrofitframemwork.receiver.StaticBroadCastReceiver;
 import com.example.retrofitframemwork.update.activity.UpDateActivity;
 import com.framework.common.BaseApplication;
 import com.framework.common.BuildConfig;
@@ -67,6 +76,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.OnTwoLevelListener;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.TwoLevelHeader;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import java.io.File;
@@ -89,6 +99,9 @@ import io.reactivex.internal.functions.ObjectHelper;
 import io.reactivex.plugins.RxJavaPlugins;
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
+/**
+ * 当代码改了没有反应要clean一下
+ */
 public class MainActivity extends BaseActivity implements ILoginView {
 
     LoginPresenter mPresenter;
@@ -114,19 +127,31 @@ public class MainActivity extends BaseActivity implements ILoginView {
         super.getParamData(intent);
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState!=null){
+            String content = (String) savedInstanceState.get("save");
+            ToastUtil.show(this,content);
+        }
+    }
+
     private String[] menus = new String[]{"vlayout", "fragmentStatePager", "versionUpdate",
             "reactNative", "scan", "testSome", "takePicture","downloadApkAndInstall","selectImage"
-    ,"phones","testNetLink","startOtherActivity","SlidingPaneLayout","testArouter"};
+    ,"phones","testNetLink","startOtherActivity","SlidingPaneLayout","testArouter","sendBroadCast"
+            ,"blueTooth","testSqliteDatabase","studyWindow","add_update","permission","pageList"};
 
     @Override
     public void bindData() {
+        String str = "中国";
+        LogUtil.e(str);
         registerBroadcast();
         mAdapter = new HomeAdapter(recyclerView);
         mAdapter.setNewData(Arrays.asList(menus));
         mAdapter.setEnableLoadMore(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
-        OverScrollDecoratorHelper.setUpOverScroll(recyclerView,OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
+        //OverScrollDecoratorHelper.setUpOverScroll(recyclerView,OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
 
 //        String url = "file://asdfs/saf/test.txt";
 //        File file;
@@ -143,6 +168,13 @@ public class MainActivity extends BaseActivity implements ILoginView {
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString("save","mainactivity");
+        super.onSaveInstanceState(outState);
+        LogUtil.e("onSave="+getClass().getSimpleName());
+    }
+
+    @Override
     public void initEvent() {
         LogUtil.e("onCreate=" + getClass().getSimpleName() + ";pid=" + Process.myPid());
         //0.34
@@ -156,7 +188,8 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     PageFragmentActivity.start(getContext());
                     break;
                 case "versionUpdate":
-                    mPresenter.checkUpdate();
+                    requestNeedPermissions(120,Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    //requestNeedPermissions(120,Manifest.permission_group.STORAGE);
                     break;
                 case "reactNative":
                     RnMainActivity.start(getContext());
@@ -168,7 +201,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     TestDiffAndHandlerActivity.start(this);
                     break;
                 case "takePicture":
-                    requestNeedPermissions(Manifest.permission.CAMERA);
+                    requestNeedPermissions(121,Manifest.permission.CAMERA);
                     break;
                 case "downloadApkAndInstall":
                     mPresenter.downLoadFile();
@@ -187,9 +220,9 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     //ComponentName cn = new ComponentName("com.nanchen.rxjava2examples", "com.nanchen.rxjava2examples.module.rxjava2.operators.item.RxCreateActivity");
                     //intent.setComponent(cn);
                     /**
-                     * 隐式跳转总结： 清单文件中 action与category(默认的)必须存在，如果有data，则intent中必须相对应
+                     * 隐式跳转总结： https://developer.android.google.cn/guide/components/intents-filters
                      */
-                    Intent intent = new Intent("xxx");
+                    Intent intent = new Intent();
                     intent.setData(Uri.parse("testscheme:123456"));
                     startActivity(intent);
                     break;
@@ -218,17 +251,55 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     break;
                 case "testArouter":
                     // 1. 应用内简单的跳转(通过URL跳转在'进阶用法'中)
-                    ARouter.getInstance().build("/test/activity").navigation();
+                    //ARouter.getInstance().build("/test/activity").navigation();
                     // 2. 跳转并携带参数
 //                    ARouter.getInstance().build("/test/1")
 //                            .withLong("key1", 666L)
 //                            .withString("key3", "888")
 //                            .withObject("key4", new UserBean())
 //                            .navigation();
+                    Intent intent11 = new Intent();
+                    intent11.setData(Uri.parse("zhang://com.zhang.example/activityone?paramsone=8&parmastwo=asdf"));
+                    startActivity(intent11);
+                    break;
+                case "sendBroadCast":
+                    //Intent intent1 = new Intent("static_receiver");
+                    //intent1.setClass(this, StaticBroadCastReceiver.class);
+                    //sendBroadcast(intent1);
+                    ToastUtil.show(getContext(),"这是新包");
+                    break;
+                case "blueTooth":
+                    //BlueToothActivity.start(getContext());
+                    ToastUtil.show(getContext(),"我真真真的是新包");
+                    //TestAddActivity.start(getContext());
+                    break;
+                case "testSqliteDatabase":
+                    TestSqliteDataBaseActivity.start(getContext());
+                    break;
+                case "studyWindow":
+                    StudyWindowActivity.start(this);
+                    break;
+                case "add_update"://增量更新
+                    PatchActivity.start(getContext());
+                    break;
+                case "permission":
+                    ActivityPermissionActivity.start(getContext());
+                    break;
+                case "pageList":
+                    PageListActivity.start(getContext());
                     break;
             }
         });
-        twoLevelHeader.setOnTwoLevelListener(refreshLayout -> false);
+        smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                ToastUtil.show(getContext(),"刷新one");
+            }
+        });
+        twoLevelHeader.setOnTwoLevelListener(refreshLayout -> {
+            ToastUtil.show(getContext(),"刷新two");
+            return false;
+        });
     }
 
     @Override
@@ -373,34 +444,11 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void passPermission(@NonNull List<String> permissions, int requestCode) {
-        if (permissions.contains(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
+        if(requestCode==120 && permissions.contains(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            mPresenter.checkUpdate();
         }
-        if (permissions.contains(Manifest.permission.CAMERA)) {
-            File imagePath = new File(getCacheDir(), "images");
-            if (!imagePath.exists()) {
-                imagePath.mkdirs();
-            }
-            File newFile = new File(imagePath, "default_image.jpg");
-            Uri contentUri = null;
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                //android.os.FileUriExposedException
-                contentUri = Uri.fromFile(newFile);//7.0以上应用间只能用content:// 不管私有内部还是私有外部还是公有外部存储
-            } else {
-                contentUri = FileProvider.getUriForFile(this,
-                        BaseApplication.getApp().getPackageName() + ".FileProvider", newFile);
-            }
-            /**
-             * Uri.fromFile 对于拍照程序和安装程序都不可以我们应用访问私有内部存储
-             * FileProvider对于拍照程序可以我们应用访问私有内部存储（而安装程序却不可以）
-             */
-
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
-            // 授予目录临时共享权限 //Intent中migrateExtraStreamToClipData有自动添加这两个权限
-//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
-//                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            startActivityForResult(intent, 100);
+        if (requestCode==121&&permissions.contains(Manifest.permission.CAMERA)) {
+            takePhoto();
         }
 //        UserOperation opration = new UserOperation();
 //        long start = System.currentTimeMillis();
@@ -408,6 +456,40 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //            opration.setCacheWithoutKeyAsy(content+i);
 //        }
 //        Log.e("zhang","userTime="+(System.currentTimeMillis()-start));
+    }
+
+    public void takePhoto(){
+        File imagePath = new File(getExternalCacheDir(), "images");
+        if (!imagePath.exists()) {
+            imagePath.mkdirs();
+        }
+        File newFile = new File(imagePath, "default_image.jpg");
+        Uri contentUri = null;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            //android.os.FileUriExposedException
+            contentUri = Uri.fromFile(newFile);
+        } else {
+            //7.0以上应用间只能用content:// 不管私有内部还是私有外部还是公有外部存储
+            contentUri = FileProvider.getUriForFile(this,
+                    BaseApplication.getApp().getPackageName() + ".FileProvider", newFile);
+        }
+        /**
+         * Uri.fromFile 对于拍照程序和安装程序都不可以我们应用访问私有内部存储
+         * FileProvider对于拍照程序可以我们应用访问私有内部存储
+         *
+         * 所有android设备都有两个文件存储区域：内部存储和外部存储。
+         * 这些名字来源于android的早期，当时大多数设备都提供内置的非易失性存储器（内部存储器），
+         * 以及可移动存储介质，如micro-sd卡（外部存储器）。
+         * 许多设备现在将永久存储空间划分为单独的“内部”和“外部”分区。因此，即使没有可移动存储介质，
+         * 这两个存储空间始终存在，而且无论外部存储是否可移动，API行为都是相同的。
+         */
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+        // 授予目录临时共享权限 //Intent中migrateExtraStreamToClipData有自动添加这两个权限
+//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+//                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        startActivityForResult(intent, 100);
     }
 
     @Override
@@ -446,13 +528,16 @@ public class MainActivity extends BaseActivity implements ILoginView {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case 100:
-                    File imagePath = new File(getCacheDir(), "images");
+                    File imagePath = new File(getExternalCacheDir(), "images");
                     if (!imagePath.exists()) {
                         imagePath.mkdirs();
                     }
                     File newFile = new File(imagePath, "default_image.jpg");
                     Bitmap bitmap = BitmapFactory.decodeFile(newFile.getAbsolutePath());
-                    image.setImageBitmap(bitmap);
+                    if(bitmap!=null){
+                        ToastUtil.show(getContext(),"bitmap有值");
+                    }
+                    //image.setImageBitmap(bitmap);
                     break;
                 case 200:
                     List<String> photoPath = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
@@ -498,13 +583,15 @@ public class MainActivity extends BaseActivity implements ILoginView {
     private void registerBroadcast() {
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.frameWork.test");
+        //可以共用同一个mReciver
         mReciver = new MyBroadCastReciver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReciver, filter);
+        registerReceiver(mReciver,filter);
 
         mDownReciver = new CompleteReceiver();
         //getName ==>com.example.retrofitframemwork.login.activity.MainActivity$CompleteReceiver
         //getSimpleName ==> CompleteReceiver
-        LogUtil.e("zhang",mDownReciver.getClass().getName());
+        //LogUtil.e("zhang",mDownReciver.getClass().getName());
         registerReceiver(mDownReciver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
@@ -524,6 +611,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
     @Override
     protected void onDestroy() {
         if (mReciver != null) {
+            unregisterReceiver(mReciver);
             LocalBroadcastManager.getInstance(this).unregisterReceiver(mReciver);
         }
         if (mDownReciver != null) {

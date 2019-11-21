@@ -12,8 +12,6 @@ import com.framework.common.adapter.CommonAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import leakcanary.internal.activity.ui.SimpleListAdapter;
 /**
  * @author zhangzhiqiang
  * @date 2019/9/7.

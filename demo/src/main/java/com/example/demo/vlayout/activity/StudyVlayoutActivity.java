@@ -30,6 +30,7 @@ import com.example.demo.vlayout.view.IStudyVlayoutView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
+import com.framework.common.utils.UIHelper;
 import com.framework.model.demo.ActivityBean;
 import com.framework.model.demo.ProductBean;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -58,10 +59,14 @@ public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutV
     }
 
     @Override
+    protected boolean isFitSystemBar() {
+        return true;
+    }
+
+    @Override
     public void bindData() {
         mScrollActViewPool = new RecyclerView.RecycledViewPool();
         mScrollActViewPool.setMaxRecycledViews(0, 10);
-
 
         VirtualLayoutManager layoutManager = new VirtualLayoutManager(this);
         layoutManager.setLayoutViewFactory(new LayoutViewFactory() {
@@ -70,6 +75,7 @@ public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutV
                 return new SimpleDraweeView(context);
             }
         });
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
         viewPool.setMaxRecycledViews(Constants.TYPE_BOOTOM_PRODUCT, 10);
@@ -85,6 +91,17 @@ public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutV
 
     @Override
     public void initEvent() {
+        smartRefreshLayout.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                smartRefreshLayout.getRefreshHeader().getView().setPadding(0, UIHelper.getStatusHeight(), 0, 0);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+
+            }
+        });
         smartRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {

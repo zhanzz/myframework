@@ -9,7 +9,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Base64;
 import com.framework.common.BaseApplication;
-import com.framework.common.manager.CacheDirManager;
+import com.framework.common.image_select.utils.FileManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -147,7 +147,7 @@ public class PictureUtils {
     }
 
     public static Uri createImageFile(String fileName) {
-        File storageDir = CacheDirManager.getCameraCacheDir();
+        File storageDir = FileManager.getCameraCacheDir();
         File image = null;
         try {
             image = new File(storageDir, fileName);

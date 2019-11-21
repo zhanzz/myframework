@@ -2,11 +2,77 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.demo">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <!--读取手机联系人-->
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 添加悬浮窗所需权限 -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- 读取手机联系人 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <permission
+        android:name="com.zhang.one"
+        android:label="将要启动android"
+        android:protectionLevel="dangerous" />
+    <permission
+        android:name="com.zhang.access.provider"
+        android:label="用于访问读写provider的权限" />
+    <permission
+        android:name="com.zhang.access.provider.read"
+        android:label="用于访问读provider的权限" />
+    <permission
+        android:name="com.zhang.access.provider.write"
+        android:label="用于访问写provider的权限" />
 
     <application>
+        <activity
+            android:name=".pagelist.activity.PageListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity android:name=".lifecycle.LifecycleActivity" />
+        <activity
+            android:name=".some_test.activity.UriActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait">
+
+            <!-- zhang://com.zhang.example/activityone?paramsone=8&parmastwo=asdf -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="com.zhang.example"
+                    android:scheme="zhang" />
+            </intent-filter>
+        </activity> <!-- android:exported="true"其它应用启动时就不会有java.lang.SecurityException -->
+        <!-- android:permission="com.zhang.one"其它应用要启动需要在清单文件中添加 <uses-permission android:name="com.zhang.one"/> -->
+        <activity
+            android:name=".some_test.activity.ActivityPermissionActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true"
+            android:permission="com.zhang.one"
+            android:screenOrientation="portrait"
+            android:taskAffinity="com.zhang.haha" />
+        <activity
+            android:name=".incremental_updating.activity.TestAddActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".incremental_updating.activity.PatchActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".window.activity.StudyWindowActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".db.activity.TestSqliteDataBaseActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".study_bluetooth.activity.BlueToothActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".contact.activity.PhoneListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -49,6 +115,16 @@
             android:screenOrientation="portrait" />
 
         <service android:name=".service.ForegroundService" />
+        <service android:name=".window.WindowService.WindowService" />
+
+        <provider
+            android:name=".some_test.study_content_provider.MyContentProvider"
+            android:authorities="com.zhang.studentProvider"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:permission="com.zhang.access.provider"
+            android:readPermission="com.zhang.access.provider.read"
+            android:writePermission="com.zhang.access.provider.write" />
     </application>
 
 </manifest>

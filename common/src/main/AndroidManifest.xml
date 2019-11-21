@@ -12,11 +12,18 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <application>
+        <!--// Sanity check our security
+        if (info.exported) {
+            throw new SecurityException("Provider must not be exported");
+        }
+        if (!info.grantUriPermissions) {
+            throw new SecurityException("Provider must grant uri permissions");
+        }-->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.FileProvider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"> <!--允许intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)对外授权-->
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>

@@ -40,7 +40,8 @@ public class TestInputFragment extends BaseDialog {
     protected void setLayoutParams(WindowManager.LayoutParams params) {
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         params.height = UIHelper.dip2px(100);
-        params.gravity = Gravity.BOTTOM;
+        params.gravity = Gravity.CENTER;
+        params.windowAnimations = 0;
     }
 
     @Override

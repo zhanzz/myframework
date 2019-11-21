@@ -7,6 +7,9 @@ import com.framework.common.exception.CustomException;
 import com.framework.common.manager.EventBusUtils;
 import com.framework.common.manager.Events;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -41,6 +44,15 @@ public  abstract class ApiSubscriber<R> extends AtomicReference<Disposable> impl
                 int code = data.getCode();
                 if(isBusinessSuccess(code)){
                     R model = data.getData();
+                    if(model==null){
+                        ParameterizedType type = (ParameterizedType)getClass().getGenericSuperclass();
+                        Type clazz = type.getActualTypeArguments()[0];
+                        if(clazz instanceof Class){
+                            ((Class)clazz).isAssignableFrom(Object.class);
+                        }else if(clazz instanceof ParameterizedType){
+
+                        }
+                    }
                     onSuccess(model,data.getCode(),data.getMessage());
                 }else{
                     if(isLoginExpired(code)&& UserOperation.getInstance().isLogin()){

@@ -32,6 +32,16 @@ public class ContactAdapter extends BaseMultiItemQuickAdapter<ContactBean, BaseV
         switch (item.itemType) {
             case ContactBean.TYPE_HEAD:
                 helper.setText(R.id.tv_name,String.valueOf(item.category));
+                helper.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LogUtil.e("before position="+helper.getAdapterPosition());
+                        getData().add(helper.getLayoutPosition(),new ContactBean("xx","xxx",'x'));
+                        notifyItemInserted(helper.getLayoutPosition());
+                        //helper.getAdapterPosition() ，正在删除或调用dataSetChanged后返回为-1
+                        LogUtil.e("after position="+helper.getLayoutPosition());
+                    }
+                });
                 break;
             case ContactBean.TYPE_NORMAL:
                 helper.setText(R.id.tv_phone,item.phone);

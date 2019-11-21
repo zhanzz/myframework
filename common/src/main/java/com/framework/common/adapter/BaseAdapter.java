@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.entity.IExpandable;
 import com.chad.library.adapter.base.loadmore.LoadMoreView;
 import com.framework.common.R;
 import com.framework.common.loading_view.SimpleLoadMoreView;
@@ -19,6 +20,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 /**
@@ -33,6 +35,10 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
     private boolean isRecyclerViewHolder=true;//是否回收header footer
     private RecyclerView mRecyclerView;
     private LoadMoreView mLoadMoreView;
+
+    public BaseAdapter(RecyclerView recyclerView){
+        this(recyclerView,0);
+    }
 
     public BaseAdapter(RecyclerView recyclerView, int layoutResId) {
         super(layoutResId);
@@ -217,5 +223,32 @@ public abstract class BaseAdapter<T,K extends BaseViewHolder> extends BaseQuickA
             mLoadMoreView.setLoadMoreStatus(LoadMoreView.STATUS_DEFAULT);
             notifyItemChanged(getLoadMoreViewPosition());
         }
+    }
+
+    public void notifyExpandDataChange(){
+        List<T> result = new ArrayList<>();
+        List<T> data = getData();
+        if(!ListUtils.isEmpty(data)){
+            for(T bean:data){
+                if(bean instanceof IExpandable){
+                    result.add(bean);
+                    IExpandable iExpandable = ((IExpandable) bean);
+                    if(iExpandable.isExpanded()&&!ListUtils.isEmpty(iExpandable.getSubItems())){
+                        result.addAll(((IExpandable) bean).getSubItems());
+                    }
+                }
+            }
+        }
+        setNewData(result);
+    }
+
+    /**
+     * Set whether to use empty view
+     *
+     * @param isUseEmpty
+     */
+    @Override
+    public void isUseEmpty(boolean isUseEmpty) {
+        super.isUseEmpty(isUseEmpty);
     }
 }

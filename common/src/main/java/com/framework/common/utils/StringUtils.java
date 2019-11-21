@@ -1,9 +1,20 @@
 package com.framework.common.utils;
 
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
+import com.framework.common.R;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -507,5 +518,41 @@ public class StringUtils {
     public static String formatData(long milliseconds){
         SimpleDateFormat sdf =   new SimpleDateFormat("-yyyy年MM月dd日-");
         return sdf.format(new Date(milliseconds));
+    }
+
+    public static void setListener(TextView tv, String content, final int color, String[] need_clicks,boolean isNeedUnderline,final View.OnClickListener listener) {
+        if (tv == null || TextUtils.isEmpty(content) || ListUtils.isEmpty(need_clicks)) {
+            return;
+        }
+        SpannableString builder = new SpannableString(content);
+        for (int i = 0, count = need_clicks.length; i < count; i++) {
+            String need_click = need_clicks[i];
+            int startIndex = content.indexOf(need_click);
+            int endIndex = startIndex + need_click.length();
+
+            builder.setSpan(new ForegroundColorSpan(color), startIndex,
+                    endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            //设置文本点击事件
+            final int finalI = i;
+            builder.setSpan(new ClickableSpan() {
+                                @Override
+                                public void updateDrawState(@NonNull TextPaint ds) {
+                                    super.updateDrawState(ds);
+                                    ds.setColor(color);//设置颜色
+                                    ds.setUnderlineText(false);//去掉下划线
+                                }
+
+                                @Override
+                                public void onClick(View widget) {
+                                    widget.setTag(R.id.click_position, finalI);
+                                    listener.onClick(widget);
+                                }
+                            }, startIndex, endIndex,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        tv.setHighlightColor(tv.getContext().getResources().getColor(android.R.color.transparent));//方法重新设置点击文字背景为透明色。
+        tv.setMovementMethod(LinkMovementMethod.getInstance());
+        tv.setText(builder);
     }
 }

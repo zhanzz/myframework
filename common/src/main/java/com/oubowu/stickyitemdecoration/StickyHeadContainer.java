@@ -35,12 +35,12 @@ public class StickyHeadContainer extends ViewGroup implements OnStickyChangeList
 
     public StickyHeadContainer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: 2017/1/9 屏蔽点击事件
-            }
-        });
+//        setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // TODO: 2017/1/9 屏蔽点击事件
+//            }
+//        });
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.example.retrofitframemwork;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.Feature;
 import com.example.demo.excption_handler.CrashHandler;
 import com.example.retrofitframemwork.interceptor.RequestInterceptor;
 import com.framework.common.BaseApplication;
@@ -15,6 +17,8 @@ import com.framework.common.manager.NetWorkManager;
 public class MainApplication extends BaseApplication{
     @Override
     public void init() {
+        //让String类型的值初始化为空字符串(对象中的其它初始化值将会失效)
+        JSON.DEFAULT_PARSER_FEATURE|= Feature.InitStringFieldAsEmpty.getMask();
         NetWorkManager.getInstance().init(new RequestInterceptor());
         CrashHandler.getInstance().init();
         if (BuildConfig.DEBUG_ENVIRONMENT) {           // 这两行必须写在init之前，否则这些配置在init过程中将无效

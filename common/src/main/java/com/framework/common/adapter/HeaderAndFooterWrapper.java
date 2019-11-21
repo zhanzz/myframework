@@ -533,9 +533,9 @@ public class HeaderAndFooterWrapper extends RecyclerView.Adapter<RecyclerView.Vi
         });
     }
 
-    private BaseAdapter.RefreshListener mRefreshListener;
+    private RefreshListener mRefreshListener;
 
-    public void setRefreshListener(BaseAdapter.RefreshListener refreshListener){
+    public void setRefreshListener(RefreshListener refreshListener){
         mRefreshListener = refreshListener;
     }
 

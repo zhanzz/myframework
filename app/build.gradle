@@ -4,6 +4,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.alibaba.arouter'
+apply plugin: 'com.mob.sdk'
 
 android {
     compileSdkVersion build_versions.target_sdk
@@ -14,6 +15,12 @@ android {
         versionCode build_versions.versionCode
         versionName build_versions.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk { //只添加以下架构的so库到lib中
+            abiFilters "armeabi"
+            abiFilters "armeabi-v7a"
+            abiFilters "arm64-v8a"
+            //abiFilters "x86"
+        }
         multiDexEnabled true
         def environment = project.NET_ENVIRONMENT
         switch (environment) {
@@ -59,12 +66,21 @@ android {
         }
     }
 
+    //配置版本类型
     buildTypes {
         release {
             zipAlignEnabled true
             shrinkResources false
             signingConfig signingConfigs.release
             minifyEnabled true //开启混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            zipAlignEnabled true
+            shrinkResources false
+            signingConfig signingConfigs.debug
+            minifyEnabled false //开启混淆
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -76,7 +92,7 @@ android {
 
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "app-" + NET_ENVIRONMENT + "-release.apk"
+            outputFileName = "app-" + NET_ENVIRONMENT +"-"+variant.buildType.name+".apk"
         }
     }
 }
@@ -90,10 +106,8 @@ dependencies {
     implementation project(':model')
     implementation project(':demo')
     implementation project(':reactnative')
-    implementation project(':study_gradle')
-    implementation "androidx.core:core-ktx:1.0.2"
+    implementation androidx_support.core
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin_version"
-    implementation 'com.github.bumptech.glide:glide:4.1.1'
     api 'com.sobot.chat:sobotsupport-glidev4:1.0.2'
     //arouter
     implementation "com.alibaba:arouter-api:$versions.arouter_api"

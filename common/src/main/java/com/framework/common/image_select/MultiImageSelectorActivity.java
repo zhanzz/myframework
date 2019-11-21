@@ -11,6 +11,8 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
 import com.framework.common.R;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
@@ -128,6 +130,11 @@ public class MultiImageSelectorActivity extends BaseActivity implements MultiIma
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.image_grid, Fragment.instantiate(this, MultiImageSelectorFragment.class.getName(), bundle))
                 .commitAllowingStateLoss();
+    }
+
+    @Override
+    public void failPermission(@NonNull List<String> permissions, int requestCode) {
+        finish();
     }
 
     @Override

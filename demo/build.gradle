@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion build_versions.target_sdk
@@ -9,6 +11,49 @@ android {
         targetSdkVersion build_versions.target_sdk
         versionCode build_versions.versionCode
         versionName build_versions.versionName
+
+        // defaultConfig中添加externalNativeBuild
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11"
+                abiFilters 'armeabi'
+                abiFilters "armeabi-v7a"
+                abiFilters "arm64-v8a"
+            }
+        }
+
+        //将库文件打包到项目中
+        sourceSets {
+            main {
+                //这里使用相对路径，相对于build.gradle的路径
+                jniLibs.srcDirs = ['src/main/cpp/libs']
+            }
+        }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"]
+            }
+        }
+    }
+
+    // android中添加externalNativeBuild
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
+    }
+
+    compileOptions {//使用JAVA8语法解析
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dataBinding {
+        enabled true
     }
 }
 
@@ -16,10 +61,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation androidx_support.appcompat
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation project(':common')
     implementation project(':model')
@@ -29,7 +75,17 @@ dependencies {
     }
     //https://github.com/youth5201314/banner
     implementation 'com.youth.banner:banner:1.4.10'
-    implementation 'com.kevin:common:1.1'
-    runtimeOnly 'com.kevin:common:1.0'
-    implementation 'com.glide.load:common:1.4'
+    //implementation 'com.kevin:common:1.1'
+    //runtimeOnly 'com.kevin:common:1.0'
+    //implementation 'com.glide.load:common:1.4'
+    //room
+    implementation "androidx.room:room-runtime:$versions.room_version"
+    annotationProcessor "androidx.room:room-compiler:$versions.room_version"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+    //page
+    implementation "androidx.paging:paging-runtime:$versions.paging_version"
+    testImplementation "androidx.paging:paging-common:$versions.paging_version"
+    implementation "androidx.paging:paging-rxjava2:$versions.paging_version"
+    //RxView
+    implementation 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
 }

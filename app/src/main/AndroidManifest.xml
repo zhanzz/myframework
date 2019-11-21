@@ -47,11 +47,20 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="xxx"/>
+                <action android:name="xxx"/> <!--如果该过滤器未列出任何操作，则 Intent 没有任何匹配项，
+                因此所有 Intent 均无法通过测试。但是，如果 Intent 未指定操作，
+                则只要过滤器内包含至少一项操作，就可以通过测试。-->
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:scheme="testscheme"/>
             </intent-filter>
         </activity>
+
+        <!--在后台时才有限制静态收不到通知-->
+        <receiver android:name=".receiver.StaticBroadCastReceiver">
+            <intent-filter>
+                <action android:name="static_receiver"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -14,6 +14,15 @@ public class User {
     String name;
     @JSONField(format = "MMM dd, yyyy h:mm:ss aa")
     Date date;
+    boolean needPrint;
+
+    public boolean isNeedPrint() {
+        return needPrint;
+    }
+
+    public void setNeedPrint(boolean needPrint) {
+        this.needPrint = needPrint;
+    }
 
     public Date getDate() {
         return date;

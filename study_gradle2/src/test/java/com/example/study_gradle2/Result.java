@@ -1,5 +1,8 @@
 package com.example.study_gradle2;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+
 /**
  * @author zhangzhiqiang
  * @date 2019/8/30.
@@ -7,7 +10,17 @@ package com.example.study_gradle2;
  */
 public class Result {
     int code;
-    String msg;
+    @JSONField(deserialize=false)
+    private final String msg="haha";
+    User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public int getCode() {
         return code;
@@ -19,9 +32,5 @@ public class Result {
 
     public String getMsg() {
         return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
     }
 }

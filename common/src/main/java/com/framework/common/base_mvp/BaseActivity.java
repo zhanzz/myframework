@@ -181,7 +181,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         if(mPresenters==null){
             mPresenters = new ArrayList<>();
         }
-        mPresenters.add(child);
+        if(child!=null){
+            mPresenters.add(child);
+        }
     }
 
     @Override

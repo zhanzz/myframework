@@ -27,3 +27,5 @@
 -keep class android.support.v7.widget.ChildHelper { *; }
 -keep class android.support.v7.widget.ChildHelper$Bucket { *; }
 -keep class android.support.v7.widget.RecyclerView$LayoutManager { *; }
+
+-keep class com.example.demo.incremental_updating.BsPatch { *; }

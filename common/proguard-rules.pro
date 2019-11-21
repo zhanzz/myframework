@@ -19,6 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+#-------------------------------------------self----------------------------------------------
+-keep class com.framework.common.data.Result{*;}
 #-------------------------------------------baseQuickAdapter----------------------------------------------
 -keep class com.chad.library.adapter.** {
 *;

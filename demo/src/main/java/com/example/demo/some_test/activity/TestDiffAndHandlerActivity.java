@@ -3,6 +3,7 @@ package com.example.demo.some_test.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,16 +14,26 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.os.Process;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.method.DigitsKeyListener;
 import android.transition.ChangeBounds;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,20 +44,26 @@ import androidx.core.content.FileProvider;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
 import com.example.demo.R2;
+import com.example.demo.incremental_updating.ApkUtils;
 import com.example.demo.keybord.fragment.TestInputFragment;
+import com.example.demo.pagelist.MyViewModel;
+import com.example.demo.pagelist.PostalCodeRepository;
 import com.example.demo.some_test.adapter.ListAdapter;
 import com.example.demo.some_test.adapter.TestDiffAdapter;
 import com.example.demo.some_test.presenter.TestDiffAndHandlerPresenter;
 import com.example.demo.some_test.view.ITestDiffAndHandlerView;
-import com.example.study_gradle.TestHas;
-import com.example.study_gradle2.TestGlideLoad;
+//import com.example.study_gradle.TestHas;
+//import com.example.study_gradle2.TestGlideLoad;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.framework.common.BaseApplication;
 import com.framework.common.base_mvp.BaseActivity;
@@ -54,19 +71,27 @@ import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.utils.FileUtils;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.LogUtil;
+import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.model.demo.TestDiffBean;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.attribute.PosixFileAttributes;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDiffAndHandlerView {
     @BindView(R2.id.btn_change)
@@ -89,8 +114,15 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
     ImageView ivInbitmap2;
     @BindView(R2.id.listView)
     ListView listView;
+    @BindView(R2.id.et_input)
+    EditText etInput;
+    @BindView(R2.id.linear_container)
+    LinearLayout linearContainer;
     private TestDiffAndHandlerPresenter mPresenter;
     private TestDiffAdapter mAdapter;
+    AlertDialog alertDialog;
+    private static String sStr;
+    private Disposable mDispose;
 
     @Override
     public int getLayoutId() {
@@ -98,7 +130,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
     }
 
     AdSwitchTask adSwitchTask;
-
+    MyViewModel myViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -106,6 +138,16 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         }
         super.onCreate(savedInstanceState);
         LogUtil.e("onCreate=" + getClass().getSimpleName() + ";pid=" + Process.myPid() + ";name=" + getAppName(this));
+        String content = getIntent().getStringExtra("content");
+        String content1 = getIntent().getStringExtra("content1");
+        /**
+         * app进程被回收，静态值不存在了，
+         * intent中的值还在,intent是启动此页面时的intent,后面的修改都无效，无法保存
+         */
+        LogUtil.e("静态值="+sStr+";intent="+content+";content1="+content1);
+        LogUtil.e("path", ApkUtils.getSourceApkPath(this,getPackageName()));
+        LogUtil.e("path",ApkUtils.getSourceApkPathTwo(this));
+        //LogUtil.e("path",ApkUtils.getSourceApkPathThree(this).toString());
         printMemory();
         getLifecycle().addObserver(new LifecycleObserver() {
 
@@ -133,18 +175,44 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
 
             }
         });
-        testBitmap();
+        test_Bitmap();
+
+//        etInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        //String digists = "0123456789abcdefghigklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        //etInput.setKeyListener(DigitsKeyListener.getInstance(digists));
+        //etInput.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+
+        etInput.setKeyListener(new DigitsKeyListener() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                return source;
+            }
+        });
+
+        myViewModel = new MyViewModel();
+        myViewModel.mediator.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                LogUtil.e("live","mediator="+s);
+            }
+        });
     }
+
     int a = android.R.drawable.arrow_down_float;
     Bitmap bitmap;
 
-    private void testBitmap() {
+    private void test_Bitmap() {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.RGB_565;
         bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_red_packet);
         ivInbitmap.setImageBitmap(bitmap);
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        LogUtil.e("onSave="+getClass().getSimpleName());
+    }
 
     /**
      * 获取当前进程的名字，一般就是当前app的包名
@@ -174,14 +242,15 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
 
     @Override
     public void bindData() {
-        TestGlideLoad load = new TestGlideLoad();
-        load.doTest();
-        final TestHas testHas = new TestHas();
-        showToast(testHas.hello());
+//        TestGlideLoad load = new TestGlideLoad();
+//        load.doTest();
+//        final TestHas testHas = new TestHas();
+//        showToast(testHas.hello());
         /**
          * 因此方法为底版本才存在，此模块引用了低版本的方法且编译时不会报错，
          * gradle打包时会使用最新版本的，
          * 所以运行时报java.lang.NoSuchMethodError: No virtual method world()
+         * class不会变
          */
         recyclerView.postDelayed(new Runnable() {
             @Override
@@ -213,6 +282,15 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         ivAnim.setImageURI("res:///" + R.drawable.menu_bg);
 
         listView.setAdapter(new ListAdapter());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        alertDialog = builder.setMessage("我是消息").setTitle("我是标题").create();
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //finish();
+            }
+        },3000);
     }
 
     private void testGhostView() {
@@ -283,6 +361,35 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
 //            }
 //        };
 //        helper.getWritableDatabase();
+        etInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                ToastUtil.show(getContext(),"s="+s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        mDispose = RxTextView.textChanges(etInput)
+                .skipInitialValue()
+                .debounce(1500, TimeUnit.MILLISECONDS) // 过滤掉发射频率小于2秒的发射事件
+                .onTerminateDetach()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<CharSequence>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull CharSequence o){
+                        ToastUtil.show(getContext(),"os="+o);
+                    }
+                });
     }
 
     @Override
@@ -293,14 +400,14 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         return mPresenter;
     }
 
-    @OnClick({R2.id.btn_change,R2.id.image})
+    @OnClick({R2.id.btn_change, R2.id.image})
     public void onClick(View view) {
         //switch (view.getId()){
-            //case R2.id.btn_change:
-                //break;
+        //case R2.id.btn_change:
+        //break;
         //}
-        TestInputFragment dialog = TestInputFragment.newInstance();
-        dialog.showNow(getSupportFragmentManager(),"");
+        //TestInputFragment dialog = TestInputFragment.newInstance();
+        //dialog.showNow(getSupportFragmentManager(), "");
 //        List<TestDiffBean> old = mAdapter.getDatas();
 //        List<TestDiffBean> newList = new ArrayList<>(old);
 //        for(int i=5,count=10;i<count;i++){
@@ -321,14 +428,70 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
 //        options2.inBitmap = bitmap;
 //        Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(),R.drawable.ic_empty_product);
 //        ivInbitmap2.setImageBitmap(bitmap2);
-        //requestNeedPermissions(Manifest.permission.CAMERA);
-        ivInbitmap.offsetLeftAndRight(60);
-        ivInbitmap.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ivInbitmap.requestLayout();
-            }
-        }, 3000);
+//        requestNeedPermissions(Manifest.permission.CAMERA);
+//        ivInbitmap.offsetLeftAndRight(60);
+//        ivInbitmap.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                ivInbitmap.requestLayout();//会移回原位置
+//            }
+//        }, 3000);
+        //alertDialog.show();//不会隐藏软件盘    AlertController-->setupView中有做处理
+        //TestInputFragment.newInstance().showNow(getSupportFragmentManager(),"testInput");//会自动隐藏软键盘
+
+//        HandlerThread thread = new MyHandlerThread("IntentService[" + "Aa" + "]");
+//        thread.start();
+//        LogUtil.e("zhang","执行了looper后"+thread.isAlive());//true
+//        Looper mServiceLooper = thread.getLooper();//会阻塞主线程
+//        LogUtil.e("zhang","执行了looper后");
+        //testException();
+//        Intent intent = new Intent();
+//        intent.putExtra("content","我是修改后的内容");
+//        setIntent(intent);
+        //getIntent().putExtra("content","我是修改后的内容");
+        //getIntent().putExtra("content1","我是修改后的内容1");
+        //one=false;two=true;three=false
+        //LogUtil.e("one="+btnChange.hasFocus()+";two="+btnChange.hasFocusable()+";three="+btnChange.isFocusableInTouchMode());
+        myViewModel.strLive.setValue("change");
+    }
+
+    private void testException(){
+        try{
+            String xx = null;
+            xx.length();
+        }catch (Throwable e){
+            onError(e);
+        }
+    }
+
+    private void onError(Throwable e) {
+        try{
+            acctep(e);
+        }catch (Throwable x){
+            LogUtil.e("zhang","error x");
+            x.printStackTrace();
+        }
+    }
+
+    private void acctep(Throwable e){
+        LogUtil.e("zhang","acctep e");
+    }
+
+    class MyHandlerThread extends HandlerThread{
+
+        public MyHandlerThread(String name) {
+            super(name);
+        }
+
+        @Override
+        public void run() {
+//            try {
+//                Thread.sleep(6000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            super.run();
+        }
     }
 
     private File newFile;
@@ -366,6 +529,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
             switch (requestCode) {
                 case 100:
                     if (newFile == null) {
+                        ToastUtil.show(this,"空的");
                         return;
                     }
                     image.setImageURI(Uri.fromFile(newFile));
@@ -423,7 +587,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         }
 
         @Override
-        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) { //不相同就会调用局部刷新
             // 当areItemsTheSame返回true时，我们还需要判断两个item的内容是否相同
             // 此处以User的age作为两个item内容是否相同的依据
             // 即返回两个user的age是否相同
@@ -433,6 +597,8 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
 
     public static void start(Context context) {
         Intent starter = new Intent(context, TestDiffAndHandlerActivity.class);
+        starter.putExtra("content","我是intent内容");
+        sStr = "我是中国人";
         context.startActivity(starter);
     }
 
@@ -440,6 +606,21 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
     protected void onDestroy() {
         LogUtil.e("调用了onDestroy=" + getClass().getSimpleName());
         super.onDestroy();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                    alertDialog.dismiss();//WindowManagerGlobal-->closeAllExceptView
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        //thread.start();
+        if(mDispose!=null){
+            mDispose.dispose();
+        }
     }
 
     private void printMemory() {

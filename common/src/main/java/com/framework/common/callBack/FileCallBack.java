@@ -36,7 +36,7 @@ public abstract class FileCallBack{
         byte[] buf = new byte[4096];
         int len = 0;
         FileOutputStream fos = null;
-        File file = null;
+        File tempFile = null;
         try {
             is = response.byteStream();
             final long total = response.contentLength();
@@ -47,11 +47,8 @@ public abstract class FileCallBack{
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-            file = new File(dir, destFileName);
-            if(file.exists()){//先清除旧的文件
-                file.delete();
-            }
-            fos = new FileOutputStream(file);
+            tempFile = File.createTempFile("tmep_",destFileName,dir);
+            fos = new FileOutputStream(tempFile);
             while ((len = is.read(buf)) != -1) {
                 sum += len;
                 fos.write(buf, 0, len);
@@ -67,8 +64,16 @@ public abstract class FileCallBack{
                 }
             }
             fos.flush();
-
-            final File finalFile = file;
+            File file = new File(dir, destFileName);
+            if(file.exists()){//先清除旧的文件
+                file.delete();
+            }
+            /**
+             * file对象代表一种虚拟路径  ,
+             * file.renameTo(file2),file本身表示的路径不会变，实际是file表示的真实文件名变成了file2的
+             */
+            tempFile.renameTo(file);
+            final File finalFile = file;//此处为file
             Platform.get().defaultCallbackExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -76,8 +81,8 @@ public abstract class FileCallBack{
                 }
             });
         } catch (final IOException e) {//发生异常了就删除这个文件
-            if(file!=null&&file.exists()){
-                file.delete();
+            if(tempFile!=null&&tempFile.exists()){
+                tempFile.delete();
             }
             Platform.get().defaultCallbackExecutor().execute(new Runnable() {
                 @Override
@@ -103,5 +108,7 @@ public abstract class FileCallBack{
      *
      * @param progress  [0,1]
      */
-    public abstract void inProgress(float progress, long total);
+    protected void inProgress(float progress, long total){
+
+    }
 }

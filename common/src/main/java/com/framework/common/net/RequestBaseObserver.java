@@ -1,37 +1,57 @@
 package com.framework.common.net;
 
+import com.framework.common.exception.ApiException;
+import com.framework.common.exception.CustomException;
+
+import java.util.concurrent.atomic.AtomicReference;
+
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.internal.disposables.DisposableHelper;
 
-public  abstract class RequestBaseObserver<V> implements Observer<Object>,Disposable{
+public  abstract class RequestBaseObserver<V> extends AtomicReference<Disposable> implements Observer<Object>,Disposable{
 
-    protected Disposable disposable;
-    private boolean isDisposable;
     public RequestBaseObserver() {}
 
     @Override
     public void onSubscribe(@NonNull Disposable d) {
-        this.disposable = d;
+        DisposableHelper.setOnce(this, d);
     }
 
     @Override
     public void onNext(Object t) {
-        if (disposable == null || !disposable.isDisposed()) {
+        if (!isDisposed()) {
             onSuccess((V)t);
         }
     }
 
     @Override
     public void onError(Throwable e) {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
+        if (!isDisposed()) {
+            lazySet(DisposableHelper.DISPOSED);
+            try {
+                onFail(CustomException.handleException(e));
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
         }
     }
 
+    /**
+     * 错误回调
+     */
+    protected abstract void onFail(ApiException ex);
+
     @Override
     public void onComplete() {
-
+        if (!isDisposed()) {
+            lazySet(DisposableHelper.DISPOSED);
+            try {
+                //onComplete.run();
+            } catch (Throwable e) {
+            }
+        }
     }
 
 
@@ -52,17 +72,12 @@ public  abstract class RequestBaseObserver<V> implements Observer<Object>,Dispos
 
     @Override
     public void dispose() {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
-        isDisposable = true;
+        DisposableHelper.dispose(this);
+        onFail(new ApiException(CustomException.DISPOSED,"操作已取消"));
     }
 
     @Override
     public boolean isDisposed() {
-        if (disposable != null) {
-            return disposable.isDisposed();
-        }
-        return isDisposable;
+        return get() == DisposableHelper.DISPOSED;
     }
 }

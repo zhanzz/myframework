@@ -109,20 +109,6 @@ public class BaseApplication extends Application {
                         onNetWorkChange(true);
                     }
                 });
-            }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-                manager.requestNetwork(new NetworkRequest.Builder().build(),
-                        new ConnectivityManager.NetworkCallback() {
-                            @Override
-                            public void onAvailable(Network network) {
-                                onNetWorkChange(true);
-                            }
-
-                            @Override
-                            public void onLost(Network network) {
-                                onNetWorkChange(false);
-                            }
-                        });
             }else{
                 NetChangeReceiver receiver = new NetChangeReceiver();
                 IntentFilter intentFilter = new IntentFilter();
