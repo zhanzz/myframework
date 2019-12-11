@@ -9,7 +9,7 @@ import java.util.Date;
  * @date 2019/9/5.
  * description：
  */
-public class User {
+public class User implements Cloneable{
     int age;
     String name;
     @JSONField(format = "MMM dd, yyyy h:mm:ss aa")

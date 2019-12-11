@@ -100,7 +100,8 @@
         <activity
             android:name=".viewpager_fragment.Main2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:exported="true"/>
         <activity
             android:name=".viewpager_fragment.activity.PageFragmentActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -112,7 +113,9 @@
         <activity
             android:name=".viewpager_fragment.activity.ExpandRecyclerViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:exported="true"/>
 
         <service android:name=".service.ForegroundService" />
         <service android:name=".window.WindowService.WindowService" />

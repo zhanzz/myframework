@@ -5,26 +5,33 @@ import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-
-import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.login.adapter.UpDateAdapter;
 import com.example.retrofitframemwork.login.service.UpdateService;
 import com.example.retrofitframemwork.update.presenter.UpDatePresenter;
 import com.example.retrofitframemwork.update.view.IUpDateView;
+import com.example.retrofitframemwork.update.worker.DownLoadWorker;
 import com.framework.common.BaseApplication;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
@@ -48,12 +55,18 @@ public class UpDateActivity extends BaseActivity implements IUpDateView {
     TextView tvUpdate;
     @BindView(R.id.tv_cancel)
     TextView tvCancel;
+    @BindView(R.id.tv_apk_tip)
+    TextView tvApkTip;
     private UpDatePresenter mPresenter;
     private VersionInfo mVersionInfo;
     public final static String APK_FILE_NAME = "framework_test.apk";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
         overridePendingTransition(R.anim.alpha_in, 0);
     }
 
@@ -81,6 +94,9 @@ public class UpDateActivity extends BaseActivity implements IUpDateView {
         recyclerView.setAdapter(new UpDateAdapter(mVersionInfo.getList()));
 
         setFinishOnTouchOutside(false);//点击空白处，窗体不关闭
+        if(mVersionInfo.isDownLoad()){
+            tvApkTip.setText("安装包已下载，可直接安装");
+        }
     }
 
     @Override
@@ -111,9 +127,49 @@ public class UpDateActivity extends BaseActivity implements IUpDateView {
                 finish();
                 break;
             case R.id.tv_cancel:
+                if (!mVersionInfo.isDownLoad()) {
+                    startWorker();
+                }
                 finish();
                 break;
         }
+    }
+
+    private void startWorker() {
+        ConfigOperation operation = new ConfigOperation();
+        cancelWorker();
+        File apkFileDir;
+        if (PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            apkFileDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        } else {
+            apkFileDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+        }
+        if (apkFileDir == null) {
+            ToastUtil.show(this, "存储不可用");
+            return;
+        }
+        File file = new File(apkFileDir, APK_FILE_NAME);
+        Data inputData = new Data.Builder()
+                .putString("filePath", file.getAbsolutePath())
+                .putString("downUrl", mVersionInfo.getUrl())
+                .build();
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)//不计费网络执行，比如wifi
+                .setRequiresBatteryNotLow(true)
+                .setRequiresStorageNotLow(true)
+                .build();
+
+        OneTimeWorkRequest request =
+                new OneTimeWorkRequest.Builder(DownLoadWorker.class)
+                        .setInputData(inputData)
+                        .setConstraints(constraints)
+                        .addTag("downLoadApk")
+                        .build();
+        ConfigBean bean = operation.getData();
+        bean.workerId = request.getId();
+        bean.version = mVersionInfo.getVersioncode();
+        operation.setData(bean);
+        WorkManager.getInstance(this).enqueue(request);
     }
 
     private void upDataByService() {
@@ -123,17 +179,17 @@ public class UpDateActivity extends BaseActivity implements IUpDateView {
         } else {
             apkFileDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
         }
-        if(apkFileDir==null){
-            ToastUtil.show(this,"存储不可用");
+        if (apkFileDir == null) {
+            ToastUtil.show(this, "存储不可用");
             return;
         }
         if (mVersionInfo.isDownLoad()) {
             installApk();
         } else {
             Intent intent = new Intent(this, UpdateService.class);
-            intent.putExtra(UpdateService.EXTRA_DIRECTORY,apkFileDir.getAbsolutePath());
-            intent.putExtra(UpdateService.EXTRA_FILE_NAME,APK_FILE_NAME);
-            intent.putExtra(UpdateService.EXTRA_URL,mVersionInfo.getUrl());
+            intent.putExtra(UpdateService.EXTRA_DIRECTORY, apkFileDir.getAbsolutePath());
+            intent.putExtra(UpdateService.EXTRA_FILE_NAME, APK_FILE_NAME);
+            intent.putExtra(UpdateService.EXTRA_URL, mVersionInfo.getUrl());
             startService(intent);
         }
     }
@@ -248,15 +304,22 @@ public class UpDateActivity extends BaseActivity implements IUpDateView {
     private void openSetting() {
         try {
             //Open the specific App Info page:
-            Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             intent.setData(Uri.parse("package:" + "com.android.providers.downloads"));
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
             //Open the generic Apps page:
-            Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS);
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS);
             startActivity(intent);
         }
+    }
+
+    /**
+     * 通过tag取消任务
+     */
+    private void cancelWorker() {
+        WorkManager.getInstance(this).cancelAllWorkByTag("downLoadApk");
     }
 
     public static void start(Context context, VersionInfo info) {

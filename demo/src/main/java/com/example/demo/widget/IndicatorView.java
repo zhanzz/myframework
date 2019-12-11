@@ -64,7 +64,7 @@ public class IndicatorView extends View {
     }
 
     /**
-     * 计算出bar的宽度比例
+     * 计算出bar的宽度比例  bar的长度为  extend/rang*视图的高
      * @param extent
      * @param range
      */

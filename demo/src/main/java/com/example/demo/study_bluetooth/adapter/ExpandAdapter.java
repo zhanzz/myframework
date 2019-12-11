@@ -67,4 +67,9 @@ public class ExpandAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Ba
     public void setHasStableIds(boolean hasStableIds) {
         super.setHasStableIds(hasStableIds);
     }
+
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+    }
 }

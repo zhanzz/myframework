@@ -60,4 +60,9 @@
         <!--背景是否模糊显示-->
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+    <style name="SplashTheme" parent="BaseTheme">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
 </resources>

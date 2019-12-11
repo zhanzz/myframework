@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.DownloadManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -234,20 +235,21 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //                        }
 //                    });
                     //Main4Activity.start(this);
-//                    Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-//                        @Override
-//                        public void uncaughtException(Thread t, Throwable e) {
-//                            LogUtil.e("zhang","线程自已的处理器"+e.getMessage());
-//                        }
-//                    });
-//                    try {
-//                        ObjectHelper.requireNonNull(null, "The mapper returned a null ObservableSource");
-//                    } catch (Throwable t) {
-//                        //Exceptions.throwIfFatal(t);
-//                        RxJavaPlugins.onError(new CompositeException(t, t));
-//                        t.printStackTrace();
-//                    }
+                    Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                        @Override
+                        public void uncaughtException(Thread t, Throwable e) {
+                            LogUtil.e("zhang","线程自已的处理器"+e.getMessage());
+                        }
+                    });
+                    try {
+                        ObjectHelper.requireNonNull(null, "The mapper returned a null ObservableSource");
+                    } catch (Throwable t) {
+                        //Exceptions.throwIfFatal(t);
+                        RxJavaPlugins.onError(new CompositeException(t, t));
+                        t.printStackTrace();
+                    }
                     Main4Activity.start(this);
+                    //Main2Activity.start(this);
                     break;
                 case "testArouter":
                     // 1. 应用内简单的跳转(通过URL跳转在'进阶用法'中)
@@ -343,6 +345,11 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //                Log.e("zhang", "fail:" + t.getMessage());
 //            }
 //        });
+        Intent setAlertIntent=new Intent(this,Main2Activity.class);
+        setAlertIntent.putExtra("try", "i'm just have a try");
+        PendingIntent pendingIntent=PendingIntent.getBroadcast(this, 0, setAlertIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent();
+        intent.putExtra("a",pendingIntent);
     }
 
 

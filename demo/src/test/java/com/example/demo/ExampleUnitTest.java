@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import android.content.Intent;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
@@ -9,6 +11,9 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.framework.common.data.ActivityLifeCycleEvent;
+import com.framework.common.exception.ApiException;
+import com.framework.common.exception.CustomException;
+import com.framework.common.retrofit.ApiSubscriber;
 import com.framework.common.utils.GsonUtils;
 import com.google.gson.Gson;
 import com.google.zxing.common.StringUtils;
@@ -16,12 +21,19 @@ import com.google.zxing.common.StringUtils;
 import org.json.JSONException;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -68,10 +80,15 @@ public class ExampleUnitTest {
     }
 
     @Test
+    public void testEnum(){
+        System.out.println(State.ONE instanceof Serializable);
+    }
+
+    @Test
     public void testFiled(){
-        Fater fater = new Son();
+        Son fater = new Son();
         //fater.setAge(40);
-        System.out.println(fater.getAge());
+        System.out.println(fater.getFAge());
     }
 
     private <T> T testInvoke(Class<T> clazz){
@@ -106,6 +123,7 @@ public class ExampleUnitTest {
         String[] xx = new String[]{"44","45"};
         String conent =  GsonUtils.parseToString(xx);
         System.out.println(conent);
+        System.out.println(String.format(Locale.CHINA,"剩余%ss",2000/1000));
     }
 
     public <T> List<T> getList(){
@@ -114,7 +132,7 @@ public class ExampleUnitTest {
 
     @Test
     public void testFormart(){
-        System.out.println(String.format("aa%s",null));
+        System.out.println(String.format("aa%s",""));
     }
 
     @Test
@@ -164,7 +182,7 @@ public class ExampleUnitTest {
     public void testEnumEquel(){
         //枚举是单实例的
         ActivityLifeCycleEvent aa = ActivityLifeCycleEvent.valueOf("DESTROY");
-        System.out.println(ActivityLifeCycleEvent.DESTROY.equals(aa));
+        System.out.println(aa==ActivityLifeCycleEvent.DESTROY);
         System.out.println(System.identityHashCode(ActivityLifeCycleEvent.DESTROY));
         System.out.println(System.identityHashCode(aa));//打印地址 十进制格式
     }
@@ -237,5 +255,76 @@ public class ExampleUnitTest {
             sb.append(" ");
         }
         System.out.println(sb.toString());
+    }
+
+    @Test //测试泛型
+    public void testClass(){
+        ApiSubscriber apiSubscriber = new ApiSubscriber<String>(){
+
+            @Override
+            protected void onFail(ApiException ex) {
+                System.out.println("onFail="+ex.getDisplayMessage());
+            }
+
+            @Override
+            public void onSuccess(String data, int code, String msg) {
+                System.out.println("onSuccess="+msg);
+            }
+        };
+        com.framework.common.data.Result<String> result = new com.framework.common.data.Result<>();
+        apiSubscriber.onNext(result);
+        System.out.println(apiSubscriber.getClass().getSuperclass());
+//        request(new CallBack<User>(){
+//            @Override
+//            public void haha() {
+//
+//            }
+//        });
+    }
+
+    public <T> void request(CallBack<T> callBack){
+        //Type entityClass =  ((ParameterizedType) callBack.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        Type type = callBack.getClass().getGenericInterfaces()[0];
+        System.out.println(type instanceof ParameterizedType);//true
+        Type type1 = ((ParameterizedType)type).getRawType();
+        Type type2 = ((ParameterizedType)type).getOwnerType();
+        Type type3 = ((ParameterizedType)type).getActualTypeArguments()[0];
+        //System.out.println(entityClass);
+        System.out.println(type);//com.example.demo.CallBack<com.example.demo.User>
+        System.out.println(type1);//interface com.example.demo.CallBack
+        System.out.println(type2);//null
+        System.out.println(type3);//class com.example.demo.User
+    }
+
+    @Test
+    public void testListCast(){
+        List<String> strings = new ArrayList<>();
+        strings.add("11");strings.add("22");
+
+        List<Object> objects = new ArrayList<>();
+        for(String str:strings){
+            objects.add(str);
+        }
+        for (Object object:objects){
+            System.out.println(object);
+        }
+        Son son = new Son();
+        son.setAge(15);
+        System.out.println(son.getAge());
+
+        Son cson = son.clone();
+        System.out.println(cson instanceof Son);
+    }
+
+    @Test
+    public void testSerisize(){
+//        UUID uuid = UUID.randomUUID();
+//        String str = GsonUtils.parseToString(uuid);
+//        System.out.println(str);
+//        UUID uuid1 = GsonUtils.parseFromString(str,UUID.class);
+//        System.out.println(uuid1);
+        File file = new File("cc/dd","aa.txt");
+        System.out.println(file.getName());//aa.txt
+        System.out.println(file.getParent());
     }
 }

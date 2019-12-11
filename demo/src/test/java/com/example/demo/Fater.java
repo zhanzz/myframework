@@ -5,7 +5,7 @@ package com.example.demo;
  * @date 2019/11/20.
  * description：
  */
-public class Fater {
+public class Fater implements Cloneable{
     public int age = 20;
 
     public int getAge() {
@@ -18,5 +18,15 @@ public class Fater {
 
     public int getFAge(){
         return age;
+    }
+
+    @Override
+    public Fater clone(){
+        try {
+            return (Fater) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return this;
     }
 }

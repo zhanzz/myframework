@@ -1,37 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.example.demo.widget.MySwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootSwipe"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.framework.common.widget.TitleView xmlns:title="http://schemas.android.com/apk/res-auto"
+    <com.example.demo.widget.MyLinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/linear_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_height"
-        title:title_name="权限" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_test_span"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp"/>
+        <com.framework.common.widget.TitleView xmlns:title="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_bar_height"
+            title:title_name="权限" />
 
-    <Button
-        android:id="@+id/btn_get_apk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="获取apk"/>
+        <TextView
+            android:id="@+id/tv_test_span"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp" />
 
-    <Button
-        android:id="@+id/btn_reload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="重新加载网页"/>
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="50dp"
+            android:layout_height="100dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:textSize="14sp"
+                android:textColor="#333"
+                android:textStyle="bold"
+                android:text="订单货款收入--结算中订单货款收入--结算中"
+                android:drawableRight="@drawable/selector_small_black_arrow"
+                android:drawablePadding="3dp"/>
+        </androidx.core.widget.NestedScrollView>
+        <TextView
+            android:id="@+id/tv_change_type"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="12dp"
+            android:textSize="14sp"
+            android:textColor="#333"
+            android:textStyle="bold"
+            android:text="订单货款收入--结算中"
+            android:drawableRight="@drawable/selector_small_black_arrow"
+            android:drawablePadding="3dp"/>
 
-    <WebView
-        android:id="@+id/webView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+        <Button
+            android:id="@+id/btn_get_apk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="获取apk" />
+
+        <Button
+            android:id="@+id/btn_reload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="重新加载网页" />
+
+        <FrameLayout
+            android:id="@+id/frame_click"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#ff0000">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:enabled="false"
+                android:text="点击我\n点击我" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:enabled="false"
+                android:text="点击我\n点击我"
+                android:textColor="#333"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <com.example.demo.widget.MySwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="#ff00ff"
+                android:text="haha" />
+        </com.example.demo.widget.MySwipeRefreshLayout>
+
+        <com.example.demo.widget.MyWebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.example.demo.widget.MyLinearLayout>
+</com.example.demo.widget.MySwipeRefreshLayout>

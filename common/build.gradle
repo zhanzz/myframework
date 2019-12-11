@@ -102,5 +102,7 @@ dependencies {
     api 'com.google.zxing:core:3.3.3' //二维码扫描 //3.4.0有bug 24api以下sort方法找不到
     api group: 'com.belerweb', name: 'pinyin4j', version: '2.5.1' //汉字转拼音
     api 'org.greenrobot:greendao:3.2.2'
-
+    //worker
+    api "androidx.work:work-runtime:$versions.work_version"
+    api "androidx.work:work-rxjava2:$versions.work_version"
 }

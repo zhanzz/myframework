@@ -95,7 +95,6 @@ public class BaseApplication extends Application {
                 EventBus.builder().throwSubscriberException(true).installDefaultEventBus();
             }
 
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
                 manager.registerDefaultNetworkCallback(new ConnectivityManager.NetworkCallback() {

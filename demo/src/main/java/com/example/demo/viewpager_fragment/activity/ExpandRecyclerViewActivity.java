@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Process;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.example.demo.widget.ActivityRefreshHeader;
 import com.example.demo.widget.MySmartRefreshLayout;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
+import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -49,6 +51,12 @@ public class ExpandRecyclerViewActivity extends BaseActivity implements IExpandR
 
     @Override
     public void bindData() {
+        /**
+         * 当前activity launchemode为singleTask  其它应用--》打开当应用标准activity(跟其它应用在同一个task）-->打开此activity  跟其它应用不再同一个task
+         * 当前activity launchemode为singleTask  其它应用-->打开此activity  跟其它应用不再同一个task
+         * 当前activity launchemode为singleTask  当前应用--》打开当应用标准activity(跟其它应用在同一个task）-->打开此activity  跟当前应用再同一个task
+         */
+        LogUtil.e("zhang", getClass().getSimpleName() + ";" + getTaskId() + ";pid=" + Process.myPid());
         //List<SectionEntity> list = mPresenter.getData();
         //SectionAdapter adapter = new SectionAdapter(list);
         List<MultiItemEntity> multi = mPresenter.getMultiData();

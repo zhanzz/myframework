@@ -44,13 +44,27 @@ public  abstract class ApiSubscriber<R> extends AtomicReference<Disposable> impl
                 int code = data.getCode();
                 if(isBusinessSuccess(code)){
                     R model = data.getData();
-                    if(model==null){
+                    if(model==null){//是否需要为null报错误
                         ParameterizedType type = (ParameterizedType)getClass().getGenericSuperclass();
-                        Type clazz = type.getActualTypeArguments()[0];
-                        if(clazz instanceof Class){
-                            ((Class)clazz).isAssignableFrom(Object.class);
-                        }else if(clazz instanceof ParameterizedType){
-
+                        if(type!=null){
+                            Type clazz = type.getActualTypeArguments()[0];
+                            /**
+                             * 父类.class.isAssignableFrom(子类.class)   (Assignable)可转让的
+                             * 子类实例 instanceof 父类类型
+                             */
+                            if(clazz instanceof Class){
+                                boolean isObject = ((Class)clazz).isAssignableFrom(Object.class);
+                                if(!isObject){
+                                    onFail(new ApiException(code,"data数据为空"));
+                                    return;
+                                }
+                            }else if(clazz instanceof ParameterizedType){//List<T>
+                                Type rawType = ((ParameterizedType)clazz).getRawType();
+                                if(rawType != List.class){
+                                    onFail(new ApiException(code,"data数据为空"));
+                                    return;
+                                }
+                            }
                         }
                     }
                     onSuccess(model,data.getCode(),data.getMessage());

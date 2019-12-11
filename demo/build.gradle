@@ -88,4 +88,8 @@ dependencies {
     implementation "androidx.paging:paging-rxjava2:$versions.paging_version"
     //RxView
     implementation 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
+    // optional - GCMNetworkManager support
+    //implementation "androidx.work:work-gcm:$versions.work_version"//会导致主题问题
+    // optional - Test helpers
+    androidTestImplementation "androidx.work:work-testing:$versions.work_version"
 }

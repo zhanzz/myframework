@@ -12,9 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".splash.activity.SplashActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".login.activity.SettingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".login.service.UpdateService"
@@ -25,40 +36,38 @@
             android:name=".update.activity.UpDateActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
             android:theme="@style/activity_dialog_styles" />
         <activity
             android:name=".login.activity.Main4Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" />
-        <activity android:name=".login.activity.MainActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".login.activity.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".login.activity.Main2Activity"
             android:launchMode="singleTask" />
-        <activity android:name=".login.activity.Main3Activity"
+        <activity
+            android:name=".login.activity.Main3Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="xxx"/> <!--如果该过滤器未列出任何操作，则 Intent 没有任何匹配项，
+                <action android:name="xxx" />
+                <!--
+     如果该过滤器未列出任何操作，则 Intent 没有任何匹配项，
                 因此所有 Intent 均无法通过测试。但是，如果 Intent 未指定操作，
-                则只要过滤器内包含至少一项操作，就可以通过测试。-->
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:scheme="testscheme"/>
-            </intent-filter>
-        </activity>
+                则只要过滤器内包含至少一项操作，就可以通过测试。
+                -->
+                <category android:name="android.intent.category.DEFAULT" />
 
-        <!--在后台时才有限制静态收不到通知-->
+                <data android:scheme="testscheme" />
+            </intent-filter>
+        </activity> <!-- 在后台时才有限制静态收不到通知 -->
         <receiver android:name=".receiver.StaticBroadCastReceiver">
             <intent-filter>
-                <action android:name="static_receiver"/>
+                <action android:name="static_receiver" />
             </intent-filter>
         </receiver>
     </application>

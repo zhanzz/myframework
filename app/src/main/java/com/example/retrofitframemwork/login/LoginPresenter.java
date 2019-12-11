@@ -164,7 +164,7 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
                                 File apkFile = new File(apkFileDir, UpDateActivity.APK_FILE_NAME);
                                 int code = AppTools.getApkCode(BaseApplication.getApp(), apkFile.getAbsolutePath());
                                 int serviceCode = versionBean.getVersioncode();
-                                emitter.onNext(serviceCode > code);
+                                emitter.onNext(serviceCode <= code);
                             }
                         }).compose(SchedulerProvider.getInstance().applySchedulers())
                                 .subscribe(new Consumer<Boolean>() {

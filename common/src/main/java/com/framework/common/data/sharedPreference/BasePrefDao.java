@@ -85,4 +85,9 @@ public class BasePrefDao<T> {
         String content = GsonUtils.parseToString(data);
         setCacheWithoutKeyAsy(content);
     }
+
+    public void setDataSyn(T data){
+        String content = GsonUtils.parseToString(data);
+        setCacheWithoutKey(content);
+    }
 }

@@ -73,6 +73,11 @@ public class Main4Activity extends BaseActivity implements IMain4View {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+    }
+
+    @Override
     public void initEvent() {
         tvTestSpan.clearComposingText();
         String content = String.format(Locale.CHINA, "%s笔(详情)", 0);

@@ -1,9 +1,6 @@
 package com.example.demo.some_test.activity;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,12 +11,13 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.core.app.ActivityCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.demo.R;
 import com.example.demo.R2;
 import com.example.demo.some_test.presenter.ActivityPremissionPresenter;
 import com.example.demo.some_test.view.IActivityPremissionView;
+import com.example.demo.widget.MyLinearLayout;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.utils.LogUtil;
@@ -39,6 +37,12 @@ public class ActivityPermissionActivity extends BaseActivity implements IActivit
     Button btnReload;
     @BindView(R2.id.tv_test_span)
     TextView tvTestSpan;
+    @BindView(R2.id.linear_container)
+    MyLinearLayout linearContainer;
+    @BindView(R2.id.rootSwipe)
+    SwipeRefreshLayout rootSwipe;
+    @BindView(R2.id.tv_change_type)
+    TextView tvChangeType;
     private ActivityPremissionPresenter mPresenter;
 
     @Override
@@ -48,6 +52,7 @@ public class ActivityPermissionActivity extends BaseActivity implements IActivit
 
     @Override
     public void bindData() {
+        //rootSwipe.canChildScrollUp();
         LogUtil.e("zhang", getClass().getSimpleName() + ";" + getTaskId() + ";pid=" + Process.myPid());
         /**
          * 当新的url即将加载到当前webview中时，
@@ -77,10 +82,10 @@ public class ActivityPermissionActivity extends BaseActivity implements IActivit
             }
         });
         String content = "我是内容好吧";
-        StringUtils.setListener(tvTestSpan, content, 0xffffff00, new String[]{"容好"},false, new View.OnClickListener() {
+        StringUtils.setListener(tvTestSpan, content, 0xffffff00, new String[]{"容好"}, false, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtil.show(getContext(),"点击了我");
+                ToastUtil.show(getContext(), "点击了我");
             }
         });
     }
@@ -158,5 +163,31 @@ public class ActivityPermissionActivity extends BaseActivity implements IActivit
          *         at android.view.ViewRootImpl.setView(ViewRootImpl.java:859)
          */
         //finish();
+        //linearContainer.detachViewFromParent(btnReload);
+        //linearContainer.removeAllViewsInLayout();
+
+        /**
+         * 简单来说ViewGroup 维护一个子类的View 数组
+         *
+         * attachViewToParent 和 DetachViewToparent 是直接操作这个数组，不会去调用requestlayout 去重绘。
+         * removeView 和 addView 会主动调用requestlayout 和 invalidate 去强制重绘。
+         * removeViewInLayout 和 addViewInLayout 不会去调用 requestLayout 和 invalidate 所以可以有效的在onlayout方法中调用。
+         *
+         * 2 和 3 都会通过 addViewInner 和 removeViewInternal 去操作
+         * 第一种方式 通过 addInArray 和 removeFromArray 直接去 修改 子view的数组
+         *
+         * 如果是通过 addviewinner 和 removeViewInternal 会促发 layouttransition 做动画效果 还会 触发一些回调 并调用 子view的attachwindow 和 detachwindow 然后 也会进行 addInArray 和 removeFromArray 去修改数组。
+         *
+         * 所以如果 只是单纯的数据变化 使用 attachViewtoParent 和 detachViewtoParent 不会对 子view 做变化。只是简单的移出 viewGroup的显示 attach 还是最好 配合 detach使用 因为 添加一个子view应该还需要做下子viewAttach操作 具体 相关代码 可能在attachInfo 之中找到关
+         *
+         * 然后这个子view数组 对viewgroup显示有什么影响呢 ？
+         * viewgroup dispatchdraw 会使用 这个来对每个子view分派draw事件
+         */
+        tvChangeType.setSelected(!tvChangeType.isSelected());
+    }
+
+    @OnClick(R2.id.frame_click)
+    public void onClick() {
+        ToastUtil.show(this, "点击了");
     }
 }

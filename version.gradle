@@ -12,6 +12,7 @@ versions.arouter_api = '1.5.0'
 versions.arouter_compiler = '1.2.2'
 versions.room_version = "2.2.1"
 versions.paging_version = "2.1.0"
+versions.work_version = "2.2.0"
 ext.versions = versions
 
 def support = [:]

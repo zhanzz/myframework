@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 
@@ -27,15 +28,12 @@ import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.login.adapter.TestAdapter;
 import com.example.retrofitframemwork.login.presenter.TestPresenter;
 import com.example.retrofitframemwork.login.view.ITestView;
-import com.example.retrofitframemwork.receiver.StaticBroadCastReceiver;
-import com.framework.common.manager.Events;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.framework.common.adapter.BaseAdapter;
 import com.framework.common.adapter.HeaderAndFooterWrapper;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
-import com.framework.common.manager.EventBusUtils;
 import com.framework.common.utils.FrescoUtils;
 import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.UIHelper;
@@ -192,12 +190,6 @@ public class Main2Activity extends BaseActivity implements ITestView {
         mAdapter.loadMoreFail();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 
 
     private void reduce() {
@@ -265,11 +257,16 @@ public class Main2Activity extends BaseActivity implements ITestView {
         Intent intent = new Intent();
         intent.setAction("com.frameWork.test");
         //if(change){
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            //LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         //}else {
             //sendBroadcast(intent);
         //}
         change = !change;
+        Intent intent1 = new Intent(this,Main4Activity.class);
+        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //FLAG_ACTIVITY_CLEAR_TOP 会清除Maina4Activity(launcheMode为标准模式)和它之上的activity并重新onCreate
+        //这是因为加载模式为“standard”的activity 总会创建一个新实例来处理新的intent。
+        startActivity(intent1);
     }
 
     /**
