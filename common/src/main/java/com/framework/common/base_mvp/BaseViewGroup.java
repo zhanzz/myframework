@@ -25,7 +25,7 @@ import io.reactivex.subjects.BehaviorSubject;
  * @date 2019/9/11.
  * description：
  */
-public abstract class BaseViewGroup extends FrameLayout implements IBaseView,View.OnClickListener{
+public abstract class BaseViewGroup extends FrameLayout implements IBaseView,IStopAdd,View.OnClickListener{
     private Unbinder unbinder;
     public final BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
     private CompositeDisposable mCompositeDisposable;

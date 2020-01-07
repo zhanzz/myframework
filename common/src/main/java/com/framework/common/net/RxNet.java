@@ -2,7 +2,9 @@ package com.framework.common.net;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.framework.common.BaseApplication;
 import com.framework.common.BuildConfig;
@@ -12,6 +14,7 @@ import com.framework.common.callBack.FileUploadCallBack;
 import com.framework.common.callBack.RxNetCallBack;
 import com.framework.common.data.ActivityLifeCycleEvent;
 import com.framework.common.data.LoadType;
+import com.framework.common.data.LoadViewType;
 import com.framework.common.data.Result;
 import com.framework.common.data.operation.UserOperation;
 import com.framework.common.exception.ApiException;
@@ -30,7 +33,6 @@ import java.util.Map;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import okhttp3.ResponseBody;
 
@@ -49,9 +51,9 @@ public class RxNet {
         if(loadType.ordinal()>2 && !UserOperation.getInstance().isLogin()){
             return null;
         }
-        if (loadType==LoadType.LOAD) {
+        if (loadType==LoadType.LOAD || loadType==LoadType.LOGIN_LOAD) {
             view.showLoading();
-        }else if(loadType==LoadType.LOAD_DIALOG){
+        }else if(loadType==LoadType.LOAD_DIALOG || loadType==LoadType.LOGIN_LOAD_DIALOG){
             view.showLoadingDialog();
         }
         ApiSubscriber apiSubscriber = new ApiSubscriber<T>() {
@@ -77,10 +79,54 @@ public class RxNet {
         return apiSubscriber;
     }
 
+
+    /**
+     * 一般请求，返回数据带有body
+     */
+    public static @Nullable
+    <T> Disposable request(Observable<Result<T>> observable, @NonNull final MutableLiveData<LoadViewType> loading, final LoadType loadType, final RxNetCallBack<T> callBack) {
+        if(loadType.ordinal()>2 && !UserOperation.getInstance().isLogin()){
+            return null;
+        }
+        if (loadType==LoadType.LOAD || loadType==LoadType.LOGIN_LOAD) {
+            loading.setValue(LoadViewType.SHOW_LOAD);
+        }else if(loadType==LoadType.LOAD_DIALOG || loadType==LoadType.LOGIN_LOAD_DIALOG){
+            loading.setValue(LoadViewType.SHOW_DIALOG);
+        }
+        ApiSubscriber apiSubscriber = new ApiSubscriber<T>() {
+            @Override
+            protected void onFail(ApiException ex) {
+                hideLoad(loadType, loading);
+                if (callBack != null && ex.getCode()!= CustomException.DISPOSED) {
+                    callBack.onFailure(ex.getCode(), ex.getDisplayMessage());
+                }
+            }
+
+            @Override
+            public void onSuccess(T data, int code, String msg) {
+                hideLoad(loadType, loading);
+                if (callBack != null) {
+                    callBack.onSuccess(data, code, msg);
+                }
+            }
+        };
+        observable.compose(SchedulerProvider.getInstance().<Result<T>>applySchedulers())
+                .subscribe(apiSubscriber);
+        return apiSubscriber;
+    }
+
+    private static void hideLoad(LoadType loadType, @NonNull MutableLiveData<LoadViewType> callBack) {
+        if (loadType==LoadType.LOAD || loadType==LoadType.LOGIN_LOAD) {
+            callBack.setValue(LoadViewType.HIDE_LOAD);
+        }else if(loadType==LoadType.LOAD_DIALOG || loadType==LoadType.LOGIN_LOAD_DIALOG){
+            callBack.setValue(LoadViewType.HIDE_DIALOG);
+        }
+    }
+
     private static void hideLoad(LoadType loadType, IBaseView view) {
-        if (loadType==LoadType.LOAD) {
+        if (loadType==LoadType.LOAD || loadType==LoadType.LOGIN_LOAD) {
             view.hideLoading();
-        }else if(loadType==LoadType.LOAD_DIALOG){
+        }else if(loadType==LoadType.LOAD_DIALOG || loadType==LoadType.LOGIN_LOAD_DIALOG){
             view.hideLoadingDialog();
         }
     }
@@ -117,13 +163,12 @@ public class RxNet {
             return null;
         }
         //压缩图片的observable
-        Observable<Map<String, Object>> mapObservable = new Compressor(BaseApplication.getApp())
+        Observable<Map<String, Object>> mapObservable = new Compressor()
                 .setMaxHeight(800)
                 .setMaxWidth(400)
                 .setQuality(80)
                 .setConfig(Bitmap.Config.RGB_565)
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                .setDestinationDirectoryPath(FileManager.getTempFileDir().getAbsolutePath())
                 .compressToFileAsObservable(params);
 
         UploadOnSubscribe uploadOnSubscribe = new UploadOnSubscribe();
@@ -135,8 +180,6 @@ public class RxNet {
                         .uploadFile(url,params);
             }
         });
-//        Observable<ResponseBody> observable = NetWorkManager.getInstance().getRetorfit(BuildConfig.GLOBAL_HOST).create(BaseApi.class)
-//                                .uploadFile(url,params);
         LoadCallBack loadCallBack = new LoadCallBack<ResponseBody>() {
             @Override
             protected void onProgress(String percent) {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="custom_orientation">
+        <enum name="custom_vertical" value="0" />
+        <enum name="custom_horizontal" value="1" />
+    </attr>
+</resources>

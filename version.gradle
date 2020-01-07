@@ -1,5 +1,6 @@
 def build_versions = [:]
 build_versions.min_sdk = 16
+build_versions.compile_sdk = 29
 build_versions.target_sdk = 28
 build_versions.versionCode = 40
 build_versions.versionName = "2.1.1"

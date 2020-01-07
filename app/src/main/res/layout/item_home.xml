@@ -2,4 +2,9 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="44dp"
-    android:gravity="center"/>
+    android:gravity="center"
+    android:background="?android:attr/selectableItemBackground"/>
+
+<!-- android:background="?android:attr/selectableItemBackground" 有界水波纹
+android:background="?android:attr/selectableItemBackgroundBorderless" 21版本
+无界水波纹 以控件宽高中最大的数值作为水波纹效果所在正方形的边界进行绘制-->

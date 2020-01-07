@@ -14,6 +14,7 @@
         android:layout_marginLeft="10dp"
         android:id="@+id/cover"
         android:layout_gravity="center_vertical"
+        android:scaleType="centerCrop"
         fresco:placeholderImage="@drawable/default_error"
         fresco:placeholderImageScaleType="centerCrop"
         fresco:actualImageScaleType="centerCrop"

@@ -31,7 +31,7 @@ import io.reactivex.subjects.PublishSubject;
  * @date 2019/4/23.
  * description：
  */
-public abstract class BaseDialog extends DialogFragment implements IBaseView {
+public abstract class BaseDialog extends DialogFragment implements IBaseView,IStopAdd {
     private Unbinder unbinder;
     public final PublishSubject<ActivityLifeCycleEvent> lifecycleSubject = PublishSubject.create();
     private FrameLayout mContainer;

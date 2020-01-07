@@ -1,5 +1,9 @@
 package com.framework.common.convert;
 
+import android.net.Uri;
+import android.text.TextUtils;
+
+import com.facebook.common.util.UriUtil;
 import com.framework.common.convert.CountingRequestBody;
 import com.framework.common.net.UploadOnSubscribe;
 import com.framework.common.utils.PictureUtils;
@@ -35,8 +39,14 @@ public class FileRequestBodyConverter implements Converter<Map<String, Object>, 
 
         for(String key : params.keySet()){
             Object value = params.get(key);
+            if(value instanceof Uri){
+                Uri uri = (Uri) value;
+                if(UriUtil.isLocalFileUri(uri) && !TextUtils.isEmpty(uri.getPath())){
+                    value = new File(uri.getPath());
+                }
+            }
             if(value instanceof File){
-                String fileName = PictureUtils.getFilName(((File)value).getPath());
+                String fileName = PictureUtils.getFilName(((File)value).getName());
                 RequestBody fileBody = RequestBody.create(MediaType.parse(guessMimeType(fileName)),(File)value);
                 builder.addFormDataPart(key, fileName, fileBody);
             }else if(value instanceof String){

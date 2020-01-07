@@ -1,8 +1,13 @@
 package com.framework.common.image_select.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
+import android.os.ParcelFileDescriptor;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +26,8 @@ import com.framework.common.utils.FrescoUtils;
 import com.framework.common.utils.UIHelper;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +37,7 @@ import java.util.List;
  */
 public class ImageGridAdapter extends BaseMultiItemQuickAdapter<Image, BaseViewHolder> {
     private boolean showSelectIndicator = true;
-    private List<Image> mSelectedImages = new ArrayList<Image>();
+    private List<Image> mSelectedImages = new ArrayList<>();
     private int mItemWidth,mItemHeight;
     public ImageGridAdapter() {
         super(null);
@@ -65,6 +72,7 @@ public class ImageGridAdapter extends BaseMultiItemQuickAdapter<Image, BaseViewH
      * @param resultList
      */
     public void setDefaultSelected(ArrayList<String> resultList) {
+        mSelectedImages.clear();
         for(String path : resultList){
             Image image = getImageByPath(path);
             if(image != null){
@@ -114,6 +122,19 @@ public class ImageGridAdapter extends BaseMultiItemQuickAdapter<Image, BaseViewH
         }else{
             helper.setGone(R.id.checkmark,false);
         }
-        FrescoUtils.showThumb("file://"+item.path, (SimpleDraweeView) helper.getView(R.id.image),mItemWidth,mItemHeight);
+        SimpleDraweeView simpleDraweeView = helper.getView(R.id.image);
+        try {
+            simpleDraweeView.setActualImageResource(R.drawable.default_error);//复用
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Bitmap bitmap = mContext.getContentResolver().loadThumbnail(item.uri,new Size(mItemWidth,mItemHeight),null);
+                simpleDraweeView.setImageBitmap(bitmap);
+            }else {
+                FrescoUtils.showThumb("file://"+item.path,simpleDraweeView,mItemWidth,mItemHeight);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

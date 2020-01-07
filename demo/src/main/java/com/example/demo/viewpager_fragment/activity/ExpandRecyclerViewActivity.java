@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleObserver;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,6 +56,7 @@ public class ExpandRecyclerViewActivity extends BaseActivity implements IExpandR
          * 当前activity launchemode为singleTask  其它应用--》打开当应用标准activity(跟其它应用在同一个task）-->打开此activity  跟其它应用不再同一个task
          * 当前activity launchemode为singleTask  其它应用-->打开此activity  跟其它应用不再同一个task
          * 当前activity launchemode为singleTask  当前应用--》打开当应用标准activity(跟其它应用在同一个task）-->打开此activity  跟当前应用再同一个task
+         *另一应用跳转singletask,如果当前应用已有则onNewIntent
          */
         LogUtil.e("zhang", getClass().getSimpleName() + ";" + getTaskId() + ";pid=" + Process.myPid());
         //List<SectionEntity> list = mPresenter.getData();
@@ -64,6 +66,10 @@ public class ExpandRecyclerViewActivity extends BaseActivity implements IExpandR
         //adapter.expandAll();
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(adapter);
+
+        getLifecycle().addObserver(new LifecycleObserver() {
+
+        });
     }
 
     @Override

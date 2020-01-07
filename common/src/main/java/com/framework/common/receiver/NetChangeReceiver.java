@@ -1,12 +1,12 @@
 package com.framework.common.receiver;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import com.framework.common.manager.ActivityManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import com.framework.common.manager.LocalBroadcastActionManager;
 /**
  * @author zhangzhiqiang
  * @date 2019/4/19.
@@ -16,15 +16,17 @@ public class NetChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        Activity activity = ActivityManager.getInstance().getLastActivity();
-        if(activity instanceof INetChange){
-            INetChange iNetChange = (INetChange) activity;
+        if (connectivityManager != null) {
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            boolean hasNet;
             if (networkInfo != null && networkInfo.isAvailable()) {
-                iNetChange.onNetChange(true);
+                hasNet = true;
             } else {
-                iNetChange.onNetChange(false);
+                hasNet = false;
             }
+            Intent nIntent = new Intent(LocalBroadcastActionManager.ACTION_NETWORK_CHANGE);
+            nIntent.putExtra("hasNet", hasNet);
+            LocalBroadcastManager.getInstance(context).sendBroadcastSync(nIntent);
         }
     }
 }

@@ -4,26 +4,27 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.DownloadManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.content.pm.SigningInfo;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -31,23 +32,19 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.FileProvider;
-import androidx.core.util.Pools;
-import androidx.databinding.DataBindingUtil;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.alibaba.android.arouter.launcher.ARouter;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.demo.contact.activity.PhoneListActivity;
 import com.example.demo.db.activity.TestSqliteDataBaseActivity;
 import com.example.demo.incremental_updating.activity.PatchActivity;
-import com.example.demo.incremental_updating.activity.TestAddActivity;
 import com.example.demo.pagelist.activity.PageListActivity;
 import com.example.demo.some_test.activity.ActivityPermissionActivity;
 import com.example.demo.some_test.activity.TestDiffAndHandlerActivity;
-import com.example.demo.study_bluetooth.activity.BlueToothActivity;
 import com.example.demo.viewpager_fragment.activity.PageFragmentActivity;
 import com.example.demo.vlayout.activity.StudyVlayoutActivity;
 import com.example.demo.widget.TwoLevelRefreshHeader;
@@ -58,33 +55,38 @@ import com.example.retrofitframemwork.TestDialogFragment;
 import com.example.retrofitframemwork.login.LoginPresenter;
 import com.example.retrofitframemwork.login.adapter.HomeAdapter;
 import com.example.retrofitframemwork.login.view.ILoginView;
-import com.example.retrofitframemwork.receiver.StaticBroadCastReceiver;
 import com.example.retrofitframemwork.update.activity.UpDateActivity;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.framework.common.BaseApplication;
-import com.framework.common.BuildConfig;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.data.ConfigOperation;
 import com.framework.common.image_select.MultiImageSelectorActivity;
 import com.framework.common.manager.PermissionManager;
+import com.framework.common.utils.AppTools;
+import com.framework.common.utils.FrescoUtils;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.LogUtil;
+import com.framework.common.utils.NotificationUtil;
+import com.framework.common.utils.TakePhotoUtil;
 import com.framework.common.utils.ToastUtil;
-import com.framework.common.widget.drawable.ImageLoadingDrawable;
 import com.framework.model.UserBean;
 import com.framework.model.VersionInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.OnTwoLevelListener;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.header.TwoLevelHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -92,13 +94,9 @@ import java.util.Map;
 import java.util.Random;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.exceptions.CompositeException;
-import io.reactivex.exceptions.Exceptions;
-import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.ObjectHelper;
 import io.reactivex.plugins.RxJavaPlugins;
-import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 /**
  * 当代码改了没有反应要clean一下
@@ -115,7 +113,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
     @BindView(R.id.smartRefreshLayout)
     SmartRefreshLayout smartRefreshLayout;
     @BindView(R.id.image)
-    ImageView image;
+    SimpleDraweeView image;
     private HomeAdapter mAdapter;
 
     @Override
@@ -128,19 +126,21 @@ public class MainActivity extends BaseActivity implements ILoginView {
         super.getParamData(intent);
     }
 
+    //onStart后调用
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if(savedInstanceState!=null){
+        if (savedInstanceState != null) {
             String content = (String) savedInstanceState.get("save");
-            ToastUtil.show(this,content);
+            uri = (Uri) savedInstanceState.get("pic_uri");
+            ToastUtil.show(this, content);
         }
     }
 
     private String[] menus = new String[]{"vlayout", "fragmentStatePager", "versionUpdate",
-            "reactNative", "scan", "testSome", "takePicture","downloadApkAndInstall","selectImage"
-    ,"phones","testNetLink","startOtherActivity","SlidingPaneLayout","testArouter","sendBroadCast"
-            ,"blueTooth","testSqliteDatabase","studyWindow","add_update","permission","pageList"};
+            "reactNative", "scan", "testSome", "takePicture", "downloadApkAndInstall", "selectImage"
+            , "phones", "testNetLink", "startOtherActivity", "SlidingPaneLayout", "testArouter", "sendBroadCast"
+            , "blueTooth", "testSqliteDatabase", "studyWindow", "add_update", "permission", "pageList", "navigation"};
 
     @Override
     public void bindData() {
@@ -152,8 +152,10 @@ public class MainActivity extends BaseActivity implements ILoginView {
         mAdapter.setEnableLoadMore(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
+        recyclerView.setBackgroundResource(R.drawable.selector_fff_f3f3f3);
         //OverScrollDecoratorHelper.setUpOverScroll(recyclerView,OverScrollDecoratorHelper.ORIENTATION_VERTICAL);
-
+        int id = R.attr.custom_orientation;
+        AssetManager manager = getAssets();
 //        String url = "file://asdfs/saf/test.txt";
 //        File file;
 //        /*
@@ -170,9 +172,10 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putString("save","mainactivity");
+        outState.putString("save", "mainactivity");
+        outState.putParcelable("pic_uri", uri);
         super.onSaveInstanceState(outState);
-        LogUtil.e("onSave="+getClass().getSimpleName());
+        LogUtil.e("onSave=" + getClass().getSimpleName());
     }
 
     @Override
@@ -189,8 +192,12 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     PageFragmentActivity.start(getContext());
                     break;
                 case "versionUpdate":
-                    requestNeedPermissions(120,Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    requestNeedPermissions(120, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                     //requestNeedPermissions(120,Manifest.permission_group.STORAGE);
+                    //false
+                    //boolean value = ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CAMERA);
+                    //ToastUtil.show(this,"11");
+                    //ToastUtil.show(this,"22");
                     break;
                 case "reactNative":
                     RnMainActivity.start(getContext());
@@ -202,22 +209,24 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     TestDiffAndHandlerActivity.start(this);
                     break;
                 case "takePicture":
-                    requestNeedPermissions(121,Manifest.permission.CAMERA);
+                    //Toast.makeText(this.getApplicationContext(),"11",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this.getApplicationContext(),"22",Toast.LENGTH_SHORT).show();
+                    requestNeedPermissions(121, Manifest.permission.CAMERA);
                     break;
                 case "downloadApkAndInstall":
                     mPresenter.downLoadFile();
                     break;
                 case "selectImage":
-                    MultiImageSelectorActivity.startMe(this,5,200);
+                    MultiImageSelectorActivity.startMe(this, 5, 200);
                     break;
                 case "phones":
-                    PhoneListActivity.start(this,null);
+                    PhoneListActivity.start(this, null);
                     break;
                 case "testNetLink":
                     mPresenter.testLineRequest();
                     break;
                 case "startOtherActivity"://属于不同的进程
-                    LogUtil.e("start=pid="+Process.myPid());
+                    LogUtil.e("start=pid=" + Process.myPid());
                     //ComponentName cn = new ComponentName("com.nanchen.rxjava2examples", "com.nanchen.rxjava2examples.module.rxjava2.operators.item.RxCreateActivity");
                     //intent.setComponent(cn);
                     /**
@@ -238,7 +247,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
                         @Override
                         public void uncaughtException(Thread t, Throwable e) {
-                            LogUtil.e("zhang","线程自已的处理器"+e.getMessage());
+                            LogUtil.e("zhang", "线程自已的处理器" + e.getMessage());
                         }
                     });
                     try {
@@ -268,11 +277,11 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     //Intent intent1 = new Intent("static_receiver");
                     //intent1.setClass(this, StaticBroadCastReceiver.class);
                     //sendBroadcast(intent1);
-                    ToastUtil.show(getContext(),"这是新包");
+                    ToastUtil.show(getContext(), "这是新包");
                     break;
                 case "blueTooth":
                     //BlueToothActivity.start(getContext());
-                    ToastUtil.show(getContext(),"我真真真的是新包");
+                    ToastUtil.show(getContext(), "我真真真的是新包");
                     //TestAddActivity.start(getContext());
                     break;
                 case "testSqliteDatabase":
@@ -288,20 +297,57 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     ActivityPermissionActivity.start(getContext());
                     break;
                 case "pageList":
-                    PageListActivity.start(getContext());
+                    //PageListActivity.start(getContext());
+                    break;
+                case "navigation":
+                    //com.example.jetpack.nvigation.MainActivity.Companion.startMe(getContext());
+                    //moveAppToFront(getContext());
+                    //AppTools.isExternalStorageWritable();
+                    //showBitmapOne();
+                    //createFile("application/vnd.android.package-archive","test.apk");
+                    //showBitmapOne();
+                    mPresenter.login("13695157045","1");
                     break;
             }
         });
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                ToastUtil.show(getContext(),"刷新one");
+                ToastUtil.show(getContext(), "刷新one");
             }
         });
         twoLevelHeader.setOnTwoLevelListener(refreshLayout -> {
-            ToastUtil.show(getContext(),"刷新two");
+            ToastUtil.show(getContext(), "刷新two");
             return false;
         });
+    }
+
+    private void showBitmapOne(){
+        //image.setVisibility(View.VISIBLE);
+        //调用TakePhotoUtil.takePhotoV2生成了uri却没有拍照，所以没有内容
+        //Bitmap bitmap = BitmapFactory.decodeFile("/storage/emulated/0/Pictures/IMG_1577687131791.jpg");
+        //image.setImageBitmap(bitmap);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            boolean sl= Environment.isExternalStorageLegacy();
+        }
+        File file = new File("/storage/emulated/0/Pictures/IMG_1577687131791.jpg");
+        boolean has = PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int target = getApplicationInfo().targetSdkVersion;
+        File file1 = new File(getExternalCacheDir(),"1.txt");
+        /**
+         * 结论： 外部私有可以操作File，外部共有无法操作（报FileNotFoundException）
+         */
+        try {
+            //FileOutputStream fileOutputStream = new FileOutputStream(file);
+            //OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream);
+            FileWriter writer1 = new FileWriter(file1);
+            writer1.write("haha");
+            writer1.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -345,11 +391,11 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //                Log.e("zhang", "fail:" + t.getMessage());
 //            }
 //        });
-        Intent setAlertIntent=new Intent(this,Main2Activity.class);
+        Intent setAlertIntent = new Intent(this, Main2Activity.class);
         setAlertIntent.putExtra("try", "i'm just have a try");
-        PendingIntent pendingIntent=PendingIntent.getBroadcast(this, 0, setAlertIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, setAlertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Intent intent = new Intent();
-        intent.putExtra("a",pendingIntent);
+        intent.putExtra("a", pendingIntent);
     }
 
 
@@ -448,14 +494,23 @@ public class MainActivity extends BaseActivity implements ILoginView {
     }
 
     TestDialogFragment frament;
+    Uri uri;
 
     @Override
     public void passPermission(@NonNull List<String> permissions, int requestCode) {
-        if(requestCode==120 && permissions.contains(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            mPresenter.checkUpdate();
+        /***
+         * 如果请求WRITE_EXTERNAL_STORAGE权限通过会同时授予READ_EXTERNAL_STORAGE
+         * 如果请求READ_EXTERNAL_STORAGE权限，8.0之下会同时授予READ_EXTERNAL_STORAGE，8.0及以上不会
+         */
+        if (requestCode == 120 && permissions.contains(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            boolean ishas = PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            ToastUtil.show(this, ishas + "");
+            //mPresenter.checkUpdate();
         }
-        if (requestCode==121&&permissions.contains(Manifest.permission.CAMERA)) {
-            takePhoto();
+        if (requestCode == 121 && permissions.contains(Manifest.permission.CAMERA)) {
+            //takePhoto();
+            uri = TakePhotoUtil.takePhotoV3(this,1111);
+//            uri = TakePhotoUtil.takePhotoV2(this);
         }
 //        UserOperation opration = new UserOperation();
 //        long start = System.currentTimeMillis();
@@ -465,7 +520,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //        Log.e("zhang","userTime="+(System.currentTimeMillis()-start));
     }
 
-    public void takePhoto(){
+    public void takePhoto() {
         File imagePath = new File(getExternalCacheDir(), "images");
         if (!imagePath.exists()) {
             imagePath.mkdirs();
@@ -541,27 +596,70 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     }
                     File newFile = new File(imagePath, "default_image.jpg");
                     Bitmap bitmap = BitmapFactory.decodeFile(newFile.getAbsolutePath());
-                    if(bitmap!=null){
-                        ToastUtil.show(getContext(),"bitmap有值");
+                    if (bitmap != null) {
+                        ToastUtil.show(getContext(), "bitmap有值");
                     }
                     //image.setImageBitmap(bitmap);
                     break;
+                case 1111:
+//                    if(AppTools.isQOrHigher()){
+//                    try {
+//                        ParcelFileDescriptor pd = getContentResolver().openFileDescriptor(uri, "r");
+//                        if (pd != null) {
+//                            Bitmap bitmap1 = BitmapFactory.decodeFileDescriptor(pd.getFileDescriptor());
+//                            image.setVisibility(View.VISIBLE);
+//                            image.setImageBitmap(bitmap1);
+//                            pd.close();
+//                        }
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    }else{
+                        //ProducerSequenceFactory -->getBasicDecodedImageSequence
+                        image.setVisibility(View.VISIBLE);
+                        FrescoUtils.showThumb(uri, image,new BaseControllerListener<ImageInfo>(){
+                            @Override
+                            public void onFailure(String id, Throwable throwable) {
+                                super.onFailure(id, throwable);
+                            }
+
+                            @Override
+                            public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+                                super.onFinalImageSet(id, imageInfo, animatable);
+                            }
+                        });
+//                    }
+                    break;
                 case 200:
-                    List<String> photoPath = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+                    List<Uri> photoPath = data.getParcelableArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
                     if (!ListUtils.isEmpty(photoPath)) {
                         Map<String, Object> params = new HashMap<>();
                         params.put("dir", "oaimage");
                         for (int i = 0; i < photoPath.size(); i++) {
-                            params.put("img" + i, new File(photoPath.get(i)));
+                            params.put("img" + i, photoPath.get(i));
                         }
-                        File file = new File(photoPath.get(0));
-                        Bitmap fbitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                        image.setImageBitmap(fbitmap);
+                        //Bitmap fbitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                        //image.setImageBitmap(fbitmap);
+                        mPresenter.uploadFile(params);
                     }
                     break;
                 case 120:
                     String result = data.getStringExtra(CaptureActivity.EXTRA_RESULT);
                     ToastUtil.show(this, result);
+                    break;
+                case WRITE_REQUEST_CODE:
+                    Uri uri = data.getData();
+                    break;
+            }
+        }else{
+            switch (requestCode){
+                case 1111:
+                    getContentResolver().delete(uri,null,null);
+                    break;
+                case WRITE_REQUEST_CODE:
+                    Uri uri = data.getData();
                     break;
             }
         }
@@ -593,7 +691,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
         //可以共用同一个mReciver
         mReciver = new MyBroadCastReciver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReciver, filter);
-        registerReceiver(mReciver,filter);
+        registerReceiver(mReciver, filter);
 
         mDownReciver = new CompleteReceiver();
         //getName ==>com.example.retrofitframemwork.login.activity.MainActivity$CompleteReceiver
@@ -605,7 +703,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogUtil.e("onCreate="+getClass().getSimpleName());
+        LogUtil.e("onCreate=" + getClass().getSimpleName());
     }
 
     public static class MyBroadCastReciver extends BroadcastReceiver {
@@ -624,7 +722,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
         if (mDownReciver != null) {
             unregisterReceiver(mDownReciver);
         }
-        LogUtil.e("调用了onDestroy="+getClass().getSimpleName());
+        LogUtil.e("调用了onDestroy=" + getClass().getSimpleName());
         super.onDestroy();
     }
 
@@ -640,8 +738,76 @@ public class MainActivity extends BaseActivity implements ILoginView {
         }
     }
 
+    private void moveAppToFront(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager != null) {
+            ComponentName cn = null;
+
+            List<ActivityManager.RunningTaskInfo> runningTasks = activityManager.getRunningTasks(10);
+            ActivityManager.RunningTaskInfo info = runningTasks.get(0);
+            cn = info.topActivity;
+            if (cn.getPackageName().equals(context.getPackageName())) {
+//                activityManager.moveTaskToFront(taskInfo.id, 0)
+//                break
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    private static final int WRITE_REQUEST_CODE = 43;
+    private void createFile(String mimeType, String fileName) {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        // Filter to only show results that can be "opened", such as
+        // a file (as opposed to a list of contacts or timezones).
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        // Create a file with the requested MIME type.
+        intent.setType(mimeType);
+        intent.putExtra(Intent.EXTRA_TITLE, fileName);
+        startActivityForResult(intent, WRITE_REQUEST_CODE);
+    }
+
     public static void start(Context context) {
         Intent starter = new Intent(context, MainActivity.class);
         context.startActivity(starter);
+    }
+
+    private void showNotification() {
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        //启动通知Activity时，拉起主页面Activity
+        Intent msgIntent = new Intent();
+        msgIntent.setClass(this, com.example.demo.viewpager_fragment.Main2Activity.class);
+
+
+        Intent secondIntent = new Intent(this,com.example.demo.viewpager_fragment.Main2Activity.class);
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        Intent [] intents = new Intent[]{mainIntent,secondIntent};
+        //mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //mainIntent.setAction(Intent.ACTION_MAIN);
+        //mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        PendingIntent pendingIntent = PendingIntent.getActivities(this,0,intents,PendingIntent.FLAG_UPDATE_CURRENT);;
+        NotificationUtil.ChannelConfig.Builder builder = new NotificationUtil.ChannelConfig.Builder();
+        builder.setChannelId("normal");
+        builder.setChannelName("普通通知");
+        String channelId = NotificationUtil.createChannelId(this,builder.build());
+        // create and send notificaiton
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,channelId)
+                .setSmallIcon(getApplicationInfo().icon)
+                .setWhen(System.currentTimeMillis())
+                .setAutoCancel(true)//自己维护通知的消失
+                .setContentTitle("我是标题")
+                .setTicker("我是ticker")
+                .setContentText("我是内容")
+                .setOnlyAlertOnce(true)
+                .setContentIntent(pendingIntent);
+        //将一个Notification变成悬挂式Notification
+        mBuilder.setFullScreenIntent(pendingIntent, true);
+        Notification notification = mBuilder.build();
+        manager.notify(100, notification);
     }
 }

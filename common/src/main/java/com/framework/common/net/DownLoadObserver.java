@@ -3,6 +3,7 @@ package com.framework.common.net;
 import com.framework.common.callBack.FileCallBack;
 import com.framework.common.exception.ApiException;
 import com.framework.common.exception.CustomException;
+import com.framework.common.utils.LogUtil;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -35,6 +36,7 @@ public  abstract class DownLoadObserver<V extends ResponseBody> extends AtomicRe
         if (!isDisposed()) {
             lazySet(DisposableHelper.DISPOSED);
             try {
+                LogUtil.e("zhang","onError="+e.getMessage());
                 onFail(CustomException.handleException(e));
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -61,7 +63,8 @@ public  abstract class DownLoadObserver<V extends ResponseBody> extends AtomicRe
     @Override
     public void dispose() {
         DisposableHelper.dispose(this);
-        onFail(new ApiException(CustomException.DISPOSED,"操作已取消"));
+        LogUtil.e("zhang","dispose=操作已取消");
+        //onFail(new ApiException(CustomException.DISPOSED,"操作已取消"));
     }
 
     @Override

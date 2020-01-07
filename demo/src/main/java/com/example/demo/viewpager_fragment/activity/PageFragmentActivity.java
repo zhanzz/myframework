@@ -136,7 +136,7 @@ public class PageFragmentActivity extends BaseActivity implements IPageFragmentV
     private FragmentStatePagerAdapter mAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
         @Override
         public Fragment getItem(int position) {
-            PagerFragment fragment = null;
+            PagerFragment fragment;
             if (position == 0) {
                 fragment = PagerFragment.newInstance(mTitleDataList.get(position).getId(), mFirstProductList);
             } else {

@@ -4,7 +4,7 @@ import com.framework.common.data.Result;
 import com.framework.common.data.operation.UserOperation;
 import com.framework.common.exception.ApiException;
 import com.framework.common.exception.CustomException;
-import com.framework.common.manager.EventBusUtils;
+import com.framework.common.utils.EventBusUtils;
 import com.framework.common.manager.Events;
 
 import java.lang.reflect.ParameterizedType;
@@ -20,7 +20,7 @@ import io.reactivex.internal.disposables.DisposableHelper;
  * （比如没有，没有4g，没有联网，加载框处理等）
  * @author pengl
  */
-public  abstract class ApiSubscriber<R> extends AtomicReference<Disposable> implements Observer<Result<R>>,Disposable{
+public  abstract class ApiSubscriber<T> extends AtomicReference<Disposable> implements Observer<Result<T>>,Disposable{
     @Override
     public void onError(Throwable e) {
         if (!isDisposed()) {
@@ -34,7 +34,7 @@ public  abstract class ApiSubscriber<R> extends AtomicReference<Disposable> impl
     }
 
     @Override
-    public void onNext(Result<R> data) {
+    public void onNext(Result<T> data) {
         if (!isDisposed()) {
             try {
                 if(data == null){
@@ -43,7 +43,7 @@ public  abstract class ApiSubscriber<R> extends AtomicReference<Disposable> impl
                 }
                 int code = data.getCode();
                 if(isBusinessSuccess(code)){
-                    R model = data.getData();
+                    T model = data.getData();
                     if(model==null){//是否需要为null报错误
                         ParameterizedType type = (ParameterizedType)getClass().getGenericSuperclass();
                         if(type!=null){
@@ -112,7 +112,7 @@ public  abstract class ApiSubscriber<R> extends AtomicReference<Disposable> impl
      * 成功回调
      * @param data
      */
-    public abstract void onSuccess(R data,int code,String msg);
+    public abstract void onSuccess(T data,int code,String msg);
 
     @Override
     public void dispose() {

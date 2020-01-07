@@ -2,26 +2,21 @@ package com.framework.common.base_mvp;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
 import com.framework.common.data.ActivityLifeCycleEvent;
 import com.framework.common.manager.PermissionManager;
 import com.framework.common.utils.AppTools;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.ToastUtil;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
@@ -31,16 +26,15 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.PublishSubject;
-
 /**
  * @author zhangzhiqiang
  * @date 2019/4/23.
  * description：
  */
-public abstract class BaseFragment extends Fragment implements IBaseView, View.OnClickListener {
+public abstract class BaseFragment extends Fragment implements IBaseView,IStopAdd,View.OnClickListener {
+    protected boolean mCalled;
     private Unbinder unbinder;
-    public final BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
+    private final BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
     private FrameLayout mContainer;
     private CompositeDisposable mCompositeDisposable;
 
@@ -74,8 +68,18 @@ public abstract class BaseFragment extends Fragment implements IBaseView, View.O
         if (savedInstanceState != null) {
             getSavedInstanceState(savedInstanceState);
         }
+        mCalled = false;
         bindData();
+        if(getValid() && !mCalled){
+            throw new RuntimeException("Fragment " + this
+                    + " did not call through to super.bindData()");
+        }
+        mCalled = false;
         initEvent();
+        if(getValid() && !mCalled){
+            throw new RuntimeException("Fragment " + this
+                    + " did not call through to super.initEvent()");
+        }
     }
 
     protected void getSavedInstanceState(Bundle savedInstanceState) {
@@ -269,5 +273,9 @@ public abstract class BaseFragment extends Fragment implements IBaseView, View.O
     }
 
     public void passPermission(@NonNull List<String> permissions,int requestCode) {
+    }
+
+    public boolean getValid(){
+        return false;
     }
 }

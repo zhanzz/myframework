@@ -101,7 +101,8 @@
             android:name=".viewpager_fragment.Main2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:exported="true"/>
+            android:exported="true"
+            android:parentActivityName="com.example.demo.some_test.activity.TestDiffAndHandlerActivity"/>
         <activity
             android:name=".viewpager_fragment.activity.PageFragmentActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

@@ -25,7 +25,6 @@ public abstract class BaseLazyFragment extends BaseFragment {
             lazyLoad();
         }else{
             isVisible = false;
-            onInVisible();
         }
     }
 
@@ -38,13 +37,10 @@ public abstract class BaseLazyFragment extends BaseFragment {
 
     protected abstract void loadLazyData();
 
-    public void onInVisible(){}
-
-    protected void lazyLoad(){
+    private void lazyLoad(){
         if (!isPrepared || !isVisible || isLoadData) {
             return;
         }
-
         loadLazyData();
         isLoadData = true;
     }

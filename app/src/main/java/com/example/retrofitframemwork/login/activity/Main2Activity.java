@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
+
+import android.os.Process;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -28,6 +30,7 @@ import com.example.retrofitframemwork.R;
 import com.example.retrofitframemwork.login.adapter.TestAdapter;
 import com.example.retrofitframemwork.login.presenter.TestPresenter;
 import com.example.retrofitframemwork.login.view.ITestView;
+import com.facebook.common.references.CloseableReference;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.framework.common.adapter.BaseAdapter;
@@ -38,6 +41,7 @@ import com.framework.common.utils.FrescoUtils;
 import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.common.utils.ViewUtil;
+import com.framework.model.VersionInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.util.ArrayList;
@@ -78,6 +82,7 @@ public class Main2Activity extends BaseActivity implements ITestView {
 
     @Override
     public void bindData() {
+        LogUtil.e("zhang", getClass().getSimpleName() + ";" + getTaskId() + ";pid=" + Process.myPid());
         registerReceiver(true);
         LogUtil.e("bindData");
         //refreshLayout.setFitsSystemWindows(true);
@@ -263,6 +268,7 @@ public class Main2Activity extends BaseActivity implements ITestView {
         //}
         change = !change;
         Intent intent1 = new Intent(this,Main4Activity.class);
+        intent1.putExtra("xx",new VersionInfo());
         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         //FLAG_ACTIVITY_CLEAR_TOP 会清除Maina4Activity(launcheMode为标准模式)和它之上的activity并重新onCreate
         //这是因为加载模式为“standard”的activity 总会创建一个新实例来处理新的intent。

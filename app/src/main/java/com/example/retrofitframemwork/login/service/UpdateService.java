@@ -148,6 +148,7 @@ public class UpdateService extends Service {
                 .setContentIntent(getDefalutIntent(PendingIntent.FLAG_UPDATE_CURRENT))
                 .setPriority(Notification.PRIORITY_DEFAULT)// 设置该通知优先级
                 .setOngoing(true)// ture，设置他为一个正在进行的通知。他们通常是用来表示一个后台任务,用户积极参与(如播放音乐)或以某种方式正在等待,因此占用设备(如一个文件下载,同步操作,主动网络连接)
+                .setOnlyAlertOnce(true)
                 .setSmallIcon(R.mipmap.ic_launcher);
     }
 

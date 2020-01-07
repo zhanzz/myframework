@@ -8,6 +8,7 @@ import android.os.Environment;
 import androidx.core.app.ActivityCompat;
 
 import com.framework.common.BaseApplication;
+import com.framework.common.utils.AppTools;
 import com.framework.common.utils.ListUtils;
 
 import java.io.File;
@@ -51,7 +52,8 @@ public class FileManager {
         File appCacheDir = null;
         String cacheDir = "temp";
         if (MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && !AppTools.isQOrHigher()) {
             appCacheDir = new File(Environment.getExternalStorageDirectory(), cacheDir);
         }else{
             appCacheDir = new File(context.getExternalCacheDir(),cacheDir);

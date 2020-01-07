@@ -175,7 +175,11 @@ public class UpDateActivity extends BaseActivity implements IUpDateView {
     private void upDataByService() {
         File apkFileDir;
         if (PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            apkFileDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            if(AppTools.isQOrHigher()){
+                apkFileDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+            }else {
+                apkFileDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            }
         } else {
             apkFileDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
         }

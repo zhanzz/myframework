@@ -1,13 +1,27 @@
 package com.framework.common.utils;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.os.FileUtils;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
+
 import com.framework.common.BaseApplication;
 import com.framework.common.image_select.utils.FileManager;
 
@@ -17,6 +31,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +50,7 @@ public class PictureUtils {
         return BitmapFactory.decodeFile(filePath, options);
     }
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
@@ -116,22 +133,22 @@ public class PictureUtils {
             );
         } catch (IOException e) {
             e.printStackTrace();
-            try{
+            try {
                 Random random = new Random();
                 int n = random.nextInt();
                 String name = imageFileName + Integer.toString(n) + ".jpg";
-                image = new File(BaseApplication.getApp().getFilesDir(),name);
-                if(!image.exists()){
+                image = new File(BaseApplication.getApp().getFilesDir(), name);
+                if (!image.exists()) {
                     image.createNewFile();
                 }
-            }catch (Exception ee){
+            } catch (Exception ee) {
                 ee.printStackTrace();
             }
         }
         return Uri.fromFile(image);
     }
 
-    public static String getFilName(String filePath){
+    public static String getFilName(String filePath) {
         if (StringUtils.isEmpty(filePath)) {
             return filePath;
         }
@@ -142,7 +159,7 @@ public class PictureUtils {
         String imageFileName = timeStamp + "_";
         Random random = new Random();
         int n = random.nextInt(100);
-        String name = imageFileName + Integer.toString(n) + realFileName;
+        String name = imageFileName + n + realFileName;
         return name;
     }
 
@@ -152,10 +169,6 @@ public class PictureUtils {
         try {
             image = new File(storageDir, fileName);
             image.createNewFile();
-//			image = File.createTempFile(fileName, /* prefix */
-//					".jpg", /* suffix */
-//					storageDir /* directory */
-//			);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -264,5 +277,37 @@ public class PictureUtils {
             e.printStackTrace();
         }
         return degree;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static Uri insertImage(Uri uri) {
+        ContentValues values = new ContentValues();
+        //图片名称
+        String mFileName = "IMG_" + System.currentTimeMillis() + ".jpg";
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, mFileName);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(MediaStore.Images.Media.IS_PENDING, 1);
+        ContentResolver resolver = BaseApplication.getApp().getContentResolver();
+        Uri collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+        Uri item = resolver.insert(collection, values);
+        if (item == null) {
+            return null;
+        }
+        try {
+            ParcelFileDescriptor pfd = resolver.openFileDescriptor(item, "w");
+            ParcelFileDescriptor pfdIn = resolver.openFileDescriptor(uri, "r");
+            FileUtils.copy(pfdIn.getFileDescriptor(), pfd.getFileDescriptor());
+            // Now that we're finished, release the "pending" status, and allow other apps
+            // to view the image.
+            values.clear();
+            values.put(MediaStore.Images.Media.IS_PENDING, 0);
+            resolver.update(item, values, null, null);
+            return item;
+            // Write data into the pending image.
+        } catch (Exception e) {
+            e.printStackTrace();
+            BaseApplication.getApp().getContentResolver().delete(item, null, null);
+            return null;
+        }
     }
 }

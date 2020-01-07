@@ -15,7 +15,7 @@ import io.reactivex.Observable;
  * @date 2019/9/12.
  * description：
  */
-public class TestPagerPresenter extends BasePagePresenter<PresellBean, IPageBaseView<PresellBean>> {
+public class TestPagerPresenter extends BasePagePresenter<PresellBean,IPageBaseView<PresellBean.PresellProduct>> {
     private ArrayList<PresellBean.PresellProduct> mData;
     private String id;
     public TestPagerPresenter(int pageSize) {
@@ -23,12 +23,14 @@ public class TestPagerPresenter extends BasePagePresenter<PresellBean, IPageBase
     }
 
     @Override
-    protected Observable<Result<PresellBean>> getObservable() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("pageSize",getPageSize());
-        params.put("startPage",getCurrentPage());
+    protected Observable<Result<PresellBean>> getObservable(Map<String,Object> params) {
         params.put("activityId",id);
         return RetorfitUtil.getMallRetorfitApi(DemoApi.class).loadCategoryData(params);
+    }
+
+    @Override
+    protected void onPageData(PresellBean data, int mCurrentPage, int mPageSize) {
+        getMvpView().onPageData(data.getProductList(),mCurrentPage,mPageSize);
     }
 
     public void setId(String id) {

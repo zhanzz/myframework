@@ -6,10 +6,19 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.media.ExifInterface;
+import android.net.Uri;
+import android.os.Build;
+import android.os.ParcelFileDescriptor;
+import android.text.TextUtils;
+
+import com.facebook.common.util.UriUtil;
+import com.framework.common.BaseApplication;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 class ImageUtil {
 
@@ -17,9 +26,9 @@ class ImageUtil {
 
     }
 
-    static File compressImage(File imageFile, float reqWidth, float reqHeight, Bitmap.CompressFormat compressFormat, int quality,Bitmap.Config config, String destinationPath) throws IOException {
+    static Uri compressImage(Uri imageFile, float reqWidth, float reqHeight, Bitmap.CompressFormat compressFormat, int quality,Bitmap.Config config, File destinationPath) throws IOException {
         FileOutputStream fileOutputStream = null;
-        File file = new File(destinationPath).getParentFile();
+        File file = destinationPath.getParentFile();
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -41,17 +50,23 @@ class ImageUtil {
             }
         }
 
-        return new File(destinationPath);
+        return Uri.fromFile(destinationPath);
     }
 
-    static Bitmap decodeSampledBitmapFromFile(File imageFile, float reqWidth, float reqHeight,Bitmap.Config config) throws IOException {
+    static Bitmap decodeSampledBitmapFromFile(Uri imageFile, float reqWidth, float reqHeight, Bitmap.Config config) throws IOException {
         // First decode with inJustDecodeBounds=true to check dimensions
-
+        if(imageFile==null){
+            return null;
+        }
         Bitmap scaledBitmap = null, bmp = null;
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+        ParcelFileDescriptor pd = BaseApplication.getApp().getContentResolver().openFileDescriptor(imageFile,"r");
+        if(pd==null){
+            return null;
+        }
+        bmp = BitmapFactory.decodeFileDescriptor(pd.getFileDescriptor(), null,options);
 
         int actualHeight = options.outHeight;
         int actualWidth = options.outWidth;
@@ -91,7 +106,7 @@ class ImageUtil {
         options.inTempStorage = new byte[16 * 1024];
 
         try {
-            bmp = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+            bmp = BitmapFactory.decodeFileDescriptor(pd.getFileDescriptor(), null,options);
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
         }
@@ -99,6 +114,7 @@ class ImageUtil {
             scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight,config);
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
+            return null;
         }
 
         float ratioX = actualWidth / (float) options.outWidth;
@@ -111,20 +127,26 @@ class ImageUtil {
 
         Canvas canvas = new Canvas(scaledBitmap);
         canvas.setMatrix(scaleMatrix);
-        canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2,
-                middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+        canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2.0f,
+                middleY - bmp.getHeight() / 2.0f, new Paint(Paint.FILTER_BITMAP_FLAG));
         bmp.recycle();
-        ExifInterface exif;
+        ExifInterface exif = null;
         try {
-            exif = new ExifInterface(imageFile.getAbsolutePath());
-            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                exif = new ExifInterface(pd.getFileDescriptor());
+            }else if(UriUtil.isLocalFileUri(imageFile) && !TextUtils.isEmpty(imageFile.getPath())){
+                exif = new ExifInterface(imageFile.getPath());
+            }
             Matrix matrix = new Matrix();
-            if (orientation == 6) {
-                matrix.postRotate(90);
-            } else if (orientation == 3) {
-                matrix.postRotate(180);
-            } else if (orientation == 8) {
-                matrix.postRotate(270);
+            if(exif!=null){
+                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+                if (orientation == 6) {
+                    matrix.postRotate(90);
+                } else if (orientation == 3) {
+                    matrix.postRotate(180);
+                } else if (orientation == 8) {
+                    matrix.postRotate(270);
+                }
             }
             scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(),
                     scaledBitmap.getHeight(), matrix, true);

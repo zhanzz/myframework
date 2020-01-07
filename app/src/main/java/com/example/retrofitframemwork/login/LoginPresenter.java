@@ -10,6 +10,7 @@ import android.os.Build;
 import androidx.core.content.FileProvider;
 
 import android.os.Environment;
+import android.os.Looper;
 import android.util.Log;
 
 import com.example.retrofitframemwork.AppApi;
@@ -216,18 +217,18 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
     }
 
     public void zipFile(final String filePath) {
-        new Compressor(BaseApplication.getApp())
+        new Compressor()
                 .setMaxHeight(1920)
                 .setMaxWidth(1080)
                 .setQuality(80)
                 .setConfig(Bitmap.Config.RGB_565)
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                .setDestinationDirectoryPath(FileManager.getTempFileDir().getAbsolutePath())
                 .compressToFileAsObservable(new File(filePath))
-                .compose(SchedulerProvider.getInstance().<File>applySchedulers())
-                .subscribe(new Consumer<File>() {
+                .compose(SchedulerProvider.getInstance().<Uri>applySchedulers())
+                .subscribe(new Consumer<Uri>() {
                     @Override
-                    public void accept(File file) throws Exception {
+                    public void accept(Uri uri) throws Exception {
+                        File file = new File(uri.getPath());
                         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                         Log.e("zhang", "Width=" + bitmap.getWidth() + ";height=" + bitmap.getHeight()
                                 + "bitmapSize=" + bitmap.getByteCount() + ";fileSize=" + file.length());

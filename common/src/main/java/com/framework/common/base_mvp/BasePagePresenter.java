@@ -1,5 +1,7 @@
 package com.framework.common.base_mvp;
 
+import androidx.annotation.NonNull;
+
 import com.framework.common.callBack.RxNetCallBack;
 import com.framework.common.data.LoadType;
 import com.framework.common.data.Result;
@@ -16,7 +18,7 @@ import io.reactivex.disposables.Disposable;
  * @date 2019/9/12.
  * description：
  */
-public abstract class BasePagePresenter<R,T extends IPageBaseView<R>> extends BasePresenter<T>{
+public abstract class BasePagePresenter<R,T extends IPageBaseView> extends BasePresenter<T>{
     private int mCurrentPage;
     private final int mPageSize;
     private Disposable mDispose;
@@ -37,10 +39,13 @@ public abstract class BasePagePresenter<R,T extends IPageBaseView<R>> extends Ba
         if(mDispose!=null){
             mDispose.dispose();
         }
-        mDispose = RxNet.request(getObservable(), getMvpView(), loadType, new RxNetCallBack<R>() {
+        Map<String,Object> params = new HashMap<>();
+        params.put("pageSize",mPageSize);
+        params.put("startPage",mCurrentPage);
+        mDispose = RxNet.request(getObservable(params), getMvpView(), loadType, new RxNetCallBack<R>() {
             @Override
             public void onSuccess(R data, int code, String msg) {
-                getMvpView().onPageData(data,mCurrentPage,mPageSize);
+                onPageData(data,mCurrentPage,mPageSize);
                 mCurrentPage++;
             }
 
@@ -51,7 +56,9 @@ public abstract class BasePagePresenter<R,T extends IPageBaseView<R>> extends Ba
         });
     }
 
-    protected abstract Observable<Result<R>> getObservable();
+    protected abstract Observable<Result<R>> getObservable(@NonNull Map<String,Object> params);
+
+    protected abstract void onPageData(R data,int mCurrentPage,int mPageSize);
 
     public int getCurrentPage() {
         return mCurrentPage;

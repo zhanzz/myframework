@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -48,7 +49,7 @@ public class MultiImageSelectorActivity extends BaseActivity implements MultiIma
     /** 多选 */
     public static final int MODE_MULTI = 1;
 
-    private ArrayList<String> resultList = new ArrayList<String>();
+    private ArrayList<Uri> resultList = new ArrayList<>();
     private Button mSubmitButton;
     private int mDefaultCount;
     private int mode;
@@ -65,7 +66,7 @@ public class MultiImageSelectorActivity extends BaseActivity implements MultiIma
         mode = intent.getIntExtra(EXTRA_SELECT_MODE, MODE_MULTI);
         isShow = intent.getBooleanExtra(EXTRA_SHOW_CAMERA, true);
         if(mode == MODE_MULTI && intent.hasExtra(EXTRA_DEFAULT_SELECTED_LIST)) {
-            resultList = intent.getStringArrayListExtra(EXTRA_DEFAULT_SELECTED_LIST);
+            resultList = intent.getParcelableArrayListExtra(EXTRA_DEFAULT_SELECTED_LIST);
         }
     }
 
@@ -85,7 +86,7 @@ public class MultiImageSelectorActivity extends BaseActivity implements MultiIma
             }
         });
         // 完成按钮
-        mSubmitButton = (Button) findViewById(R.id.commit);
+        mSubmitButton = findViewById(R.id.commit);
         if(resultList == null || resultList.size()<=0){
             mSubmitButton.setText("完成");
             mSubmitButton.setEnabled(false);
@@ -102,7 +103,7 @@ public class MultiImageSelectorActivity extends BaseActivity implements MultiIma
                 if(resultList != null && resultList.size() >0){
                     // 返回已选择的图片数据
                     Intent data = new Intent();
-                    data.putStringArrayListExtra(EXTRA_RESULT, resultList);
+                    data.putParcelableArrayListExtra(EXTRA_RESULT, resultList);
                     setResult(RESULT_OK, data);
                     finish();
                 }
@@ -125,7 +126,7 @@ public class MultiImageSelectorActivity extends BaseActivity implements MultiIma
         bundle.putInt(MultiImageSelectorFragment.EXTRA_SELECT_COUNT, mDefaultCount);
         bundle.putInt(MultiImageSelectorFragment.EXTRA_SELECT_MODE, mode);
         bundle.putBoolean(MultiImageSelectorFragment.EXTRA_SHOW_CAMERA, isShow);
-        bundle.putStringArrayList(MultiImageSelectorFragment.EXTRA_DEFAULT_SELECTED_LIST, resultList);
+        bundle.putParcelableArrayList(MultiImageSelectorFragment.EXTRA_DEFAULT_SELECTED_LIST, resultList);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.image_grid, Fragment.instantiate(this, MultiImageSelectorFragment.class.getName(), bundle))
@@ -138,16 +139,16 @@ public class MultiImageSelectorActivity extends BaseActivity implements MultiIma
     }
 
     @Override
-    public void onSingleImageSelected(String path) {
+    public void onSingleImageSelected(Uri path) {
         Intent data = new Intent();
         resultList.add(path);
-        data.putStringArrayListExtra(EXTRA_RESULT, resultList);
+        data.putParcelableArrayListExtra(EXTRA_RESULT, resultList);
         setResult(RESULT_OK, data);
         finish();
     }
 
     @Override
-    public void onImageSelected(String path) {
+    public void onImageSelected(Uri path) {
         if(!resultList.contains(path)) {
             resultList.add(path);
         }
@@ -161,7 +162,7 @@ public class MultiImageSelectorActivity extends BaseActivity implements MultiIma
     }
 
     @Override
-    public void onImageUnselected(String path) {
+    public void onImageUnselected(Uri path) {
         if(resultList.contains(path)){
             resultList.remove(path);
             mSubmitButton.setText("完成("+resultList.size()+"/"+mDefaultCount+")");
@@ -176,11 +177,11 @@ public class MultiImageSelectorActivity extends BaseActivity implements MultiIma
     }
 
     @Override
-    public void onCameraShot(File imageFile) {
+    public void onCameraShot(Uri imageFile) {
         if(imageFile != null) {
             Intent data = new Intent();
-            resultList.add(imageFile.getAbsolutePath());
-            data.putStringArrayListExtra(EXTRA_RESULT, resultList);
+            resultList.add(imageFile);
+            data.putParcelableArrayListExtra(EXTRA_RESULT, resultList);
             setResult(RESULT_OK, data);
             finish();
         }

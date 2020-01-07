@@ -3,12 +3,15 @@ package com.framework.common.base_mvp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,10 +43,10 @@ import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 
-public abstract class BaseActivity extends AppCompatActivity implements IBaseView,INetChange{
+public abstract class BaseActivity extends AppCompatActivity implements IBaseView,IStopAdd,INetChange{
     protected List<BasePresenter> mPresenters;
     private CompositeDisposable mCompositeDisposable;
-    public final BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
+    private final BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
     private View mPartErrorView;
 
     @SuppressWarnings("unchecked")
@@ -260,7 +263,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     }
 
     @Override
-    public Context getContext() {
+    public @NonNull Context getContext() {
         return this;
     }
 
@@ -269,7 +272,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
      * @return
      */
     @Override
-    public CompositeDisposable getCompositeDisposable() {
+    public @NonNull CompositeDisposable getCompositeDisposable() {
         if(mCompositeDisposable==null){
             mCompositeDisposable = new CompositeDisposable();
         }
@@ -283,12 +286,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     }
 
     public boolean isDestroy(){
-        boolean isDestory = false;
-        isDestory = isFinishing();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            isDestory = super.isDestroyed();
-        }
-        return isDestory;
+        return lifecycleSubject.getValue()==ActivityLifeCycleEvent.DESTROY;
     }
 
     /**
@@ -353,6 +351,17 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             } else {
                 failPermission.add(permission);
                 PermissionManager.getInstance().toastTip(getContext(), permission);
+                /**
+                 * ActivityCompat.shouldShowRequestPermissionRationale
+                 * 如果应用之前请求过此权限但用户拒绝了请求，此方法将返回 true。如果用户在过去拒绝了权限请求，并在权限请求
+                 * 系统对话框中选择了 Don't ask again 选项，此方法将返回 false。如果设备规范禁止应用具有该权限，此方法也会返回 false。
+                 */
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this,permissions[i])){
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivityForResult(intent,requestCode);
+                }
             }
         }
         if(!ListUtils.isEmpty(passPermission)){
@@ -371,6 +380,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
 
     @Override
     public void onNetChange(boolean isConnect) {
+        if(isDestroy()){
+           return;
+        }
         if(isConnect){
             hideTopTipView();
         }else {

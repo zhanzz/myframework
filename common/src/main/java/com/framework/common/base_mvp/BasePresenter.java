@@ -3,14 +3,19 @@ package com.framework.common.base_mvp;
 import com.framework.common.callBack.RxNetCallBack;
 import com.framework.common.data.LoadType;
 import com.framework.common.data.Result;
-import com.framework.common.manager.EventBusUtils;
+import com.framework.common.utils.EventBusUtils;
 import com.framework.common.net.RxNet;
+import com.framework.common.utils.LogUtil;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -29,10 +34,10 @@ public class BasePresenter<T extends IBaseView> implements Presenter<T>{
     public void attachView(T view) {
         this.mvpView = new WeakReference<T>(view);
         MvpViewInvocationHandler invocationHandler = new MvpViewInvocationHandler();
+        Class<?>[] clazz = getAllInterfaces(view.getClass());
         // 在这里采用动态代理
         proxyView = (T) Proxy.newProxyInstance(
-                view.getClass().getClassLoader(), view.getClass()
-                        .getInterfaces(), invocationHandler);
+                view.getClass().getClassLoader(),clazz, invocationHandler);
         if(isRegisterEventBus()){
             EventBusUtils.register(this);
         }
@@ -96,5 +101,25 @@ public class BasePresenter<T extends IBaseView> implements Presenter<T>{
      */
     protected boolean isRegisterEventBus(){
         return false;
+    }
+
+    private Class[] getAllInterfaces(Class clazz){
+        List<Class> result = new ArrayList<>();
+        bgm:while (clazz!=null && clazz!=Object.class){
+            Class[] temp = clazz.getInterfaces();
+            for(Class claz:temp){
+                if(IBaseView.class.isAssignableFrom(claz)&&!result.contains(claz)){
+                    result.add(claz);
+                }else if(claz==IStopAdd.class){
+                    break bgm;
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        if(result.size()>1){
+            result.remove(IBaseView.class);
+        }
+        Class[] cResults = new Class[result.size()];
+        return result.toArray(cResults);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.demo.some_test.activity;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -23,6 +25,8 @@ import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.StringUtils;
 import com.framework.common.utils.ToastUtil;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -188,6 +192,17 @@ public class ActivityPermissionActivity extends BaseActivity implements IActivit
 
     @OnClick(R2.id.frame_click)
     public void onClick() {
-        ToastUtil.show(this, "点击了");
+        //ToastUtil.show(this, "点击了");
+        moveAppToFront(this);
     }
+
+    private void moveAppToFront(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTasks = activityManager.getRunningTasks(10);
+        ComponentName cn = runningTasks.get(0).topActivity;
+            if (cn.getPackageName().equals(context.getPackageName())) {
+                //activityManager.moveTaskToFront(taskInfo.id, 0)
+//                break
+            }
+        }
 }

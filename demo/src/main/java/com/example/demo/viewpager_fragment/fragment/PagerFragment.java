@@ -5,17 +5,20 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.SharedElementCallback;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.demo.R;
 import com.example.demo.R2;
 import com.example.demo.viewpager_fragment.activity.BrowsePhotoActivity;
@@ -26,6 +29,7 @@ import com.example.demo.viewpager_fragment.view.IPagerView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.framework.common.adapter.BaseAdapter;
 import com.framework.common.base_mvp.BaseFragment;
+import com.framework.common.base_mvp.BasePageFragment;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.base_mvp.IPageBaseView;
 import com.framework.common.data.LoadType;
@@ -40,7 +44,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-public class PagerFragment extends BaseFragment implements IPageBaseView<PresellBean> {
+public class PagerFragment extends BasePageFragment<PresellBean.PresellProduct>{
     @BindView(R2.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R2.id.smartRefreshLayout)
@@ -63,7 +67,7 @@ public class PagerFragment extends BaseFragment implements IPageBaseView<Presell
     }
 
     @Override
-    protected BasePresenter getPresenter() {
+    protected TestPagerPresenter getPresenter() {
         if(mPresenter==null){
             mPresenter = new TestPagerPresenter(10);
         }
@@ -84,18 +88,21 @@ public class PagerFragment extends BaseFragment implements IPageBaseView<Presell
         return R.layout.fragment_pager;
     }
 
+    @NonNull
+    @Override
+    public BaseAdapter<PresellBean.PresellProduct, ? extends BaseViewHolder> getAdapter() {
+        return mAdapter;
+    }
+
     @Override
     public void bindData() {
         //testMerge添加的测试提交
         //int x = 4;
         mAdapter = new TestSaveAdapter(recyclerView);
-        mAdapter.setRealControlMoreEnable(true);
-        mAdapter.setIsRecyclerHeadAndFooter(false);
+        super.bindData();
         TextView tv = new TextView(getContext());
         tv.setText(mPresenter.getId());
         mAdapter.addHeaderView(tv);
-        mAdapter.setLoadEndText("暂无更多数据");
-        mAdapter.setEmptyView(ViewUtil.createEmptyView(getContext()));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setRecycledViewPool(mRecyclerViewPool);
@@ -109,18 +116,7 @@ public class PagerFragment extends BaseFragment implements IPageBaseView<Presell
 
     @Override
     public void initEvent() {
-        mAdapter.setSmartRefreshLayout(smartRefreshLayout);
-        mAdapter.setRefreshListener(new BaseAdapter.RefreshListener() {
-            @Override
-            public void onRefresh() {
-                mPresenter.getFirst(LoadType.NONE);
-            }
-
-            @Override
-            public void onLoadMore() {
-                mPresenter.getMore();
-            }
-        });
+        super.initEvent();
 
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
@@ -144,29 +140,20 @@ public class PagerFragment extends BaseFragment implements IPageBaseView<Presell
         });
     }
 
+    @NonNull
+    @Override
+    protected SmartRefreshLayout getSmartRefreshLayout() {
+        return smartRefreshLayout;
+    }
+
     public void onReenter(int resultCode,Intent data) {
         // Do whatever with the data here
     }
 
+    @NonNull
     @Override
-    public void onPageData(PresellBean data, int currentPage, int pageSize) {
-        mAdapter.setOrAddData(data.getProductList(),currentPage,pageSize);
-        if(recyclerView.getAdapter()==null){
-            recyclerView.setAdapter(mAdapter);
-        }
-    }
-
-    @Override
-    public void onPageFail(int code, String msg, int currentPage) {
-        mAdapter.loadMoreFail(currentPage);
-        if(ListUtils.isEmpty(mAdapter.getData())){
-            showErrorView();
-        }
-    }
-
-    @Override
-    public void reloadData() {
-        mPresenter.getFirst(LoadType.LOAD);
+    protected RecyclerView getRecyclerView() {
+        return recyclerView;
     }
 
     public void setRecyclerViewPool(RecyclerView.RecycledViewPool recyclerViewPool) {

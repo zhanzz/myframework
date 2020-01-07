@@ -95,6 +95,7 @@ public final class TinyDB {
     3. apply方法不会提示任何失败的提示。
     由于在一个进程中，sharedPreference是单实例，一般不会出现并发冲突，
     如果对提交的结果不关心的话，建议使用apply，当然需要确保提交成功且有后续操作的话，还是需要用commit的。*/
+    //避免在页面过多的调用 https://blog.csdn.net/qq_16188829/article/details/78597427
     public void putStringAsy(String key, String value) {
         Editor editor = this.preferences.edit();
         editor.putString(key, value).apply();

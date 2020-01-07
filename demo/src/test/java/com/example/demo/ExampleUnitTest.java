@@ -15,6 +15,7 @@ import com.framework.common.exception.ApiException;
 import com.framework.common.exception.CustomException;
 import com.framework.common.retrofit.ApiSubscriber;
 import com.framework.common.utils.GsonUtils;
+import com.framework.model.VersionInfo;
 import com.google.gson.Gson;
 import com.google.zxing.common.StringUtils;
 
@@ -22,6 +23,8 @@ import org.json.JSONException;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.ParameterizedType;
@@ -34,6 +37,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+
+import io.reactivex.subjects.BehaviorSubject;
 
 import static org.junit.Assert.*;
 
@@ -325,6 +330,11 @@ public class ExampleUnitTest {
 //        System.out.println(uuid1);
         File file = new File("cc/dd","aa.txt");
         System.out.println(file.getName());//aa.txt
-        System.out.println(file.getParent());
+        System.out.println(file.getParent());//
+
+
+        BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
+        lifecycleSubject.onNext(ActivityLifeCycleEvent.DESTROY);
+        System.out.println(lifecycleSubject.getValue()==ActivityLifeCycleEvent.DESTROY);//true
     }
 }

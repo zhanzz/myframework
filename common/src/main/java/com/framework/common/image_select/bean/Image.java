@@ -1,5 +1,7 @@
 package com.framework.common.image_select.bean;
 
+import android.net.Uri;
+
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 
 /**
@@ -9,6 +11,7 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 public class Image implements MultiItemEntity {
     public static final int TYPE_NORMAL = 0,TYPE_CAMERA=1;
     public String path;
+    public Uri uri;
     public String name;
     public long time;
     public int itemType = TYPE_NORMAL;//视图类型

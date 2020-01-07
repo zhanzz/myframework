@@ -13,6 +13,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.info.ImagePerfData;
 import com.facebook.drawee.backends.pipeline.info.ImagePerfDataListener;
 import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -103,6 +104,43 @@ public class FrescoUtils {
                 .setImageRequest(request)
                 .setAutoPlayAnimations(true)
                 .setOldController(draweeView.getController())
+                .build();
+        draweeView.setController(controller);
+    }
+
+    /**
+     * 不使用七牛的图片，不需要宽高
+     * @param url
+     * @param draweeView
+     */
+    public static void showThumb(Uri url, SimpleDraweeView draweeView){
+        if (url==null||TextUtils.isEmpty(url.toString())) return;
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(url)
+                .setRotationOptions(RotationOptions.autoRotate())
+                .build();
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(request)
+                .setAutoPlayAnimations(true)
+                .setOldController(draweeView.getController())
+                .build();
+        draweeView.setController(controller);
+    }
+
+    /**
+     * 不使用七牛的图片，不需要宽高
+     * @param url
+     * @param draweeView
+     */
+    public static void showThumb(Uri url, SimpleDraweeView draweeView, ControllerListener<ImageInfo> listener){
+        if (url==null||TextUtils.isEmpty(url.toString())) return;
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(url)
+                .setRotationOptions(RotationOptions.autoRotate())
+                .build();
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(request)
+                .setAutoPlayAnimations(true)
+                .setOldController(draweeView.getController())
+                .setControllerListener(listener)
                 .build();
         draweeView.setController(controller);
     }

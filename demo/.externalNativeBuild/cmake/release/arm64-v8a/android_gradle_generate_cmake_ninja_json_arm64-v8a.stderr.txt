@@ -2,7 +2,7 @@ CMake Warning at E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b
   Using custom NDK path (ANDROID_NDK is set):
   E:\android_ndk\android-ndk-r16b-windows-x86_64\android-ndk-r16b
 Call Stack (most recent call first):
-  E:/rn_study/rxjava_retorfit/android/demo/.externalNativeBuild/cmake/release/arm64-v8a/CMakeFiles/3.6.0-rc2/CMakeSystem.cmake:6 (include)
+  D:/developer_tool/android_sdk/cmake/3.6.4111459/share/cmake-3.6/Modules/CMakeDetermineSystem.cmake:98 (include)
   CMakeLists.txt
 
 

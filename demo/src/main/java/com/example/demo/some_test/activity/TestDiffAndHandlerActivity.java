@@ -4,6 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,7 +43,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import androidx.core.app.SharedElementCallback;
+import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -64,6 +70,7 @@ import com.example.demo.some_test.presenter.TestDiffAndHandlerPresenter;
 import com.example.demo.some_test.view.ITestDiffAndHandlerView;
 //import com.example.study_gradle.TestHas;
 //import com.example.study_gradle2.TestGlideLoad;
+import com.example.demo.viewpager_fragment.Main2Activity;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.framework.common.BaseApplication;
 import com.framework.common.base_mvp.BaseActivity;
@@ -71,6 +78,7 @@ import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.utils.FileUtils;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.LogUtil;
+import com.framework.common.utils.NotificationUtil;
 import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.model.demo.TestDiffBean;
@@ -452,7 +460,42 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         //getIntent().putExtra("content1","我是修改后的内容1");
         //one=false;two=true;three=false
         //LogUtil.e("one="+btnChange.hasFocus()+";two="+btnChange.hasFocusable()+";three="+btnChange.isFocusableInTouchMode());
-        myViewModel.strLive.setValue("change");
+        //myViewModel.strLive.setValue("change");
+        showNotification();
+    }
+
+    private void showNotification() {
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        //启动通知Activity时，拉起主页面Activity
+        Intent msgIntent = new Intent();
+        msgIntent.setClass(this, Main2Activity.class);
+
+        //创建返回栈
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        //添加Activity到返回栈
+        stackBuilder.addParentStack(Main2Activity.class);
+        //添加Intent到栈顶
+        stackBuilder.addNextIntent(msgIntent);
+
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationUtil.ChannelConfig.Builder builder = new NotificationUtil.ChannelConfig.Builder();
+        builder.setChannelId("normal");
+        builder.setChannelName("普通通知");
+        String channelId = NotificationUtil.createChannelId(this,builder.build());
+        // create and send notificaiton
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,channelId)
+                .setSmallIcon(getApplicationInfo().icon)
+                .setWhen(System.currentTimeMillis())
+                .setAutoCancel(true)//自己维护通知的消失
+                .setContentTitle("我是标题")
+                .setTicker("我是ticker")
+                .setContentText("我是内容")
+                .setOnlyAlertOnce(true)
+                .setContentIntent(pendingIntent);
+        //将一个Notification变成悬挂式Notification
+        mBuilder.setFullScreenIntent(pendingIntent, true);
+        Notification notification = mBuilder.build();
+        manager.notify(100, notification);
     }
 
     private void testException(){

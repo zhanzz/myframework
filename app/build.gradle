@@ -7,7 +7,7 @@ apply plugin: 'com.alibaba.arouter'
 apply plugin: 'com.mob.sdk'
 
 android {
-    compileSdkVersion build_versions.target_sdk
+    compileSdkVersion build_versions.compile_sdk
     defaultConfig {
         applicationId "com.example.retrofitframemwork"
         minSdkVersion build_versions.min_sdk
@@ -107,6 +107,7 @@ dependencies {
     implementation project(':model')
     implementation project(':demo')
     implementation project(':reactnative')
+    implementation project(':jetpack')
     implementation androidx_support.core
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin_version"
     api 'com.sobot.chat:sobotsupport-glidev4:1.0.2'

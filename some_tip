@@ -1,0 +1,6 @@
+android studio会根据 compileSdk版本来编译apk,  在运行时会加载手机中framework的class
+例如：编译时用的29版本的TextView,但是在apk安装到28版本时，不会使用29版本的TextView而是会加载手机中的FrameWork的TextView
+
+当两个不同版本的class被使用时，只要其中方法签名没变，无论加载哪个class 方法都是可以被调用的
+
+关于androidx的转换并没有改变原有的aar，只是会转换生成一份新的jar并放在.gradle\caches\transforms-2\files-2.1下

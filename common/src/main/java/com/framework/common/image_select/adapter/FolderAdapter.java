@@ -1,6 +1,9 @@
 package com.framework.common.image_select.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.Build;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,8 @@ import com.framework.common.R;
 import com.framework.common.image_select.bean.Folder;
 import com.framework.common.utils.FrescoUtils;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,7 +85,19 @@ public class FolderAdapter extends BaseAdapter {
                 holder.size.setText(getTotalImageSize()+"张");
                 if(mFolders.size()>0){
                     Folder f = mFolders.get(0);
-                    FrescoUtils.showThumb("file://"+f.cover.path,holder.cover,mImageSize,mImageSize);
+                    SimpleDraweeView simpleDraweeView = holder.cover;
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            Bitmap bitmap = mContext.getContentResolver().loadThumbnail(f.cover.uri,new Size(mImageSize,mImageSize),null);
+                            simpleDraweeView.setImageBitmap(bitmap);
+                        }else {
+                            FrescoUtils.showThumb("file://"+f.cover.path,simpleDraweeView,mImageSize,mImageSize);
+                        }
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }else {
                 holder.bindData(getItem(i));
@@ -133,7 +150,18 @@ public class FolderAdapter extends BaseAdapter {
             size.setText(data.images.size()+"张");
             // 显示图片
             FrescoUtils.showThumb("file://"+data.cover.path,cover,mImageSize,mImageSize);
-            // TODO 选择标识
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    Bitmap bitmap = mContext.getContentResolver().loadThumbnail(data.cover.uri,new Size(mImageSize,mImageSize),null);
+                    cover.setImageBitmap(bitmap);
+                }else {
+                    FrescoUtils.showThumb("file://"+data.cover.path,cover,mImageSize,mImageSize);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

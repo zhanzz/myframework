@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.MultiDex;
 
 import android.text.TextUtils;
@@ -30,12 +32,14 @@ import com.facebook.imagepipeline.listener.RequestListener;
 import com.facebook.imagepipeline.listener.RequestLoggingListener;
 import com.framework.common.loading_view.CustomRefreshHeader;
 import com.framework.common.manager.FrescoMemoryManager;
+import com.framework.common.manager.LocalBroadcastActionManager;
 import com.framework.common.manager.NetWorkManager;
 import com.framework.common.receiver.INetChange;
 import com.framework.common.receiver.NetChangeReceiver;
 import com.framework.common.callBack.EmptyActivityLifecycleCallbacks;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.LogUtil;
+import com.framework.common.utils.Platform;
 import com.framework.common.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshFooterCreator;
@@ -97,37 +101,33 @@ public class BaseApplication extends Application {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-                manager.registerDefaultNetworkCallback(new ConnectivityManager.NetworkCallback() {
-                    @Override
-                    public void onLost(Network network) {
-                        onNetWorkChange(false);
-                    }
+                if(manager!=null){
+                    manager.registerDefaultNetworkCallback(new ConnectivityManager.NetworkCallback() {
+                        @Override
+                        public void onLost(Network network) {//在子线程
+                            onNetWorkChange(false);
+                        }
 
-                    @Override
-                    public void onAvailable(Network network) {
-                        onNetWorkChange(true);
-                    }
-                });
+                        @Override
+                        public void onAvailable(Network network) {//在子线程
+                            onNetWorkChange(true);
+                        }
+                    });
+                }
             }else{
                 NetChangeReceiver receiver = new NetChangeReceiver();
                 IntentFilter intentFilter = new IntentFilter();
                 intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
                 registerReceiver(receiver, intentFilter);
-                registerActivityLifecycleCallbacks(new MyLifeCallBack());
             }
+            registerActivityLifecycleCallbacks(new MyLifeCallBack());
         }
     }
 
     private void onNetWorkChange(boolean hasNet) {
-        Activity activity = com.framework.common.manager.ActivityManager.getInstance().getLastActivity();
-        if(activity instanceof INetChange){
-            INetChange iNetChange = (INetChange) activity;
-            if (hasNet) {
-                iNetChange.onNetChange(true);
-            } else {
-                iNetChange.onNetChange(false);
-            }
-        }
+        Intent intent = new Intent(LocalBroadcastActionManager.ACTION_NETWORK_CHANGE);
+        intent.putExtra("hasNet",hasNet);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     @Override

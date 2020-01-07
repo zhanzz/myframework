@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Process;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -24,6 +25,7 @@ import com.example.retrofitframemwork.login.view.IMain4View;
 import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.utils.ListUtils;
+import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.StringUtils;
 import com.framework.common.utils.ToastUtil;
 
@@ -53,6 +55,7 @@ public class Main4Activity extends BaseActivity implements IMain4View {
 
     @Override
     public void bindData() {
+        LogUtil.e("zhang", "oncreate;"+getClass().getSimpleName() + ";" + getTaskId() + ";pid=" + Process.myPid());
         slidingPanelLayout.setSliderFadeColor(Color.TRANSPARENT);//设置面板的侧滑渐变色
         slidingPanelLayout.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
             @Override
@@ -74,6 +77,7 @@ public class Main4Activity extends BaseActivity implements IMain4View {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        LogUtil.e("zhang", "onNewIntent;"+getClass().getSimpleName() + ";" + getTaskId() + ";pid=" + Process.myPid());
         super.onNewIntent(intent);
     }
 

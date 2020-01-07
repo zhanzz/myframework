@@ -13,13 +13,10 @@ public class ToastUtil {
     private static Toast sToast;
 
     private static Toast getToast(Context applicationContext) {
-        if(sToast==null){
-            synchronized (ToastUtil.class) {
-                if (sToast == null) {
-                    sToast = Toast.makeText(applicationContext,"",Toast.LENGTH_SHORT);
-                }
-            }
+        if(sToast!=null){
+            sToast.cancel();
         }
+        sToast = Toast.makeText(applicationContext,"",Toast.LENGTH_SHORT);
         return sToast;
     }
 
