@@ -131,10 +131,17 @@ public abstract class BaseFragment extends Fragment implements IBaseView,IStopAd
         }
     }
 
+    @Override
+    public void hideErrorView() {
+        if (initLoadingAndErrorView() != null) {
+            mLoadingAndErrorView.hideError();
+        }
+    }
+
     /**
      * 当点击错误页面重试时会调用此方法
      */
-    public void reloadData() {
+    public void loadPageData() {
     }
 
     @Override
@@ -164,6 +171,10 @@ public abstract class BaseFragment extends Fragment implements IBaseView,IStopAd
         ToastUtil.show(getContext(), msg, gravity, duration);
     }
 
+    public boolean isDestroyView(){
+        return lifecycleSubject.getValue()==ActivityLifeCycleEvent.DESTROY;
+    }
+
     @Override
     public void onDestroyView() {
         lifecycleSubject.onNext(ActivityLifeCycleEvent.DESTROY);
@@ -189,7 +200,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView,IStopAd
             mLoadingAndErrorView.setActionListener(new LoadingAndErrorView.ActionListener() {
                 @Override
                 public void clickRetry() {
-                    reloadData();
+                    loadPageData();
                 }
             });
         }

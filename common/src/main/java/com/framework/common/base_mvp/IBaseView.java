@@ -22,6 +22,8 @@ public interface IBaseView {
 
     void showErrorView();
 
+    void hideErrorView();
+
     /**
      * 显示此loading的目的是不能点击内容视图
      */

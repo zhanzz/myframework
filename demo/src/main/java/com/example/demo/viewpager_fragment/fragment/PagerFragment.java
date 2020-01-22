@@ -44,7 +44,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-public class PagerFragment extends BasePageFragment<PresellBean.PresellProduct>{
+public class PagerFragment extends BasePageFragment<PresellBean.PresellProduct> implements IPagerView{
     @BindView(R2.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R2.id.smartRefreshLayout)

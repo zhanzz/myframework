@@ -48,6 +48,7 @@ import com.scwang.smartrefresh.layout.api.RefreshFooter;
 import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -81,7 +82,7 @@ public class BaseApplication extends Application {
             SmartRefreshLayout.setDefaultRefreshHeaderCreator(new DefaultRefreshHeaderCreator() {
                 @Override
                 public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
-                    return new CustomRefreshHeader(context);
+                    return new ClassicsHeader(context);
                 }
             });
             //设置全局的Footer构建器

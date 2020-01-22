@@ -3,6 +3,7 @@ package com.example.jetpack;
 import com.framework.common.data.Result;
 import com.framework.model.demo.ActivityBean;
 import com.framework.model.demo.PresellBean;
+import com.framework.model.demo.ProductAndFilterListBean;
 import com.framework.model.demo.ProductBean;
 
 import java.util.List;
@@ -27,4 +28,7 @@ public interface DemoApi {
 
     @POST("https://app.zhidianlife.com/life-mobile-mall/apis/v2/index/products")
     Observable<Result<List<ProductBean>>> getHomeProducts(@Body Map<String, String> params);
+
+    @POST("https://s1.zhidianlife.com/search/api/v2/commodity/searchFilter")
+    Observable<Result<ProductAndFilterListBean>> getSearchProduct(@Body Map<String, Object> params);
 }

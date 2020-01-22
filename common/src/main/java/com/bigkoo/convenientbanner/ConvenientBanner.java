@@ -60,21 +60,28 @@ public class ConvenientBanner<T> extends FrameLayout {
     private AdSwitchTask adSwitchTask;
 
     public ConvenientBanner(Context context) {
-        this(context, null);
+        super(context);
+        initParams(context,null);
     }
 
     public ConvenientBanner(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context,attrs);
+        initParams(context,attrs);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public ConvenientBanner(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context,attrs,defStyleAttr);
+        initParams(context, attrs);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ConvenientBanner(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        initParams(context,attrs);
+    }
+
+    private void initParams(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ConvenientBanner);
         canLoop = a.getBoolean(R.styleable.ConvenientBanner_canLoop, false);
         mIndicatorSpace = a.getDimensionPixelSize(R.styleable.ConvenientBanner_indicatorSpace, dpToPx(8));

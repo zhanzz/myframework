@@ -23,19 +23,41 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_bar">
 
-        <com.example.demo.widget.TwoLevelRefreshHeader
+        <com.scwang.smartrefresh.layout.header.TwoLevelHeader
             android:id="@+id/twoLevelHeader"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srlMaxRage="2.5"
-            app:srlFloorRage="0.6"
-            app:srlRefreshRage="0.3">
+            android:layout_height="wrap_content">
 
-            <com.example.demo.widget.ActivityTwoRefreshHeader
+            <ImageView
+                android:id="@+id/second_floor"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_name"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_red_packet" />
 
-        </com.example.demo.widget.TwoLevelRefreshHeader>
+            <FrameLayout
+                android:id="@+id/second_floor_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0"
+                android:background="#fff">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/app_name"
+                    android:gravity="center"
+                    android:scaleType="centerCrop"
+                    android:text="二楼"
+                    android:textColor="#000000" />
+            </FrameLayout>
+
+            <com.scwang.smartrefresh.layout.header.ClassicsHeader
+                android:id="@+id/classics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.scwang.smartrefresh.layout.header.TwoLevelHeader>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

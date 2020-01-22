@@ -10,6 +10,7 @@ import com.framework.common.data.LoadViewType;
 import com.framework.common.net.RxNet;
 import com.framework.common.retrofit.RetorfitUtil;
 import com.framework.model.demo.PresellBean;
+import com.framework.model.demo.ProductAndFilterListBean;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,16 +27,31 @@ public class OneViewModel extends ViewModel {
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     public final MutableLiveData<LoadViewType> loading = new MutableLiveData<>();
     public final MutableLiveData<Boolean> errorView = new MutableLiveData<>();
-    public final MutableLiveData<PresellBean> presellBean = new MutableLiveData<>();
+    public final MutableLiveData<ProductAndFilterListBean> presellBean = new MutableLiveData<>();
 
-    public void getProducts(){
+    private int pageSize = 10;
+    private int mCurrentPage = 1;
+    public int test = 0;//ViewModel 类让数据可在发生屏幕旋转等"配置"更改后继续存在
+
+
+    public void getFirst(LoadType loadType){
+        mCurrentPage = 1;
+        getProducts(loadType);
+    }
+
+    public void getMore(){
+        mCurrentPage++;
+        getProducts(LoadType.NONE);
+    }
+
+    private void getProducts(LoadType loadType){
         Map<String, Object> params = new HashMap<>();
-        params.put("pageSize","10");
-        params.put("startPage","1");
-        params.put("activityId","");
-        Disposable disposable = RxNet.request(RetorfitUtil.getMallRetorfitApi(DemoApi.class).loadCategoryData(params),loading,LoadType.LOAD, new RxNetCallBack<PresellBean>() {
+        params.put("pageSize",pageSize);
+        params.put("startPage",mCurrentPage);
+        params.put("queryString","纸");
+        Disposable disposable = RxNet.request(RetorfitUtil.getMallRetorfitApi(DemoApi.class).getSearchProduct(params),loading,loadType, new RxNetCallBack<ProductAndFilterListBean>() {
                     @Override
-                    public void onSuccess(PresellBean data, int code, String msg) {
+                    public void onSuccess(ProductAndFilterListBean data, int code, String msg) {
                         presellBean.setValue(data);
                     }
 
@@ -45,6 +61,14 @@ public class OneViewModel extends ViewModel {
                     }
                 });
         compositeDisposable.add(disposable);
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public int getCurrentPage() {
+        return mCurrentPage;
     }
 
     @Override

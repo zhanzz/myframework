@@ -75,6 +75,35 @@ public class CustomRefreshHeader extends RelativeLayout implements RefreshHeader
 
     @Override
     public void onStateChanged(RefreshLayout refreshLayout, RefreshState oldState, RefreshState newState) {
+//        final View arrowView = mArrowView;
+//        final View updateView = mLastUpdateText;
+//        switch (newState) {
+//            case None:
+//                updateView.setVisibility(mEnableLastTime ? VISIBLE : GONE);
+//            case PullDownToRefresh:
+//                mTitleText.setText(mTextPulling);
+//                arrowView.setVisibility(VISIBLE);
+//                arrowView.animate().rotation(0);
+//                break;
+//            case Refreshing:
+//            case RefreshReleased:
+//                mTitleText.setText(mTextRefreshing);
+//                arrowView.setVisibility(GONE);
+//                break;
+//            case ReleaseToRefresh:
+//                mTitleText.setText(mTextRelease);
+//                arrowView.animate().rotation(180);
+//                break;
+//            case ReleaseToTwoLevel:
+//                mTitleText.setText(mTextSecondary);
+//                arrowView.animate().rotation(0);
+//                break;
+//            case Loading:
+//                arrowView.setVisibility(GONE);
+//                updateView.setVisibility(mEnableLastTime ? INVISIBLE : GONE);
+//                mTitleText.setText(mTextLoading);
+//                break;
+//        }
         switch (newState) {
             case PullDownToRefresh: // 下拉刷新开始。正在下拉还没松手时调用
                 mArrowImageView.setVisibility(View.VISIBLE);
@@ -96,6 +125,9 @@ public class CustomRefreshHeader extends RelativeLayout implements RefreshHeader
             case RefreshFinish: // 刷新结束
                 mLastCurrentTimeMillis = System.currentTimeMillis();
                 break;
+            case ReleaseToTwoLevel:
+                mHintTextView.setText("释放进入二楼");
+                mArrowImageView.animate().rotation(0);
         }
     }
 

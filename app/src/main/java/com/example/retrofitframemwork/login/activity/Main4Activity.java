@@ -110,7 +110,7 @@ public class Main4Activity extends BaseActivity implements IMain4View {
 
     @OnClick(R.id.btn_4jump)
     public void onClick() {
-        Main2Activity.start(this);
+        Main2Activity.start(this,2);
     }
 
     public static void start(Context context) {

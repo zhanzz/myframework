@@ -135,10 +135,17 @@ public abstract class BaseViewGroup extends FrameLayout implements IBaseView,ISt
         }
     }
 
+    @Override
+    public void hideErrorView() {
+        if (initLoadingAndErrorView() != null) {
+            mLoadingAndErrorView.hideError();
+        }
+    }
+
     /**
      * 当点击错误页面重试时会调用此方法
      */
-    public void reloadData() {
+    public void loadPageData() {
     }
 
     private LoadingAndErrorView mLoadingAndErrorView;
@@ -151,7 +158,7 @@ public abstract class BaseViewGroup extends FrameLayout implements IBaseView,ISt
             mLoadingAndErrorView.setActionListener(new LoadingAndErrorView.ActionListener() {
                 @Override
                 public void clickRetry() {
-                    reloadData();
+                    loadPageData();
                 }
             });
         }

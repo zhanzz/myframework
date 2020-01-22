@@ -62,9 +62,10 @@ public  abstract class DownLoadObserver<V extends ResponseBody> extends AtomicRe
 
     @Override
     public void dispose() {
-        DisposableHelper.dispose(this);
-        LogUtil.e("zhang","dispose=操作已取消");
-        //onFail(new ApiException(CustomException.DISPOSED,"操作已取消"));
+        if(!isDisposed()){
+            DisposableHelper.dispose(this);
+            onFail(new ApiException(CustomException.DISPOSED,"操作已取消"));
+        }
     }
 
     @Override

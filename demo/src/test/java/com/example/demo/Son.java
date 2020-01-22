@@ -8,12 +8,12 @@ import java.io.Serializable;
  * description：
  */
 public class Son extends Fater implements Cloneable, Serializable {
-    //public int age = 10;
+    public int age = 10;
 
-//    @Override
-//    public int getAge() {
-//        return age;
-//    }
+    @Override
+    public int getAge() {
+        return age;
+    }
 
     @Override
     public void setAge(int age) {

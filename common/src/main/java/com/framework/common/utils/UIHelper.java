@@ -2,6 +2,7 @@ package com.framework.common.utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import com.framework.common.BaseApplication;
@@ -106,13 +107,30 @@ public class UIHelper {
     }
 
     /**
-     * 获取屏幕高度
+     * 获取屏幕高度,去掉了状态栏与导航栏的高度
      */
     public static int getDisplayHeight() {
         if (BaseApplication.getApp() == null)
             return 0;
         WindowManager manage = (WindowManager) BaseApplication.getApp().getSystemService(Context.WINDOW_SERVICE);
         return manage.getDefaultDisplay().getHeight();
+    }
+
+    /**
+     * 获取屏幕高度
+     * 手机真实设备的高度，在设置界面中看到的手机分辨率
+     */
+    public static int getDisplayRealHeight() {
+        if (BaseApplication.getApp() == null)
+            return 0;
+        WindowManager manage = (WindowManager) BaseApplication.getApp().getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            manage.getDefaultDisplay().getRealMetrics(dm);
+        }else {
+            manage.getDefaultDisplay().getMetrics(dm);
+        }
+        return dm.heightPixels;
     }
 
     public static int getDeviceDpi(){

@@ -1,13 +1,10 @@
 package com.framework.common.image_select;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.UiAutomation;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -16,13 +13,11 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -31,14 +26,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ListPopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.framework.common.R;
@@ -48,30 +39,19 @@ import com.framework.common.image_select.adapter.FolderAdapter;
 import com.framework.common.image_select.adapter.ImageGridAdapter;
 import com.framework.common.image_select.bean.Folder;
 import com.framework.common.image_select.bean.Image;
-import com.framework.common.image_select.utils.FileManager;
 import com.framework.common.image_select.utils.TimeUtils;
 import com.framework.common.manager.PermissionManager;
-import com.framework.common.retrofit.SchedulerProvider;
 import com.framework.common.utils.AppTools;
 import com.framework.common.utils.FrescoUtils;
-import com.framework.common.utils.GridSpaceItemDecoration;
-import com.framework.common.utils.LogUtil;
-import com.framework.common.utils.PictureUtils;
+import com.framework.common.item_decoration.GridSpaceItemDecoration;
 import com.framework.common.utils.TakePhotoUtil;
 import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /**
  * 图片选择Fragment
@@ -176,7 +156,7 @@ public class MultiImageSelectorFragment extends BaseFragment {
                 // 跳转到系统照相机
                 mTmpUri = TakePhotoUtil.takePhotoV3(this, REQUEST_CAMERA);
             } else if (permissions.contains(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                mTmpUri = Uri.fromFile(TakePhotoUtil.takePhoto(this, REQUEST_CAMERA));
+                mTmpUri = Uri.fromFile(TakePhotoUtil.takePhotoV2(this, REQUEST_CAMERA));
             }
         }
     }
@@ -472,7 +452,6 @@ public class MultiImageSelectorFragment extends BaseFragment {
                 CursorLoader cursorLoader = new CursorLoader(getActivity(),
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION,
                         null, null, IMAGE_PROJECTION[2] + " DESC");
-                cursorLoader.forceLoad();//重新加载
                 return cursorLoader;
             } else if (id == LOADER_CATEGORY) {
                 CursorLoader cursorLoader = new CursorLoader(getActivity(),

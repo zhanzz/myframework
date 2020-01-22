@@ -129,7 +129,7 @@ public class PageFragmentActivity extends BaseActivity implements IPageFragmentV
     }
 
     @Override
-    public void reloadData() {
+    public void loadPageData() {
         mPresenter.getCategory();
     }
 

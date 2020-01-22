@@ -64,6 +64,11 @@ public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutV
     }
 
     @Override
+    protected int getSystemBarColor() {
+        return 0x77000000;
+    }
+
+    @Override
     public void bindData() {
         mScrollActViewPool = new RecyclerView.RecycledViewPool();
         mScrollActViewPool.setMaxRecycledViews(0, 10);
@@ -129,7 +134,7 @@ public class StudyVlayoutActivity extends BaseActivity implements IStudyVlayoutV
     }
 
     @Override
-    public void reloadData() {
+    public void loadPageData() {
         mPresenter.getHomeData(true);
     }
 

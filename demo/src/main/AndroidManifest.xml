@@ -24,6 +24,19 @@
 
     <application>
         <activity
+            android:name=".recyclerview.activity.CustomManagerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/customeTheme"/>
+        <activity
+            android:name=".coordinator_layout.activity.CoordinatorLayoutV2Activity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".coordinator_layout.activity.CoordinatorLayoutActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".pagelist.activity.PageListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
@@ -100,9 +113,9 @@
         <activity
             android:name=".viewpager_fragment.Main2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
             android:exported="true"
-            android:parentActivityName="com.example.demo.some_test.activity.TestDiffAndHandlerActivity"/>
+            android:parentActivityName=".some_test.activity.TestDiffAndHandlerActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".viewpager_fragment.activity.PageFragmentActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -114,9 +127,9 @@
         <activity
             android:name=".viewpager_fragment.activity.ExpandRecyclerViewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
+            android:exported="true"
             android:launchMode="singleTask"
-            android:exported="true"/>
+            android:screenOrientation="portrait" />
 
         <service android:name=".service.ForegroundService" />
         <service android:name=".window.WindowService.WindowService" />

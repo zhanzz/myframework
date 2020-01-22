@@ -1,6 +1,7 @@
 package com.example.demo.viewpager_fragment.presenter;
 
 import com.example.demo.DemoApi;
+import com.example.demo.viewpager_fragment.view.IPagerView;
 import com.framework.common.base_mvp.BasePagePresenter;
 import com.framework.common.base_mvp.IPageBaseView;
 import com.framework.common.data.Result;
@@ -15,7 +16,7 @@ import io.reactivex.Observable;
  * @date 2019/9/12.
  * description：
  */
-public class TestPagerPresenter extends BasePagePresenter<PresellBean,IPageBaseView<PresellBean.PresellProduct>> {
+public class TestPagerPresenter extends BasePagePresenter<PresellBean, IPagerView> {
     private ArrayList<PresellBean.PresellProduct> mData;
     private String id;
     public TestPagerPresenter(int pageSize) {

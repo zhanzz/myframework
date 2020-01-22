@@ -28,15 +28,15 @@ import io.reactivex.disposables.Disposable;
  */
 public class BasePresenter<T extends IBaseView> implements Presenter<T>{
     private WeakReference<T> mvpView;
-    private T proxyView;
+    private Object proxyView;
     private Map<Integer,Disposable> mRequestMap;
     @Override
     public void attachView(T view) {
-        this.mvpView = new WeakReference<T>(view);
+        this.mvpView = new WeakReference<>(view);
         MvpViewInvocationHandler invocationHandler = new MvpViewInvocationHandler();
         Class<?>[] clazz = getAllInterfaces(view.getClass());
         // 在这里采用动态代理
-        proxyView = (T) Proxy.newProxyInstance(
+        proxyView = Proxy.newProxyInstance(
                 view.getClass().getClassLoader(),clazz, invocationHandler);
         if(isRegisterEventBus()){
             EventBusUtils.register(this);
@@ -75,7 +75,7 @@ public class BasePresenter<T extends IBaseView> implements Presenter<T>{
     }
 
     protected T getMvpView(){
-        return proxyView;
+        return (T)proxyView;
     }
 
     protected boolean isViewAttached() {

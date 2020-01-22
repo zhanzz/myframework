@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_page1"
             app:popUpTo="@id/page1Fragment" />
+        <action
+            android:id="@+id/action_page2Fragment_to_blankFragment"
+            app:destination="@id/blankFragment" />
     </fragment>
 
     <navigation
@@ -37,5 +40,10 @@
             android:label="fragment_page3"
             tools:layout="@layout/fragment_two" />
     </navigation>
+    <fragment
+        android:id="@+id/blankFragment"
+        android:name="com.example.jetpack.BlankFragment"
+        android:label="fragment_blank"
+        tools:layout="@layout/fragment_blank" />
 
 </navigation>

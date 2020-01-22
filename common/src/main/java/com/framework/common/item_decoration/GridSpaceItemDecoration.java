@@ -1,4 +1,4 @@
-package com.framework.common.utils;
+package com.framework.common.item_decoration;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -7,14 +7,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class GridSpaceItemDecoration extends RecyclerView.ItemDecoration {
-
-    private int horizontalSpace, verticalSpace,padding;
-
+    private int verticalSpace,padding;
     private int eachItemWidth,dividerItemWidth;
 
     public GridSpaceItemDecoration(int horizontalSpace, int verticalSpace, int padding) {
         this.verticalSpace = verticalSpace;
-        this.horizontalSpace = horizontalSpace;
         this.padding = padding;//左右padding
         dividerItemWidth = horizontalSpace;//item之间的间隔
     }

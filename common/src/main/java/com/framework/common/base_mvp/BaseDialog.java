@@ -122,6 +122,13 @@ public abstract class BaseDialog extends DialogFragment implements IBaseView,ISt
     }
 
     @Override
+    public void hideErrorView() {
+        if (initLoadingAndErrorView() != null) {
+            mLoadingAndErrorView.hideError();
+        }
+    }
+
+    @Override
     public void showLoadingDialog() {
         if (initLoadingAndErrorView() != null) {
             mLoadingAndErrorView.showLoadingDialog();
@@ -138,7 +145,7 @@ public abstract class BaseDialog extends DialogFragment implements IBaseView,ISt
     /**
      * 当点击错误页面重试时会调用此方法
      */
-    public void reloadData() {
+    public void loadPageData() {
     }
 
     @Override
@@ -193,7 +200,7 @@ public abstract class BaseDialog extends DialogFragment implements IBaseView,ISt
             mLoadingAndErrorView.setActionListener(new LoadingAndErrorView.ActionListener() {
                 @Override
                 public void clickRetry() {
-                    reloadData();
+                    loadPageData();
                 }
             });
         }

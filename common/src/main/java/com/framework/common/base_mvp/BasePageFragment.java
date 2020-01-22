@@ -67,7 +67,7 @@ public abstract class BasePageFragment<T> extends BaseFragment implements IPageB
     }
 
     @Override
-    public void reloadData() {
+    public void loadPageData() {
         getPresenter().getFirst(LoadType.LOAD);
     }
 

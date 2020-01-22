@@ -188,6 +188,7 @@ public class ActivityPermissionActivity extends BaseActivity implements IActivit
          * viewgroup dispatchdraw 会使用 这个来对每个子view分派draw事件
          */
         tvChangeType.setSelected(!tvChangeType.isSelected());
+        tvChangeType.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.selector_small_black_arrow,0);
     }
 
     @OnClick(R2.id.frame_click)

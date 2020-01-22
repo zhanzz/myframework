@@ -3,12 +3,12 @@ package com.framework.common.base_mvp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -41,7 +41,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.PublishSubject;
 
 public abstract class BaseActivity extends AppCompatActivity implements IBaseView,IStopAdd,INetChange{
     protected List<BasePresenter> mPresenters;
@@ -89,15 +88,25 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     private void initSystemBar() {
         Window window = getWindow();
         if(isFitSystemBar()){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//大于等于4.4
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getSystemBarColor());
+            }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//大于等于4.4
                 window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             }
+            /**
+             * 可不要半透明效果
+             * window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+             * getWindow().setStatusBarColor(Color.TRANSPARENT);
+             */
         }else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {//大于等于5.0
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.setStatusBarColor(getSystemBarColor());// SDK21
-            } else {//需要动态添加view来达到改变系统栏颜色
+            } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){//需要动态添加view来达到改变系统栏颜色
+                window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 View mTopView = new View(this);
                 int statusBarHeight = UIHelper.getStatusHeight();
                 FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,statusBarHeight);
@@ -106,8 +115,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
                 ((ViewGroup)window.getDecorView()).addView(mTopView,params);
                 ((ViewGroup.MarginLayoutParams) findViewById(android.R.id.content).getLayoutParams()).topMargin = statusBarHeight;
             }
-            setStatusDarkBar(AppTools.isLightColor(getSystemBarColor()));
         }
+        setStatusDarkBar(AppTools.isLightColor(getSystemBarColor()));
     }
 
     public abstract int getLayoutId();
@@ -155,10 +164,17 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         }
     }
 
+    @Override
+    public void hideErrorView() {
+        if(initLoadingAndErrorView()!=null){
+            mLoadingAndErrorView.hideError();
+        }
+    }
+
     /**
      * 当点击错误页面重试时会调用此方法
      */
-    public void reloadData() {
+    public void loadPageData() {
 
     }
 
@@ -243,7 +259,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             mLoadingAndErrorView.setActionListener(new LoadingAndErrorView.ActionListener() {
                 @Override
                 public void clickRetry() {
-                    reloadData();
+                    loadPageData();
                 }
             });
         }
@@ -309,12 +325,15 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         DeviceUtils.setStatusBarDarkMode(this, isDark);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window = getWindow();
+            View view = window.getDecorView();
+            int systemUiVisibility = view.getSystemUiVisibility();
             if (isDark) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                systemUiVisibility |=View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                view.setSystemUiVisibility(systemUiVisibility);
             } else {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                systemUiVisibility &=~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+                view.setSystemUiVisibility(systemUiVisibility);
             }
         }
     }

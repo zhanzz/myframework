@@ -47,13 +47,13 @@ public class PagerPresenter extends BasePresenter<IPagerView> {
                 getMvpView(), isLoading ? LoadType.LOAD:LoadType.NONE, new RxNetCallBack<PresellBean>() {
                     @Override
                     public void onSuccess(PresellBean data, int code, String msg) {
-                        getMvpView().onProductList(data.getProductList(),pageIndex);
+                        getMvpView().onPageData(data.getProductList(),pageIndex,PAGE_SIZE);
                         pageIndex++;
                     }
 
                     @Override
                     public void onFailure(int code, String msg) {
-                        getMvpView().onFailList(pageIndex);
+                        getMvpView().onPageFail(code,msg,pageIndex);
                     }
                 });
     }

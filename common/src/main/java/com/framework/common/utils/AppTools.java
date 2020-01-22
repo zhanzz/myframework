@@ -3,6 +3,7 @@ package com.framework.common.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -79,6 +80,21 @@ public class AppTools {
             }
         }
         return false;
+    }
+
+    private void moveAppToFront(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager != null) {
+            ComponentName cn = null;
+
+            List<ActivityManager.RunningTaskInfo> runningTasks = activityManager.getRunningTasks(10);
+            ActivityManager.RunningTaskInfo info = runningTasks.get(0);
+            cn = info.topActivity;
+            if (cn.getPackageName().equals(context.getPackageName())) {
+                //activityManager.moveTaskToFront(info.id, 0)
+//                break
+            }
+        }
     }
 
     public static boolean isExternalStorageWritable() {

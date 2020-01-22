@@ -39,6 +39,7 @@ import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.utils.FrescoUtils;
 import com.framework.common.utils.LogUtil;
+import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.common.utils.ViewUtil;
 import com.framework.model.VersionInfo;
@@ -115,6 +116,9 @@ public class Main2Activity extends BaseActivity implements ITestView {
         mPresenter.refreshData(true);
 
         llSearch.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+        int value = getIntent().getIntExtra("value",-1);
+        ToastUtil.show(getContext(),String.valueOf(value));
     }
 
     private void registerReceiver(boolean isRegister) {
@@ -138,6 +142,7 @@ public class Main2Activity extends BaseActivity implements ITestView {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         LogUtil.e("onNewIntent");//startActivities会调用onCreate和onNewIntent
+        setIntent(intent);//不会改变销毁后重启的intent值
     }
 
     @Override
@@ -157,7 +162,7 @@ public class Main2Activity extends BaseActivity implements ITestView {
     }
 
     @Override
-    public void reloadData() {
+    public void loadPageData() {
         mPresenter.refreshData(true);
     }
 
@@ -178,8 +183,9 @@ public class Main2Activity extends BaseActivity implements ITestView {
         context.startActivities(intents); //结论：singleTask,Main2Activity会被记录在栈底，虽然此时还没有启动，但就好像已经在栈底了一样。会清除它之后启动的页面
     }
 
-    public static void start(Context context) {
+    public static void start(Context context,int value) {
         Intent starter = new Intent(context, Main2Activity.class);
+        starter.putExtra("value",value);
         context.startActivity(starter);
     }
 
@@ -272,7 +278,8 @@ public class Main2Activity extends BaseActivity implements ITestView {
         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         //FLAG_ACTIVITY_CLEAR_TOP 会清除Maina4Activity(launcheMode为标准模式)和它之上的activity并重新onCreate
         //这是因为加载模式为“standard”的activity 总会创建一个新实例来处理新的intent。
-        startActivity(intent1);
+        //startActivity(intent1);
+        start(this,10);
     }
 
     /**

@@ -9,5 +9,5 @@ public enum LoadViewType {
     HIDE_LOAD,//隐藏loading
     HIDE_DIALOG,//隐藏dialog
     SHOW_LOAD,//显示load
-    SHOW_DIALOG//显示dialog
+    SHOW_DIALOG,//显示dialog
 }

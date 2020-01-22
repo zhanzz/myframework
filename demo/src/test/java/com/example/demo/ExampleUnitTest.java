@@ -86,14 +86,16 @@ public class ExampleUnitTest {
 
     @Test
     public void testEnum(){
-        System.out.println(State.ONE instanceof Serializable);
+        ReportFormType.Management_total.setContent("有问题");
+        System.out.println(ReportFormType.Management_total.getContent());
     }
 
     @Test
     public void testFiled(){
         Son fater = new Son();
-        //fater.setAge(40);
-        System.out.println(fater.getFAge());
+        Fater fater1 = fater;
+        fater1.setAge(40);
+        System.out.println(fater1.getAge());//this会先从本类找，找不到在在父类找
     }
 
     private <T> T testInvoke(Class<T> clazz){

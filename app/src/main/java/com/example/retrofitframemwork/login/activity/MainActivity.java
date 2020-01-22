@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
@@ -40,9 +41,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.contact.activity.PhoneListActivity;
+import com.example.demo.coordinator_layout.activity.CoordinatorLayoutActivity;
+import com.example.demo.coordinator_layout.activity.CoordinatorLayoutV2Activity;
 import com.example.demo.db.activity.TestSqliteDataBaseActivity;
 import com.example.demo.incremental_updating.activity.PatchActivity;
 import com.example.demo.pagelist.activity.PageListActivity;
+import com.example.demo.recyclerview.activity.CustomManagerActivity;
 import com.example.demo.some_test.activity.ActivityPermissionActivity;
 import com.example.demo.some_test.activity.TestDiffAndHandlerActivity;
 import com.example.demo.viewpager_fragment.activity.PageFragmentActivity;
@@ -73,11 +77,16 @@ import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.NotificationUtil;
 import com.framework.common.utils.TakePhotoUtil;
 import com.framework.common.utils.ToastUtil;
+import com.framework.common.utils.UIHelper;
 import com.framework.model.UserBean;
 import com.framework.model.VersionInfo;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.OnTwoLevelListener;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.constant.RefreshState;
+import com.scwang.smartrefresh.layout.header.TwoLevelHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
 import java.io.File;
@@ -107,7 +116,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     Random mRandom = new Random();
     @BindView(R.id.twoLevelHeader)
-    TwoLevelRefreshHeader twoLevelHeader;
+    TwoLevelHeader twoLevelHeader;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.smartRefreshLayout)
@@ -115,6 +124,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
     @BindView(R.id.image)
     SimpleDraweeView image;
     private HomeAdapter mAdapter;
+    //storage/emulated/0/Android/data/下有.nomedia文件
 
     @Override
     public int getLayoutId() {
@@ -130,17 +140,16 @@ public class MainActivity extends BaseActivity implements ILoginView {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState != null) {
-            String content = (String) savedInstanceState.get("save");
-            uri = (Uri) savedInstanceState.get("pic_uri");
-            ToastUtil.show(this, content);
-        }
+        String content = (String) savedInstanceState.get("save");
+        uri = (Uri) savedInstanceState.get("pic_uri");
+        ToastUtil.show(this, content);
     }
 
     private String[] menus = new String[]{"vlayout", "fragmentStatePager", "versionUpdate",
             "reactNative", "scan", "testSome", "takePicture", "downloadApkAndInstall", "selectImage"
             , "phones", "testNetLink", "startOtherActivity", "SlidingPaneLayout", "testArouter", "sendBroadCast"
-            , "blueTooth", "testSqliteDatabase", "studyWindow", "add_update", "permission", "pageList", "navigation"};
+            , "blueTooth", "testSqliteDatabase", "studyWindow", "add_update", "permission", "pageList", "navigation"
+    ,"coordinatorLayout","coordinatorLayoutV2","customManager"};
 
     @Override
     public void bindData() {
@@ -192,7 +201,8 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     PageFragmentActivity.start(getContext());
                     break;
                 case "versionUpdate":
-                    requestNeedPermissions(120, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    mPresenter.checkUpdate();
+                    //requestNeedPermissions(120, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                     //requestNeedPermissions(120,Manifest.permission_group.STORAGE);
                     //false
                     //boolean value = ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CAMERA);
@@ -297,43 +307,71 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     ActivityPermissionActivity.start(getContext());
                     break;
                 case "pageList":
-                    //PageListActivity.start(getContext());
+                    PageListActivity.start(getContext());
                     break;
                 case "navigation":
-                    //com.example.jetpack.nvigation.MainActivity.Companion.startMe(getContext());
+                    com.example.jetpack.nvigation.MainActivity.Companion.startMe(getContext());
                     //moveAppToFront(getContext());
                     //AppTools.isExternalStorageWritable();
                     //showBitmapOne();
                     //createFile("application/vnd.android.package-archive","test.apk");
                     //showBitmapOne();
-                    mPresenter.login("13695157045","1");
+                    //mPresenter.login("13695157045","1");
+                    break;
+                case "coordinatorLayout":
+                    CoordinatorLayoutActivity.start(getContext());
+                    break;
+                case "coordinatorLayoutV2":
+                    CoordinatorLayoutV2Activity.start(getContext());
+                    break;
+                case "customManager":
+                    CustomManagerActivity.start(getContext());
                     break;
             }
         });
-        smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+        smartRefreshLayout.setOnMultiPurposeListener(new SimpleMultiPurposeListener(){
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                Toast.makeText(getApplication(),"上拉加载",Toast.LENGTH_SHORT).show();
+                refreshLayout.finishLoadMore(2000);
+            }
+
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                ToastUtil.show(getContext(), "刷新one");
+                Toast.makeText(getApplication(),"下拉刷新",Toast.LENGTH_SHORT).show();
+                refreshLayout.finishRefresh(2000);
+            }
+
+            @Override
+            public void onStateChanged(@NonNull RefreshLayout refreshLayout, @NonNull RefreshState oldState, @NonNull RefreshState newState) {
+                if (oldState == RefreshState.TwoLevel){
+                    findViewById(R.id.second_floor_content).animate().alpha(0).setDuration(1000);
+                }
             }
         });
-        twoLevelHeader.setOnTwoLevelListener(refreshLayout -> {
-            ToastUtil.show(getContext(), "刷新two");
-            return false;
+
+        twoLevelHeader.setOnTwoLevelListener(new OnTwoLevelListener() {
+            @Override
+            public boolean onTwoLevel(@NonNull RefreshLayout refreshLayout) {
+                Toast.makeText(getApplication(),"打开二楼",Toast.LENGTH_SHORT).show();
+                findViewById(R.id.second_floor_content).animate().alpha(1).setDuration(2000);
+                return true;
+            }
         });
     }
 
-    private void showBitmapOne(){
+    private void showBitmapOne() {
         //image.setVisibility(View.VISIBLE);
         //调用TakePhotoUtil.takePhotoV2生成了uri却没有拍照，所以没有内容
         //Bitmap bitmap = BitmapFactory.decodeFile("/storage/emulated/0/Pictures/IMG_1577687131791.jpg");
         //image.setImageBitmap(bitmap);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            boolean sl= Environment.isExternalStorageLegacy();
+            boolean sl = Environment.isExternalStorageLegacy();
         }
         File file = new File("/storage/emulated/0/Pictures/IMG_1577687131791.jpg");
         boolean has = PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int target = getApplicationInfo().targetSdkVersion;
-        File file1 = new File(getExternalCacheDir(),"1.txt");
+        File file1 = new File(getExternalCacheDir(), "1.txt");
         /**
          * 结论： 外部私有可以操作File，外部共有无法操作（报FileNotFoundException）
          */
@@ -509,7 +547,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
         }
         if (requestCode == 121 && permissions.contains(Manifest.permission.CAMERA)) {
             //takePhoto();
-            uri = TakePhotoUtil.takePhotoV3(this,1111);
+            uri = TakePhotoUtil.takePhotoV3(this, 1111);
 //            uri = TakePhotoUtil.takePhotoV2(this);
         }
 //        UserOperation opration = new UserOperation();
@@ -617,19 +655,19 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //                        e.printStackTrace();
 //                    }
 //                    }else{
-                        //ProducerSequenceFactory -->getBasicDecodedImageSequence
-                        image.setVisibility(View.VISIBLE);
-                        FrescoUtils.showThumb(uri, image,new BaseControllerListener<ImageInfo>(){
-                            @Override
-                            public void onFailure(String id, Throwable throwable) {
-                                super.onFailure(id, throwable);
-                            }
+                    //ProducerSequenceFactory -->getBasicDecodedImageSequence
+                    image.setVisibility(View.VISIBLE);
+                    FrescoUtils.showThumb(uri, image, new BaseControllerListener<ImageInfo>() {
+                        @Override
+                        public void onFailure(String id, Throwable throwable) {
+                            super.onFailure(id, throwable);
+                        }
 
-                            @Override
-                            public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-                                super.onFinalImageSet(id, imageInfo, animatable);
-                            }
-                        });
+                        @Override
+                        public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+                            super.onFinalImageSet(id, imageInfo, animatable);
+                        }
+                    });
 //                    }
                     break;
                 case 200:
@@ -653,10 +691,10 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     Uri uri = data.getData();
                     break;
             }
-        }else{
-            switch (requestCode){
+        } else {
+            switch (requestCode) {
                 case 1111:
-                    getContentResolver().delete(uri,null,null);
+                    getContentResolver().delete(uri, null, null);
                     break;
                 case WRITE_REQUEST_CODE:
                     Uri uri = data.getData();
@@ -738,27 +776,13 @@ public class MainActivity extends BaseActivity implements ILoginView {
         }
     }
 
-    private void moveAppToFront(Context context) {
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        if (activityManager != null) {
-            ComponentName cn = null;
-
-            List<ActivityManager.RunningTaskInfo> runningTasks = activityManager.getRunningTasks(10);
-            ActivityManager.RunningTaskInfo info = runningTasks.get(0);
-            cn = info.topActivity;
-            if (cn.getPackageName().equals(context.getPackageName())) {
-//                activityManager.moveTaskToFront(taskInfo.id, 0)
-//                break
-            }
-        }
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
     }
 
     private static final int WRITE_REQUEST_CODE = 43;
+
     private void createFile(String mimeType, String fileName) {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         // Filter to only show results that can be "opened", such as
@@ -783,20 +807,21 @@ public class MainActivity extends BaseActivity implements ILoginView {
         msgIntent.setClass(this, com.example.demo.viewpager_fragment.Main2Activity.class);
 
 
-        Intent secondIntent = new Intent(this,com.example.demo.viewpager_fragment.Main2Activity.class);
+        Intent secondIntent = new Intent(this, com.example.demo.viewpager_fragment.Main2Activity.class);
         Intent mainIntent = new Intent(this, MainActivity.class);
-        Intent [] intents = new Intent[]{mainIntent,secondIntent};
+        Intent[] intents = new Intent[]{mainIntent, secondIntent};
         //mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         //mainIntent.setAction(Intent.ACTION_MAIN);
         //mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-        PendingIntent pendingIntent = PendingIntent.getActivities(this,0,intents,PendingIntent.FLAG_UPDATE_CURRENT);;
+        PendingIntent pendingIntent = PendingIntent.getActivities(this, 0, intents, PendingIntent.FLAG_UPDATE_CURRENT);
+        ;
         NotificationUtil.ChannelConfig.Builder builder = new NotificationUtil.ChannelConfig.Builder();
         builder.setChannelId("normal");
         builder.setChannelName("普通通知");
-        String channelId = NotificationUtil.createChannelId(this,builder.build());
+        String channelId = NotificationUtil.createChannelId(this, builder.build());
         // create and send notificaiton
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,channelId)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(getApplicationInfo().icon)
                 .setWhen(System.currentTimeMillis())
                 .setAutoCancel(true)//自己维护通知的消失

@@ -65,8 +65,8 @@ public class IndicatorView extends View {
 
     /**
      * 计算出bar的宽度比例  bar的长度为  extend/rang*视图的高
-     * @param extent
-     * @param range
+     * @param extent 视图的高度 getHeight
+     * @param range 内容的高度
      */
     public void setExtentAndRange(int extent,int range){
         mRate = extent/(float)range;

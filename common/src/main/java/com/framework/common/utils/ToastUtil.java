@@ -4,6 +4,9 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.StringRes;
+
 /**
  * @author zhangzhiqiang
  * @date 2019/4/16.
@@ -31,8 +34,8 @@ public class ToastUtil {
         }
     }
 
-    public static void show(Context context, int resId){
-        if(context==null||resId<=0){
+    public static void show(Context context, @StringRes int resId){
+        if(context==null||resId==0){
             return;
         }
         String msg = context.getResources().getString(resId);

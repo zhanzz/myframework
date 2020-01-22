@@ -5,3 +5,7 @@ zxing 扫一扫
 OverScrollDecoratorHelper 支持类型ios的越界回弹
 MultiImageSelectorActivity  图片选择封装
 BaseAdapter 支持上下接加载的封装
+
+
+一些ui：
+https://github.com/umano/AndroidSlidingUpPanel （上拉面板）

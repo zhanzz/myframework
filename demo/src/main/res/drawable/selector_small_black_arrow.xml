@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true" android:drawable="@drawable/ic_black_arrow_up"/>
-    <item android:drawable="@drawable/ic_black_arrow_down"/>
+    <!--state = getDrawableState();
+
+            if (left != null) {
+                left.setState(state);
+                left.copyBounds(compoundRect);
+                left.setCallback(this);
+                //如果初始时没有图片可用，大小将为-1，那么图片永远显示不了
+                dr.mDrawableSizeLeft = compoundRect.width();
+                dr.mDrawableHeightLeft = compoundRect.height();
+            } else {
+                dr.mDrawableSizeLeft = dr.mDrawableHeightLeft = 0;
+            }-->
 </selector>
+

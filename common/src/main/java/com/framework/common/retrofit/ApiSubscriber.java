@@ -88,6 +88,14 @@ public  abstract class ApiSubscriber<T> extends AtomicReference<Disposable> impl
     }
 
     @Override
+    public void dispose() {
+        if(!isDisposed()){
+            DisposableHelper.dispose(this);
+            onFail(new ApiException(CustomException.DISPOSED,"操作已取消"));
+        }
+    }
+
+    @Override
     public void onComplete() {
         if (!isDisposed()) {
             lazySet(DisposableHelper.DISPOSED);
@@ -113,12 +121,6 @@ public  abstract class ApiSubscriber<T> extends AtomicReference<Disposable> impl
      * @param data
      */
     public abstract void onSuccess(T data,int code,String msg);
-
-    @Override
-    public void dispose() {
-        DisposableHelper.dispose(this);
-        onFail(new ApiException(CustomException.DISPOSED,"操作已取消"));
-    }
 
     @Override
     public boolean isDisposed() {

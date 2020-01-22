@@ -72,8 +72,10 @@ public  abstract class RequestBaseObserver<V> extends AtomicReference<Disposable
 
     @Override
     public void dispose() {
-        DisposableHelper.dispose(this);
-        onFail(new ApiException(CustomException.DISPOSED,"操作已取消"));
+        if(!isDisposed()){
+            DisposableHelper.dispose(this);
+            onFail(new ApiException(CustomException.DISPOSED,"操作已取消"));
+        }
     }
 
     @Override

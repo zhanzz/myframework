@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 下拉刷新 -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tool="http://schemas.android.com/tools">
@@ -43,5 +43,5 @@
         android:textColor="#999999"
         android:textSize="12sp"
         tool:text="04:50:22"/>
-</merge>
+</RelativeLayout>
 

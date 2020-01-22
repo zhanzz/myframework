@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
 import com.example.demo.R2;
-import com.example.demo.pagelist.ListViewModel;
 import com.example.demo.pagelist.LoadingState;
-import com.example.demo.pagelist.MyPageListAdapter;
 import com.example.demo.pagelist.ResultBean;
 import com.example.demo.pagelist.presenter.PageListPresenter;
 import com.example.demo.pagelist.view.IPageListView;
@@ -22,7 +20,8 @@ import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.model.demo.ProductBean;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-
+import com.example.demo.pagelist.ListViewModel;
+import com.example.demo.pagelist.MyPageListAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
