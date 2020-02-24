@@ -9,7 +9,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import android.view.Gravity;
@@ -20,6 +22,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
+
 import com.framework.common.R;
 import com.framework.common.data.ActivityLifeCycleEvent;
 import com.framework.common.manager.PermissionManager;
@@ -27,6 +31,7 @@ import com.framework.common.receiver.INetChange;
 import com.framework.common.utils.AppTools;
 import com.framework.common.utils.DeviceUtils;
 import com.framework.common.utils.ListUtils;
+import com.framework.common.utils.LogUtil;
 import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
 import com.framework.common.widget.TitleView;
@@ -47,7 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     private CompositeDisposable mCompositeDisposable;
     private final BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
     private View mPartErrorView;
-
+    private @Nullable Toolbar mToolbar;
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,14 +79,12 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         }
         bindData();
         initEvent();
-        TitleView titleView = findViewById(R.id.title_bar);
-        if (titleView!=null){
-            titleView.getLeftBackTextTv().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onBackPressed();
-                }
-            });
+
+        mToolbar = findViewById(R.id.toolbar);
+        if(mToolbar!=null){
+            mToolbar.setTitle("");
+            setSupportActionBar(mToolbar);
+            mToolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
     }
 
@@ -168,6 +171,22 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     public void hideErrorView() {
         if(initLoadingAndErrorView()!=null){
             mLoadingAndErrorView.hideError();
+        }
+    }
+
+    @Nullable
+    public Toolbar getToolbar() {
+        return mToolbar;
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        super.setTitle(title);
+        if(mToolbar!=null){
+            TextView tv = mToolbar.findViewById(R.id.tv_title);
+            if(tv!=null){
+                tv.setText(title);
+            }
         }
     }
 

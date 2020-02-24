@@ -1,6 +1,7 @@
 package com.example.demo.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.example.demo.R;
 import com.framework.common.utils.LogUtil;
 
 /**
@@ -23,15 +25,29 @@ public class MyTextView extends TextView {
 
     public MyTextView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init(context,attrs,0,0);
     }
 
     public MyTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context,attrs,defStyleAttr,0);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public MyTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs,
+                R.styleable.MyTextView, R.attr.xin_tv_attr, R.style.xin_tv2);
+        int color2 = typedArray.getColor(R.styleable.MyTextView_xin_color, 0xffeeeeee);
+        typedArray.recycle();
+        setTextColor(color2);
+        String result = Integer.toHexString(color2);
+        LogUtil.e("color",result);
+        //set>defStyleAttr(主题可配置样式)>defStyleRes(默认样式)>NULL(主题中直接指定)
     }
 
     @Override

@@ -81,7 +81,7 @@ public class RxNet {
 
 
     /**
-     * 一般请求，返回数据带有body
+     * 同步请求
      */
     public static @Nullable
     <T> Disposable request(Observable<Result<T>> observable, @NonNull final MutableLiveData<LoadViewType> loading, final LoadType loadType, final RxNetCallBack<T> callBack) {
@@ -110,8 +110,7 @@ public class RxNet {
                 }
             }
         };
-        observable.compose(SchedulerProvider.getInstance().<Result<T>>applySchedulers())
-                .subscribe(apiSubscriber);
+        observable.subscribe(apiSubscriber);
         return apiSubscriber;
     }
 

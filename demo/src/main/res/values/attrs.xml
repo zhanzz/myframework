@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="xin_tv_attr" format="reference"/>
+    
+    <declare-styleable name="MyTextView">
+        <attr name="xin_color" format="color"/>
+        <attr name="xin_size" format="dimension"/>
+    </declare-styleable>
+</resources>

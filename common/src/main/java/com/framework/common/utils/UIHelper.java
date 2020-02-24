@@ -20,26 +20,23 @@ public class UIHelper {
         }
         if(sStatusHeight>0){
             return sStatusHeight;
-        }
-        int statusHeight = 0;
-        if (0 == statusHeight){
+        }else {
             Class<?> localClass;
             try {
                 localClass = Class.forName("com.android.internal.R$dimen");
                 Object localObject = localClass.newInstance();
                 Field field = localClass.getField("status_bar_height");
                 int i5 = Integer.parseInt(field.get(localObject).toString());
-                statusHeight = BaseApplication.getApp().getResources().getDimensionPixelSize(i5);
+                sStatusHeight = BaseApplication.getApp().getResources().getDimensionPixelSize(i5);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        if(statusHeight==0){
+        if(sStatusHeight<=0){
             DisplayMetrics dis = BaseApplication.getApp().getResources().getDisplayMetrics();
-            statusHeight = (int) (25*dis.density);
+            sStatusHeight = (int) (25*dis.density);
         }
-        sStatusHeight = statusHeight;
-        return statusHeight;
+        return sStatusHeight;
     }
 
     /**

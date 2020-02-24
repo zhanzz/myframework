@@ -9,3 +9,7 @@ BaseAdapter 支持上下接加载的封装
 
 一些ui：
 https://github.com/umano/AndroidSlidingUpPanel （上拉面板）
+
+TextInputLayout
+TextInputLayout主要是作为EditText的容器，从而为EditText生成一个浮动的Label，
+当用户点击EditText的时候，EditText中的hint字符串会自动移到EditText的左上角

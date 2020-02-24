@@ -1,30 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Toolbar" parent="Widget.AppCompat.ActionBar">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="android:background">?attr/colorPrimary</item>
-        <item name="android:textColor">#fff</item>
-        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-    </style>
-
-    <!--自定义toolbar菜单样式-->
-    <style name="OverflowMenuStyle" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
-        <!-- 是否覆盖锚点，默认为true，即盖住Toolbar -->
-        <item name="overlapAnchor">false</item>
-        <!-- 弹出层垂直方向上的偏移，负值会覆盖toolbar -->
-        <item name="android:dropDownVerticalOffset">5dp</item>
-        <!-- 弹出层水平方向上的偏移，即距离屏幕左边的距离，负值会导致右边出现空隙 -->
-        <item name="android:dropDownHorizontalOffset">-2dp</item>
-        <!--文字颜色-->
-        <item name="android:textColor">@android:color/holo_blue_light</item>
-        <!--<item name="android:colorBackground">#80000000</item>--><!--可以改变颜色-->
-        <!-- 弹出层背景颜色 -->
-        <item name="android:popupBackground">@drawable/shape_pop_bg</item>
-    </style>
-
     <style name="customeTheme" parent="AppTheme">
-        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+        <item name="xin_tv_attr">@style/xin_tv_style</item>
+        <item name="xin_color">#f88210</item>
+    </style>
+
+    <style name="xin_tv_style">
+        <item name="xin_color">#ff0000</item>
+        <item name="xin_size">16sp</item>
+    </style>
+
+    <style name="xin_tv2">
+        <item name="xin_color">#ffff00</item>
+        <item name="xin_size">16sp</item>
     </style>
 </resources>

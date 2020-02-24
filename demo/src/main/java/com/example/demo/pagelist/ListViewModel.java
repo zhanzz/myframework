@@ -21,18 +21,13 @@ import com.framework.model.demo.ProductBean;
 public class ListViewModel extends ViewModel {
     private int pageSize = 10;
     private PagedList.Config config = new PagedList.Config.Builder()
-            .setInitialLoadSizeHint(pageSize * 2) //初始加载数量
+            .setInitialLoadSizeHint(pageSize) //初始加载数量
             .setPageSize(pageSize) //每页面加载数量
             .build();
 
     private MutableLiveData<IDataSource> dataSource = new MutableLiveData<>();
 
-    public LiveData<ResultBean> result = Transformations.switchMap(dataSource, new Function<IDataSource, LiveData<ResultBean>>() {
-        @Override
-        public MutableLiveData<ResultBean> apply(IDataSource input) {
-            return input.getResultBean();
-        }
-    });
+    public LiveData<ResultBean> result = Transformations.switchMap(dataSource, IDataSource::getResultBean);
 
     private DataSource.Factory dataSourceFactory = new DataSource.Factory<Integer, ProductBean>(){
 

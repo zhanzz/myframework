@@ -16,6 +16,7 @@ import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.MultiDex;
 
@@ -153,7 +154,8 @@ public class BaseApplication extends Application {
     }
 
     public void init() {
-
+        //参数可以填"MD5"、"SHA1"、"SHA256"
+        checkSign("MD5");
     }
 
     public static String getProcessName(Context cxt) {
@@ -183,28 +185,67 @@ public class BaseApplication extends Application {
         }
     }
 
-    private void checkSign() {
-        PackageInfo pkgInfo;
-        try {
-            pkgInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
-        SigningInfo signingInfo = pkgInfo.signingInfo;
+    private void checkSign(String signType) {
         List<String> shas = new ArrayList<>();
-        for (Signature signature : signingInfo.getApkContentsSigners()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            PackageInfo pkgInfo;
             try {
-                String sha = Base64.encodeToString(MessageDigest.getInstance("SHA").digest(signature.toByteArray()), Base64.NO_WRAP);
-                shas.add(sha);
-            } catch (NoSuchAlgorithmException e) {
+                pkgInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
+                SigningInfo signingInfo = pkgInfo.signingInfo;
+                for (Signature signature : signingInfo.getApkContentsSigners()) {
+                    String sha = getSignValidString(signature.toByteArray(),signType);
+                    shas.add(sha);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            try {
+                PackageInfo pkgInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+                Signature[] signatures = pkgInfo.signatures;
+                for (Signature signature : signatures) {
+                    String sha = getSignValidString(signature.toByteArray(),signType);
+                    shas.add(sha);
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         if (!ListUtils.isEmpty(shas)) {
+            LogUtil.e("sign",shas.toString());
             if (!shas.contains("kRZ4/I7w9OYdkQvsyU6SDnkNXzw=")) { //不包含我们的签名，则退出应用
 
             }
         }
+    }
+
+    /**
+     *
+     * @param paramArrayOfByte
+     * @param signType  //参数可以填"MD5"、"SHA1"、"SHA256"
+     * @return
+     * @throws NoSuchAlgorithmException
+     */
+    private static String getSignValidString(byte[] paramArrayOfByte, String signType) throws NoSuchAlgorithmException {
+        MessageDigest localMessageDigest = MessageDigest.getInstance(signType);
+        localMessageDigest.update(paramArrayOfByte);
+        return bytesToHex(localMessageDigest.digest());  //转为16进制显示，实现略去
+    }
+
+    /**
+     * 字节数组转16进制
+     * @param bytes 需要转换的byte数组
+     * @return  转换后的Hex字符串
+     */
+    public static String bytesToHex(byte[] bytes) {
+        StringBuffer sb = new StringBuffer();
+        for(int i = 0; i < bytes.length; i++) {
+            String hex = Integer.toHexString(bytes[i] & 0xFF);
+            if(hex.length() < 2){
+                sb.append(0);
+            }
+            sb.append(hex);
+        }
+        return sb.toString();
     }
 }

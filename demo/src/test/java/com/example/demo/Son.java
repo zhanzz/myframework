@@ -12,11 +12,13 @@ public class Son extends Fater implements Cloneable, Serializable {
 
     @Override
     public int getAge() {
+        System.out.println("get_son");
         return age;
     }
 
     @Override
     public void setAge(int age) {
+        System.out.println("set_son");
         this.age = age;
     }
 

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -27,4 +28,7 @@ public interface DemoApi {
 
     @POST("https://app.zhidianlife.com/life-mobile-mall/apis/v2/index/products")
     Observable<Result<List<ProductBean>>> getHomeProducts(@Body Map<String,String> params);
+
+    @POST("https://app.zhidianlife.com/life-mobile-mall/apis/v2/index/products")
+    Call<Result<List<ProductBean>>> getHomeProductsV2(@Body Map<String,String> params);
 }

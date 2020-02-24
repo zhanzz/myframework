@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#fff</color>
+    <color name="colorPrimaryDark">#fff</color>
     <color name="colorAccent">#ffff00</color>
-    <color name="systemBarColor">#ffffff</color>
+    <color name="systemBarColor">@color/colorPrimaryDark</color>
     <color name="white">#ffffff</color>
     <color name="black">#000</color>
     <color name="app_back_color">#f3f3f3</color>
+    <color name="titleColor">#333</color>
     <color name="transplant">#00000000</color>
+    <color name="xmlColor">#de3428</color>
 </resources>

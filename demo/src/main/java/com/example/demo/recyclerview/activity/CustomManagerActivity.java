@@ -33,22 +33,11 @@ public class CustomManagerActivity extends BaseActivity implements ICustomManage
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        // App Logo
-        //toolbar.setLogo(R.drawable.ic_launcher);
-        // Title
-        toolbar.setTitle("");
-        // Sub Title
-        //toolbar.setSubtitle("Sub title");
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.back_black_icon);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        toolbar.setOnMenuItemClickListener(onMenuItemClick);
+
+        Toolbar toolbar = getToolbar();
+        if(toolbar!=null){
+            toolbar.setOnMenuItemClickListener(onMenuItemClick);
+        }
     }
 
     @Override

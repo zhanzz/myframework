@@ -35,6 +35,11 @@ android {
         }
     }
 
+    compileOptions {//使用JAVA8语法解析
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     greendao{
         schemaVersion 1//版本号，升级时可配置
         targetGenDir 'src/main/java'//包名

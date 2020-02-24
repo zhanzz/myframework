@@ -87,7 +87,7 @@ public class BasePresenter<T extends IBaseView> implements Presenter<T>{
         private MvpViewInvocationHandler() {}
 
         @Override
-        public Object invoke(Object arg0, Method method, Object[] arg2) throws Throwable {
+        public Object invoke(Object proxy, Method method, Object[] arg2) throws Throwable {
             if (isViewAttached()) {
                 return method.invoke(mvpView.get(), arg2);
             }

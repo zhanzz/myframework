@@ -29,6 +29,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,6 +41,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.demo.alipay.ShowHtmlActivity;
 import com.example.demo.contact.activity.PhoneListActivity;
 import com.example.demo.coordinator_layout.activity.CoordinatorLayoutActivity;
 import com.example.demo.coordinator_layout.activity.CoordinatorLayoutV2Activity;
@@ -149,7 +151,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
             "reactNative", "scan", "testSome", "takePicture", "downloadApkAndInstall", "selectImage"
             , "phones", "testNetLink", "startOtherActivity", "SlidingPaneLayout", "testArouter", "sendBroadCast"
             , "blueTooth", "testSqliteDatabase", "studyWindow", "add_update", "permission", "pageList", "navigation"
-    ,"coordinatorLayout","coordinatorLayoutV2","customManager"};
+    ,"coordinatorLayout","coordinatorLayoutV2","customManager","alipay","testError"};
 
     @Override
     public void bindData() {
@@ -326,6 +328,13 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     break;
                 case "customManager":
                     CustomManagerActivity.start(getContext());
+                    break;
+                case "alipay":
+                    ShowHtmlActivity.start(getContext());
+                    break;
+                case "testError":
+                    TextView tv  = null;
+                    tv.setText("haha");
                     break;
             }
         });
@@ -547,8 +556,12 @@ public class MainActivity extends BaseActivity implements ILoginView {
         }
         if (requestCode == 121 && permissions.contains(Manifest.permission.CAMERA)) {
             //takePhoto();
-            uri = TakePhotoUtil.takePhotoV3(this, 1111);
-//            uri = TakePhotoUtil.takePhotoV2(this);
+            //uri = TakePhotoUtil.takePhotoV3(this, 1111);
+            uri = TakePhotoUtil.takePhotoV2(this);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                File[] files = getExternalMediaDirs();
+                getExternalCacheDir();
+            }
         }
 //        UserOperation opration = new UserOperation();
 //        long start = System.currentTimeMillis();

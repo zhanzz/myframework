@@ -12,13 +12,14 @@ import com.alibaba.android.vlayout.layout.FixLayoutHelper;
 import com.alibaba.android.vlayout.layout.FloatLayoutHelper;
 import com.example.demo.R;
 import com.framework.common.utils.UIHelper;
+import com.example.demo.adapter.StikyAdapter.FixImageViewHolder;
 
 /**
  * @author zhangzhiqiang
  * @date 2019/7/1.
  * description：
  */
-public class FloatAdapter extends DelegateAdapter.Adapter<FloatAdapter.FixImageViewHolder> {
+public class FloatAdapter extends DelegateAdapter.Adapter<FixImageViewHolder> {
     @Override
     public LayoutHelper onCreateLayoutHelper() {
         FloatLayoutHelper helper = new FloatLayoutHelper();
@@ -28,7 +29,7 @@ public class FloatAdapter extends DelegateAdapter.Adapter<FloatAdapter.FixImageV
 
     @NonNull
     @Override
-    public FixImageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public StikyAdapter.FixImageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         ImageView iv = new ImageView(viewGroup.getContext());
         return new FixImageViewHolder(iv);
     }
@@ -53,12 +54,5 @@ public class FloatAdapter extends DelegateAdapter.Adapter<FloatAdapter.FixImageV
     @Override
     public int getItemCount() {
         return 1;
-    }
-
-    public static final class FixImageViewHolder extends RecyclerView.ViewHolder{
-
-        public FixImageViewHolder(@NonNull View itemView) {
-            super(itemView);
-        }
     }
 }

@@ -16,6 +16,7 @@ import com.framework.common.base_mvp.BasePresenter
 
 //Activity中 mWindow.getLayoutInflater().setPrivateFactory(this);
 class MainActivity : BaseActivity() {
+    private var name:String?=null
     override fun getLayoutId(): Int {
         return R.layout.activity_navigation_main
     }

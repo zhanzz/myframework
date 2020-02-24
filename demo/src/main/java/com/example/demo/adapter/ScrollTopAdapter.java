@@ -12,12 +12,13 @@ import com.alibaba.android.vlayout.layout.FixLayoutHelper;
 import com.alibaba.android.vlayout.layout.ScrollFixLayoutHelper;
 import com.example.demo.R;
 import com.framework.common.utils.UIHelper;
+import com.example.demo.adapter.StikyAdapter.FixImageViewHolder;
 /**
  * @author zhangzhiqiang
  * @date 2019/7/1.
  * description：
  */
-public class ScrollTopAdapter extends DelegateAdapter.Adapter<ScrollTopAdapter.FixImageViewHolder> {
+public class ScrollTopAdapter extends DelegateAdapter.Adapter<FixImageViewHolder> {
     @Override
     public LayoutHelper onCreateLayoutHelper() {
         ScrollFixLayoutHelper helper = new ScrollFixLayoutHelper(FixLayoutHelper.BOTTOM_RIGHT, UIHelper.dip2px(12), UIHelper.dip2px(16));
@@ -60,13 +61,6 @@ public class ScrollTopAdapter extends DelegateAdapter.Adapter<ScrollTopAdapter.F
     @Override
     public int getItemCount() {
         return 1;
-    }
-
-    public static final class FixImageViewHolder extends RecyclerView.ViewHolder{
-
-        public FixImageViewHolder(@NonNull View itemView) {
-            super(itemView);
-        }
     }
 
     public void setActioinListener(ActionListener listener){

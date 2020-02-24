@@ -12,6 +12,21 @@
         <item name="android:activityCloseExitAnimation">@anim/slide_right_out</item>
     </style>
 
+    <!--自定义toolbar菜单样式-->
+    <style name="OverflowMenuStyle" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
+        <!-- 是否覆盖锚点，默认为true，即盖住Toolbar -->
+        <item name="overlapAnchor">false</item>
+        <!-- 弹出层垂直方向上的偏移，负值会覆盖toolbar -->
+        <item name="android:dropDownVerticalOffset">5dp</item>
+        <!-- 弹出层水平方向上的偏移，即距离屏幕左边的距离，负值会导致右边出现空隙 -->
+        <item name="android:dropDownHorizontalOffset">-2dp</item>
+        <!--文字颜色-->
+        <item name="android:textColor">@android:color/white</item>
+        <!--<item name="android:colorBackground">#80000000</item>--><!--可以改变颜色-->
+        <!-- 弹出层背景颜色 -->
+        <item name="android:popupBackground">@drawable/shape_pop_bg</item>
+    </style>
+
     <!-- Application theme. -->
     <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -21,6 +36,7 @@
         <item name="android:windowBackground">@color/app_back_color</item>
         <item name="android:textSize">14dp</item>
         <item name="android:textColor">#333</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
 
     <style name="AppTheme" parent="BaseTheme">
@@ -64,5 +80,35 @@
     <style name="SplashTheme" parent="BaseTheme">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
+    <style name="toolbar_theme" parent="@style/ThemeOverlay.AppCompat.Light">
+        <!--修改toolbar的Title(大标题)颜色-->
+        <item name="android:textColorPrimary">@android:color/holo_red_dark</item>
+        <!--修改toolbar的subtitle(小标题)颜色-->
+        <item name="subtitleTextColor">@android:color/holo_red_dark</item>
+        <!--修改toolbar的图标颜色.-->
+        <item name="colorControlNormal">#333</item>
+        <item name="navigationIcon">@drawable/back_black_icon</item>
+        <item name="android:popupBackground">@drawable/shape_pop_bg</item>
+    </style>
+
+    <!-- ToolBar菜单样式.-->
+    <style name="popup_theme" parent="ThemeOverlay.AppCompat.Light">
+        <!--设置背景,会弹两次背景-->
+        <!--<item name="android:background">@android:color/white</item>-->
+        <item name="android:popupBackground">@drawable/shape_pop_bg</item>
+        <!--设置字体颜色-->
+        <item name="android:textColor">@android:color/white</item>
+        <!--设置不覆盖锚点-->
+        <item name="overlapAnchor">false</item>
+    </style>
+
+    <style name="Toolbar" parent="Widget.AppCompat.ActionBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="theme">@style/toolbar_theme</item>
+        <item name="popupTheme">@style/popup_theme</item>
     </style>
 </resources>

@@ -9,10 +9,12 @@ public class Fater implements Cloneable{
     public int age = 20;
 
     public int getAge() {
+        System.out.println("get_father");
         return getFAge();
     }
 
     public void setAge(int age) {
+        System.out.println("set_father");
         this.age = age;
     }
 

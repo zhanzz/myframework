@@ -23,11 +23,19 @@
         android:label="用于访问写provider的权限" />
 
     <application>
+        <activity android:name=".aidl.AidlActivity"></activity>
+
+        <service
+            android:name=".aidl.MyService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".alipay.ShowHtmlActivity" />
         <activity
             android:name=".recyclerview.activity.CustomManagerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/customeTheme"/>
+            android:theme="@style/customeTheme" />
         <activity
             android:name=".coordinator_layout.activity.CoordinatorLayoutV2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -141,7 +149,19 @@
             android:grantUriPermissions="true"
             android:permission="com.zhang.access.provider"
             android:readPermission="com.zhang.access.provider.read"
-            android:writePermission="com.zhang.access.provider.write" />
+            android:writePermission="com.zhang.access.provider.write" /> <!-- alipay sdk begin -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="com.alipay.sdk.app.H5AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
     </application>
 
 </manifest>

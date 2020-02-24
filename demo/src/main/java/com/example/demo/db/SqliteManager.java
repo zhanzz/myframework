@@ -22,6 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SqliteManager {
     /**
+     * https://www.sqlite.org/rescode.html#busy
+     * https://www.cnblogs.com/lijingcheng/p/4454884.html 关于锁
      * 一个线程会对应一个SqliteSession对象，这个是用ThreadLocal对象来维持的
      * 一个（SqlLiteOpenHelper）数据库对应唯一一个sqliteDabase对象，
      * 以及唯一一个SQLiteConnectionPool对象，然后各个线程之间共享这个SQLiteConnectionPool对象

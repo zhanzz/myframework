@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import android.content.Intent;
+import android.util.ArraySet;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -33,10 +34,14 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
 
 import io.reactivex.subjects.BehaviorSubject;
 
@@ -95,7 +100,7 @@ public class ExampleUnitTest {
         Son fater = new Son();
         Fater fater1 = fater;
         fater1.setAge(40);
-        System.out.println(fater1.getAge());//this会先从本类找，找不到在在父类找
+        System.out.println(fater1.age);//this会先从本类找，找不到在在父类找
     }
 
     private <T> T testInvoke(Class<T> clazz){
@@ -150,23 +155,26 @@ public class ExampleUnitTest {
         if(x instanceof Student[]){
 
         }
-        List<? extends User> xx = new ArrayList<>(); //? extends User 为“任何类型”，编译器无法验证“任何类型”的安全型
+        List<? extends Son> xx = Arrays.asList(new Son()); //? extends User 为“任何类型”，编译器无法验证“任何类型”的安全型
         //xx.add(new User());
         //xx.add(new Student());
+        Fater s = xx.get(0);
         //x[0] = new User();//java.lang.ArrayStoreException: com.example.demo.User
         List<String> aa = new ArrayList<>();
         List<? extends Object> xxx = aa;//父类转子类（逆变），子类转父类（协变）
         //xxx.add(new Student());
         //tUser(new ArrayList());
-        List<? extends User> u = new ArrayList<>();
+        ArrayList<User> u = new ArrayList<>();
 //        u.add(new Student());
         //u.add(new User());
-        List<Student> userList = new ArrayList<>();
-        userList.add(new Student());
-        //userList.add(new User());
-        u = userList;
+//        List<Student> userList = new ArrayList<>();
+//        userList.add(new Student());
+        //u.add(new User());
+        //u = userList;
         //List<User> us = u;
-        //tUser(userList);
+        tUser(u);
+        LinkedHashSet<String> aaa = new LinkedHashSet<>();
+        List<Integer> ee= Arrays.asList(4,5);
     }
 
     List<? extends Object> yy; //? extends Object 作为一种类型解理    T extends Object 表示泛型参数的边界
@@ -338,5 +346,48 @@ public class ExampleUnitTest {
         BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
         lifecycleSubject.onNext(ActivityLifeCycleEvent.DESTROY);
         System.out.println(lifecycleSubject.getValue()==ActivityLifeCycleEvent.DESTROY);//true
+
+        byte a = -2;
+        int x = a;
+        System.out.println(a);
+        System.out.println(Integer.toBinaryString(x));
+        f(map());
+    }
+
+    public void f(List<? extends Fater> list){
+        Generic<Integer>[] aa = (Generic<Integer>[])new Generic[10];
+    }
+
+    public static <T> List<T> map(){
+        return new ArrayList<>();
+    }
+
+    public static class Generic<T>{}
+
+    @Test
+    public void testClassInfo(){
+        List<Integer> list = new ArrayList<Integer>();
+        Map<Integer, String> map = new HashMap<Integer, String>(){};
+        System.out.println(Arrays.toString(list.getClass().getTypeParameters()));
+        System.out.println(Arrays.toString(map.getClass().getSuperclass().getTypeParameters()));
+
+
+        Type type = map.getClass().getGenericSuperclass();
+        ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
+//ParameterizedType parameterizedType = (ParameterizedType)map.getClass().getGenericSuperclass();
+        for (Type typeArgument : parameterizedType.getActualTypeArguments()) {
+            System.out.println(typeArgument.getTypeName());
+        }
+
+        String packageName = "zhang";
+        String sub = packageName.replaceAll("\\.", Matcher.quoteReplacement(File.separator));
+        //String sub = packageName.replaceAll("h",File.separator);
+        System.out.println(sub);
+    }
+
+    interface A<T, ID> {
+    }
+
+    class B implements A<String, Integer> {
     }
 }

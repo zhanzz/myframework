@@ -1,0 +1,34 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'com.zhang.test'
+
+dependencies {
+     //transform
+     // https://mvnrepository.com/artifact/com.android.tools.build/gradle-api
+    implementation group: 'com.android.tools.build', name: 'gradle-api', version: '2.3.0'
+    // https://mvnrepository.com/artifact/com.android.tools.build/gradle
+    //implementation group: 'com.android.tools.build', name: 'gradle', version: '2.3.0'
+    implementation gradleApi()
+    implementation localGroovy()
+}
+
+repositories {
+    mavenCentral()
+}
+
+ourInfo{
+    id = 'frameworkf'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //设置插件的GAV参数
+            pom.groupId = 'com.zhang.gradle.plugin'
+            pom.artifactId = 'test'
+            pom.version = '1.0.0'
+            //文件发布到下面目录
+            repository(url: uri("${rootProject.projectDir}/repo"))
+        }
+    }
+}
