@@ -73,7 +73,7 @@ public class ActivityPermissionActivity extends BaseActivity implements IActivit
         webView.loadUrl("http://192.168.198.84:8020/myApp/app.html");//
         webView.setWebViewClient(new WebViewClient() {
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            public boolean shouldOverrideUrlLoading(WebView view, String url) { //调用view.loadUrl会破坏Referer头
                 if (url.startsWith("http")) {
                     return false;
                 } else {

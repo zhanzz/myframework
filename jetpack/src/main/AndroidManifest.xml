@@ -3,7 +3,11 @@
     package="com.example.jetpack">
 
     <application>
-        <activity android:name=".nvigation.MainActivity"></activity>
+        <activity
+            android:name=".nvigation.activity.TestNvigationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".nvigation.MainActivity" />
     </application>
 
 </manifest>

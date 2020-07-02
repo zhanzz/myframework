@@ -39,6 +39,7 @@ public class MyTextView extends TextView {
         init(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    //先画为dst后画为src
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs,
                 R.styleable.MyTextView, R.attr.xin_tv_attr, R.style.xin_tv2);
@@ -48,6 +49,20 @@ public class MyTextView extends TextView {
         String result = Integer.toHexString(color2);
         LogUtil.e("color",result);
         //set>defStyleAttr(主题可配置样式)>defStyleRes(默认样式)>NULL(主题中直接指定)
+        int count = attrs.getAttributeCount();
+        for(int i=0;i<count;i++){
+            String name = attrs.getAttributeName(i);
+            LogUtil.e("value",String.format("name=%s;value=%s",name,attrs.getAttributeValue(i)));
+            if(name.equals("id")){
+               int id = Integer.parseInt(attrs.getAttributeValue(i).substring(1));
+               LogUtil.e("value",String.format("id=%d",id));
+               String resourceName =getResources().getResourceName(id);
+               String entryName = getResources().getResourceEntryName(id);
+               String packageName = getResources().getResourcePackageName(id);
+               String typeName = getResources().getResourceTypeName(id);
+               LogUtil.e("value",String.format("resourceName=%s;entryName=%s;packageName=%s;typeName=%s",resourceName,entryName,packageName,typeName));
+            }
+        }
     }
 
     @Override

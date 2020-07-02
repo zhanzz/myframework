@@ -26,12 +26,14 @@ import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -42,11 +44,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.alipay.ShowHtmlActivity;
+import com.example.demo.anim.activity.ViewAnimActivity;
 import com.example.demo.contact.activity.PhoneListActivity;
 import com.example.demo.coordinator_layout.activity.CoordinatorLayoutActivity;
 import com.example.demo.coordinator_layout.activity.CoordinatorLayoutV2Activity;
 import com.example.demo.db.activity.TestSqliteDataBaseActivity;
 import com.example.demo.incremental_updating.activity.PatchActivity;
+import com.example.demo.keybord.activity.TestInputActivity;
 import com.example.demo.pagelist.activity.PageListActivity;
 import com.example.demo.recyclerview.activity.CustomManagerActivity;
 import com.example.demo.some_test.activity.ActivityPermissionActivity;
@@ -73,6 +77,7 @@ import com.framework.common.data.ConfigOperation;
 import com.framework.common.image_select.MultiImageSelectorActivity;
 import com.framework.common.manager.PermissionManager;
 import com.framework.common.utils.AppTools;
+import com.framework.common.utils.DeviceUtils;
 import com.framework.common.utils.FrescoUtils;
 import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.LogUtil;
@@ -97,6 +102,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -151,7 +157,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
             "reactNative", "scan", "testSome", "takePicture", "downloadApkAndInstall", "selectImage"
             , "phones", "testNetLink", "startOtherActivity", "SlidingPaneLayout", "testArouter", "sendBroadCast"
             , "blueTooth", "testSqliteDatabase", "studyWindow", "add_update", "permission", "pageList", "navigation"
-    ,"coordinatorLayout","coordinatorLayoutV2","customManager","alipay","testError"};
+            , "coordinatorLayout", "coordinatorLayoutV2", "customManager", "alipay", "testError","viewAnim","showDialogFragment"};
 
     @Override
     public void bindData() {
@@ -179,6 +185,31 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //        } catch (IOException e) {
 //            // Error while creating file
 //        }
+
+        //结果不会受虚拟键是否展示的影响
+        DisplayMetrics metric = new DisplayMetrics();
+//API 17之后使用，获取的像素宽高包含虚拟键所占空间，在API 17之前通过反射获取
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            getWindowManager().getDefaultDisplay().getRealMetrics(metric);
+        }
+        int width = metric.widthPixels;  // 宽度（像素）
+        int height = metric.heightPixels;  // 高度（像素）
+        LogUtil.e("height",String.format("width=%d,height=%d",width,height));
+ //获取的像素宽高不包含虚拟键所占空间
+        getWindowManager().getDefaultDisplay().getMetrics(metric);
+        width = metric.widthPixels;  // 宽度（像素）
+        height = metric.heightPixels;  // 高度（像素）
+        LogUtil.e("height",String.format("two;width=%d,height=%d",width,height));
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int height = recyclerView.getRootView().getMeasuredHeight();
+                int barHeight = AppTools.getStatusBarHeight(MainActivity.this);
+                int nHeight = AppTools.getNavigationBarHeight(MainActivity.this);
+                //root;height=1920;barHeight=63;navHeight=126
+                LogUtil.e("height",String.format("root;height=%d;barHeight=%d;navHeight=%d",height,barHeight,nHeight));
+            }
+        },1000);
     }
 
     @Override
@@ -330,30 +361,51 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     CustomManagerActivity.start(getContext());
                     break;
                 case "alipay":
-                    ShowHtmlActivity.start(getContext());
+                    //ShowHtmlActivity.start(getContext());
+                    showBitmapOne();
                     break;
                 case "testError":
-                    TextView tv  = null;
-                    tv.setText("haha");
+                    //TextView tv = null;
+                    //tv.setText("haha");
+                    /*
+                     *仅当访问其他应用的文件时才需要权限，自已创建的不需要权限，当应用卸载后又不属于应用了，需要权限
+                     */
+                    Uri uri = Uri.parse("content://media/external/images/media/294");
+                    try {
+                        InputStream stream = getContentResolver().openInputStream(uri);
+                        Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                        if (bitmap != null) {
+                            ToastUtil.show(getContext(), "bitmap有值");
+                        }
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "viewAnim":
+                    ViewAnimActivity.start(getContext());
+                    break;
+                case "showDialogFragment":
+                    //showFragment(4);
+                    TestInputActivity.start(getContext());
                     break;
             }
         });
-        smartRefreshLayout.setOnMultiPurposeListener(new SimpleMultiPurposeListener(){
+        smartRefreshLayout.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                Toast.makeText(getApplication(),"上拉加载",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), "上拉加载", Toast.LENGTH_SHORT).show();
                 refreshLayout.finishLoadMore(2000);
             }
 
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                Toast.makeText(getApplication(),"下拉刷新",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), "下拉刷新", Toast.LENGTH_SHORT).show();
                 refreshLayout.finishRefresh(2000);
             }
 
             @Override
             public void onStateChanged(@NonNull RefreshLayout refreshLayout, @NonNull RefreshState oldState, @NonNull RefreshState newState) {
-                if (oldState == RefreshState.TwoLevel){
+                if (oldState == RefreshState.TwoLevel) {
                     findViewById(R.id.second_floor_content).animate().alpha(0).setDuration(1000);
                 }
             }
@@ -362,7 +414,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
         twoLevelHeader.setOnTwoLevelListener(new OnTwoLevelListener() {
             @Override
             public boolean onTwoLevel(@NonNull RefreshLayout refreshLayout) {
-                Toast.makeText(getApplication(),"打开二楼",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), "打开二楼", Toast.LENGTH_SHORT).show();
                 findViewById(R.id.second_floor_content).animate().alpha(1).setDuration(2000);
                 return true;
             }
@@ -547,7 +599,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
     public void passPermission(@NonNull List<String> permissions, int requestCode) {
         /***
          * 如果请求WRITE_EXTERNAL_STORAGE权限通过会同时授予READ_EXTERNAL_STORAGE
-         * 如果请求READ_EXTERNAL_STORAGE权限，8.0之下会同时授予READ_EXTERNAL_STORAGE，8.0及以上不会
+         * 如果请求READ_EXTERNAL_STORAGE权限，8.0之下会同时授予WRITE_EXTERNAL_STORAGE，8.0及以上不会
          */
         if (requestCode == 120 && permissions.contains(Manifest.permission.READ_EXTERNAL_STORAGE)) {
             boolean ishas = PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -557,11 +609,11 @@ public class MainActivity extends BaseActivity implements ILoginView {
         if (requestCode == 121 && permissions.contains(Manifest.permission.CAMERA)) {
             //takePhoto();
             //uri = TakePhotoUtil.takePhotoV3(this, 1111);
-            uri = TakePhotoUtil.takePhotoV2(this);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                File[] files = getExternalMediaDirs();
-                getExternalCacheDir();
-            }
+            uri = TakePhotoUtil.takePhotoV3(this,1111);
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//                File[] files = getExternalMediaDirs();
+//                getExternalCacheDir();
+//            }
         }
 //        UserOperation opration = new UserOperation();
 //        long start = System.currentTimeMillis();
@@ -681,7 +733,6 @@ public class MainActivity extends BaseActivity implements ILoginView {
                             super.onFinalImageSet(id, imageInfo, animatable);
                         }
                     });
-//                    }
                     break;
                 case 200:
                     List<Uri> photoPath = data.getParcelableArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
@@ -693,7 +744,16 @@ public class MainActivity extends BaseActivity implements ILoginView {
                         }
                         //Bitmap fbitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                         //image.setImageBitmap(fbitmap);
-                        mPresenter.uploadFile(params);
+                        //mPresenter.uploadFile(params);
+                        try {
+                            InputStream in = getContentResolver().openInputStream(photoPath.get(0));
+                            long size = in.available();//842946
+                            in.close();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
                 case 120:

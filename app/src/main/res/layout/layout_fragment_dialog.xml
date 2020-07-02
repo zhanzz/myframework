@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <com.example.retrofitframemwork.MyEdit
@@ -9,4 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:saveEnabled="false" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"/>
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:placeholderImage="@drawable/ic_empty_product"/>
+    </RelativeLayout>
 </LinearLayout>

@@ -5,8 +5,9 @@ package com.example.demo;
  * @date 2019/11/20.
  * description：
  */
-public class Fater implements Cloneable{
+public class Fater extends FatherFirst implements Cloneable{
     public int age = 20;
+
 
     public int getAge() {
         System.out.println("get_father");

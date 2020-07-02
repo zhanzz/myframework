@@ -33,7 +33,7 @@ public class WindowService extends Service {
 
         params = new WindowManager.LayoutParams();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;//需要权限
         } else {
             params.type = WindowManager.LayoutParams.TYPE_PHONE;
         }

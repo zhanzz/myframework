@@ -27,6 +27,11 @@
 }
 -keep public class * extends com.chad.library.adapter.base.BaseQuickAdapter
 -keep public class * extends com.chad.library.adapter.base.BaseViewHolder
+#不要混淆BaseViewHolder所有子类的属性与方法
+-keepclasseswithmembers class * extends com.chad.library.adapter.base.BaseViewHolder{
+    <fields>;
+    <methods>;
+}
 -keepclassmembers  class **$** extends com.chad.library.adapter.base.BaseViewHolder {
      <init>(...);
 }

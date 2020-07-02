@@ -1,6 +1,7 @@
 package com.framework.common.net;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -169,6 +170,7 @@ public class RxNet {
                 .setConfig(Bitmap.Config.RGB_565)
                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
                 .compressToFileAsObservable(params);
+
 
         UploadOnSubscribe uploadOnSubscribe = new UploadOnSubscribe();
         params.put("UploadOnSubscribe", uploadOnSubscribe);

@@ -1,28 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_outside_view"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
+    android:background="#ff0000"
     android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/edit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/image"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/rl_inputdlg_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusableInTouchMode="false"
-        android:focusable="false"/>
+        android:background="#ff1"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
 
-    <ImageView
-        android:id="@+id/image"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_empty_product" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <View android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:background="#11000000"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/edit"
+            android:hint="说点什么"
+            android:layout_width="match_parent"
+            android:layout_weight="4"
+            android:layout_height="48dp"
+            android:paddingLeft="12dp"
+            android:imeOptions="actionDone"
+            android:imeActionLabel="确定"
+            android:inputType="text"
+            android:maxLength="24"
+            android:textColor="@color/black"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="14sp"
+            android:textColorHint="#AAAAAA"
+            android:background="#00000000"/>
+
+        <View
+            android:visibility="gone"
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:background="#11000000"/>
+
+        <LinearLayout
+            android:id="@+id/confirm_area"
+            android:layout_width="76dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_height="48dp">
+            <Button
+                android:id="@+id/confrim_btn"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:background="@color/black"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="发送"
+                android:textSize="14sp"
+                android:stateListAnimator="@null"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

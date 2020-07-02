@@ -27,8 +27,6 @@ public class TestInputFragment extends BaseDialog {
 
     @BindView(R2.id.edit)
     EditText edit;
-    @BindView(R2.id.image)
-    ImageView image;
     Unbinder unbinder;
 
     @Override
@@ -40,7 +38,7 @@ public class TestInputFragment extends BaseDialog {
     protected void setLayoutParams(WindowManager.LayoutParams params) {
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         params.height = UIHelper.dip2px(100);
-        params.gravity = Gravity.CENTER;
+        params.gravity = Gravity.BOTTOM;
         params.windowAnimations = 0;
     }
 
@@ -56,14 +54,14 @@ public class TestInputFragment extends BaseDialog {
 
     @Override
     public void initEvent() {
-//        edit.requestFocus();
-//        edit.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                InputMethodManager mInputMethodManager = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
-//                mInputMethodManager.showSoftInput(edit, 0);
-//            }
-//        },300);
+        edit.requestFocus();
+        edit.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager mInputMethodManager = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
+                mInputMethodManager.showSoftInput(edit, 0);
+            }
+        },300);
 
     }
 

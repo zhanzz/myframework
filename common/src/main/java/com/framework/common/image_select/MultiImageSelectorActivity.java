@@ -194,4 +194,20 @@ public class MultiImageSelectorActivity extends BaseActivity implements MultiIma
         intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, num);
         activity.startActivityForResult(intent, requestCode);
     }
+
+    public static void startMe(Activity activity, int num,ArrayList<Uri> selectUri, int requestCode){
+        Intent intent = new Intent(activity, MultiImageSelectorActivity.class);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, num);
+        intent.putParcelableArrayListExtra(MultiImageSelectorFragment.EXTRA_DEFAULT_SELECTED_LIST,selectUri);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void startMe(Activity activity,int requestCode){
+        Intent intent = new Intent(activity, MultiImageSelectorActivity.class);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
+        activity.startActivityForResult(intent, requestCode);
+    }
 }

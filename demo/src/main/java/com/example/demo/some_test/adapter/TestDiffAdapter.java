@@ -53,6 +53,7 @@ public class TestDiffAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         //LogUtil.e("onBindViewHolder");
         ((TextView)viewHolder.itemView).setText(getItem(i).getContent());
+
     }
 
     public void submitList(List<TestDiffBean> data) {

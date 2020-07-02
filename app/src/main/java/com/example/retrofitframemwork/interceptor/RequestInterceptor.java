@@ -2,6 +2,8 @@ package com.example.retrofitframemwork.interceptor;
 
 import android.text.TextUtils;
 
+import androidx.annotation.Keep;
+
 import com.framework.common.data.operation.UserOperation;
 import com.framework.common.BuildConfig;
 

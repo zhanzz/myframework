@@ -2,24 +2,34 @@ package com.example.demo.window.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.Nullable;
+import androidx.print.PrintHelper;
 
 import com.example.demo.R;
 import com.example.demo.R2;
+import com.example.demo.window.ListenerImageView;
+import com.example.demo.window.MyScanView;
+import com.example.demo.window.WindowService.DialogService;
 import com.example.demo.window.WindowService.WindowService;
 import com.example.demo.window.presenter.StudyWindowPresenter;
 import com.example.demo.window.view.IStudyWindowView;
@@ -36,6 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
+ * //Activity中 mWindow.getLayoutInflater().setPrivateFactory(this);
  * 视图的显示过程
  * <p>
  * ActivityThread-->performLaunchActivity(创建activity实例)
@@ -48,14 +59,32 @@ import butterknife.OnClick;
  * -->WindowManagerGlobal.addView(中创建了ViewRootImpl,DecorView.assignParent(ViewRootImpl)并requestLayout)
  * -->Activity.makeVisible(ActivityThread-->handleResumeActivity中调用)
  */
+
+/**
+ * 第二屏 Activity中代理 mBase.createDisplayContext();
+ */
 public class StudyWindowActivity extends BaseActivity implements IStudyWindowView {
     @BindView(R2.id.btn_show_pop)
     Button btnShowPop;
     @BindView(R2.id.btn_show_service_pop)
     Button btnShowServicePop;
+    @BindView(R2.id.btn_show_pop2)
+    Button btnShowPop2;
     @BindView(R2.id.btn_show_test_click_down)
     Button btnShowTestClickDown;
+    @BindView(R2.id.tb_switch)
+    ToggleButton tbSwitch;
+    @BindView(R2.id.scan_view)
+    MyScanView listenerImageView;
     private StudyWindowPresenter mPresenter;
+    /**
+     * popupWindow视图结构
+     * <p>
+     * PopupDecorView（FrameLayout）(WindowManager.LayoutParams)
+     * 根据是否设置背景，没有设置背景 mbackView ==contentView,有设置
+     * 创建一个PopupBackgroundView（FrameLayout）添加contentView(宽为MATCH_PARENT,高为contentView的layoutHeight,如无则是MATCH_PARENT)
+     * PopupDecorView添加mBackgroundView(宽为MATCH_PARENT,高为contentView的layoutHeight,如无则是MATCH_PARENT)
+     */
     PopupWindow popupWindow;
 
     @Override
@@ -68,14 +97,14 @@ public class StudyWindowActivity extends BaseActivity implements IStudyWindowVie
         TextView tv = new TextView(this);
         tv.setText("我是popwindow");
         //tv.setBackgroundColor(0xffff0000);
-        tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.show(getContext(), "点击了我");
-            }
-        });
-        popupWindow = new PopupWindow(tv, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        popupWindow.setFocusable(true);
+//        tv.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ToastUtil.show(getContext(), "点击了我");
+//            }
+//        });
+        popupWindow = new PopupWindow(tv, UIHelper.dip2px(100), UIHelper.dip2px(100));
+        popupWindow.setFocusable(false);
         popupWindow.setTouchable(true);//内容可点击
         try {
             Field method = PopupWindow.class.getField("mNotTouchModal");
@@ -87,12 +116,59 @@ public class StudyWindowActivity extends BaseActivity implements IStudyWindowVie
         //popupWindow.setTouchModal(true);
         popupWindow.setBackgroundDrawable(new ColorDrawable(0xff00ff00));
         //popupWindow.showAtLocation();
+
+        tbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //listenerImageView.setVisibility(isChecked?View.VISIBLE:View.INVISIBLE);
+                listenerImageView.postDelayed(() -> {
+                    if(isChecked){
+                        boolean request = listenerImageView.requestFocus();
+                        Log.e("zhang","hasFoucs="+request);
+                    }else {
+                        listenerImageView.clearFocus();
+                    }
+                },16);
+
+            }
+        });
+
+        listenerImageView.setContentListener(content -> Log.e("zhang", "获取了输入："+content));
     }
 
     @Override
     public void initEvent() {
 
     }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+//        if(event.isShiftPressed()&&event.getAction()==KeyEvent.ACTION_DOWN&&event.getKeyCode()==KeyEvent.KEYCODE_Q){
+//            showToast("shift+q");
+//        }
+//        return super.dispatchKeyEvent(event);
+//        doPhotoPrint();
+        //Log.e("zhang",((char)event.getUnicodeChar())+"");
+//        if (event.getAction() == KeyEvent.ACTION_UP) {
+//            builder.append((char) event.getUnicodeChar());
+//            if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+//                Log.e("zhang", builder.toString());
+//            }
+//        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    private StringBuilder builder = new StringBuilder();
+
+
+    private void doPhotoPrint() {
+        PrintHelper photoPrinter = new PrintHelper(this);
+        photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.ic_cloud_store_mall_home);
+        photoPrinter.printBitmap("droids.jpg - test print", bitmap);
+    }
+
 
     @Override
     public BasePresenter getPresenter() {
@@ -103,28 +179,32 @@ public class StudyWindowActivity extends BaseActivity implements IStudyWindowVie
     }
 
     boolean change = false;
+
     @OnClick({R2.id.btn_show_pop, R2.id.btn_show_service_pop, R2.id.btn_show_test_click
-    ,R2.id.btn_show_test_click_down})
+            , R2.id.btn_show_test_click_down, R2.id.btn_show_dialog_service})
     public void onClick(View view) {
 
         if (view.getId() == R.id.btn_show_service_pop) {
+            Log.e("zhang","isFocusableInTouchMode="+btnShowServicePop.isFocusableInTouchMode());
             startFloatingButtonService();
+        } else if (view.getId() == R.id.btn_show_dialog_service) {
+            DialogService.start(this);
         } else if (view.getId() == R.id.btn_show_test_click) {
             View anrview = null;
-            if(change){
-                change=false;
-                anrview = btnShowPop;
-            }else {
-                change = true;
-                anrview = btnShowTestClickDown;
-            }
+            //if (change) {
+            change = false;
+            anrview = btnShowPop;
+//            } else {
+//                change = true;
+//                anrview = btnShowTestClickDown;
+//            }
             int[] location = new int[2];
             anrview.getLocationInWindow(location);
-            popupWindow.getContentView().measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),0);
-            if(location[1]+anrview.getHeight()>view.getRootView().getHeight()-popupWindow.getContentView().getMeasuredHeight()){
-                popupWindow.showAtLocation(anrview,Gravity.LEFT|Gravity.TOP,location[0],location[1]-popupWindow.getContentView().getHeight());
-            }else {
-                popupWindow.showAtLocation(anrview,Gravity.LEFT|Gravity.TOP,location[0],location[1]+anrview.getHeight());
+            popupWindow.getContentView().measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), 0);
+            if (location[1] + anrview.getHeight() > view.getRootView().getHeight() - popupWindow.getContentView().getMeasuredHeight()) {
+                popupWindow.showAtLocation(anrview, Gravity.LEFT | Gravity.TOP, location[0], location[1] - popupWindow.getContentView().getHeight());
+            } else {
+                popupWindow.showAtLocation(anrview, Gravity.LEFT | Gravity.TOP, location[0], location[1] + anrview.getHeight());
             }
             //
             //ToastUtil.show(this, "点击到我了");
@@ -187,6 +267,7 @@ public class StudyWindowActivity extends BaseActivity implements IStudyWindowVie
         }
     }
 
+
     public static void start(Context context) {
         Intent starter = new Intent(context, StudyWindowActivity.class);
         context.startActivity(starter);
@@ -197,5 +278,10 @@ public class StudyWindowActivity extends BaseActivity implements IStudyWindowVie
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    @OnClick(R2.id.btn_show_pop2)
+    public void onClick() {
+        showToast("点击了下面内容");
     }
 }

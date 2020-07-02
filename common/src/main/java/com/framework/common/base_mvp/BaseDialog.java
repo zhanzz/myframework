@@ -48,6 +48,7 @@ public abstract class BaseDialog extends DialogFragment implements IBaseView,ISt
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mContainer.addView(rootView, params);
         unbinder = ButterKnife.bind(this, mContainer);
+        setStyle(STYLE_NO_TITLE,0);
         return mContainer;
     }
 
@@ -72,7 +73,7 @@ public abstract class BaseDialog extends DialogFragment implements IBaseView,ISt
         Window window = getDialog().getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         lp.gravity = Gravity.CENTER;
-        lp.dimAmount = 0.3f;//越大背景越黑
+        lp.dimAmount = 0.0f;//越大背景越黑
         lp.width = UIHelper.getDisplayWidth() * 3 / 4;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.windowAnimations = R.style.DialogAnimation;

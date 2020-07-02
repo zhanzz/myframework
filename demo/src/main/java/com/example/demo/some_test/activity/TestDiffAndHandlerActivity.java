@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -18,10 +17,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
-import android.os.Message;
 import android.os.Process;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -52,24 +48,18 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.OnLifecycleEvent;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.R;
 import com.example.demo.R2;
 import com.example.demo.incremental_updating.ApkUtils;
-import com.example.demo.keybord.fragment.TestInputFragment;
 import com.example.demo.pagelist.MyViewModel;
-import com.example.demo.pagelist.PostalCodeRepository;
 import com.example.demo.some_test.adapter.ListAdapter;
 import com.example.demo.some_test.adapter.TestDiffAdapter;
 import com.example.demo.some_test.presenter.TestDiffAndHandlerPresenter;
 import com.example.demo.some_test.view.ITestDiffAndHandlerView;
-//import com.example.study_gradle.TestHas;
-//import com.example.study_gradle2.TestGlideLoad;
 import com.example.demo.viewpager_fragment.Main2Activity;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.framework.common.BaseApplication;
@@ -88,7 +78,6 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.attribute.PosixFileAttributes;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -100,6 +89,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+
+//import com.example.study_gradle.TestHas;
+//import com.example.study_gradle2.TestGlideLoad;
 
 public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDiffAndHandlerView {
     @BindView(R2.id.btn_change)
@@ -126,6 +118,10 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
     EditText etInput;
     @BindView(R2.id.linear_container)
     LinearLayout linearContainer;
+    @BindView(R2.id.v_line_width)
+    View vLineWidth;
+    @BindView(R2.id.linear_width)
+    LinearLayout linearWidth;
     private TestDiffAndHandlerPresenter mPresenter;
     private TestDiffAdapter mAdapter;
     AlertDialog alertDialog;
@@ -139,6 +135,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
 
     AdSwitchTask adSwitchTask;
     MyViewModel myViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -152,9 +149,9 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
          * app进程被回收，静态值不存在了，
          * intent中的值还在,intent是启动此页面时的intent,后面的修改都无效，无法保存
          */
-        LogUtil.e("静态值="+sStr+";intent="+content+";content1="+content1);
-        LogUtil.e("path", ApkUtils.getSourceApkPath(this,getPackageName()));
-        LogUtil.e("path",ApkUtils.getSourceApkPathTwo(this));
+        LogUtil.e("静态值=" + sStr + ";intent=" + content + ";content1=" + content1);
+        LogUtil.e("path", ApkUtils.getSourceApkPath(this, getPackageName()));
+        LogUtil.e("path", ApkUtils.getSourceApkPathTwo(this));
         //LogUtil.e("path",ApkUtils.getSourceApkPathThree(this).toString());
         printMemory();
         getLifecycle().addObserver(new LifecycleObserver() {
@@ -201,7 +198,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         myViewModel.mediator.observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                LogUtil.e("live","mediator="+s);
+                LogUtil.e("live", "mediator=" + s);
             }
         });
     }
@@ -219,7 +216,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        LogUtil.e("onSave="+getClass().getSimpleName());
+        LogUtil.e("onSave=" + getClass().getSimpleName());
     }
 
     /**
@@ -273,8 +270,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         mAdapter = new TestDiffAdapter();
         mAdapter.submitList(list);
         mAdapter.setDatas(list);
-        GridLayoutManager manager = new GridLayoutManager(this, 3);
-        recyclerView.setLayoutManager(manager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
         recyclerView.setRecyclerListener(new RecyclerView.RecyclerListener() {
             @Override
@@ -297,8 +293,12 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
             @Override
             public void run() {
                 //finish();
+                int width = vLineWidth.getWidth();
+                int drawWidth = vLineWidth.getBackground().getIntrinsicWidth();
+                int lineWidth = linearWidth.getDividerDrawable().getIntrinsicWidth();
+                LogUtil.e("width",String.format("width=%d,drawWidth=%d,lineWidth=%d",width,drawWidth,lineWidth));
             }
-        },3000);
+        }, 3000);
     }
 
     private void testGhostView() {
@@ -377,7 +377,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                ToastUtil.show(getContext(),"s="+s);
+                ToastUtil.show(getContext(), "s=" + s);
             }
 
             @Override
@@ -394,8 +394,8 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<CharSequence>() {
                     @Override
-                    public void accept(@io.reactivex.annotations.NonNull CharSequence o){
-                        ToastUtil.show(getContext(),"os="+o);
+                    public void accept(@io.reactivex.annotations.NonNull CharSequence o) {
+                        ToastUtil.show(getContext(), "os=" + o);
                     }
                 });
     }
@@ -481,9 +481,9 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         NotificationUtil.ChannelConfig.Builder builder = new NotificationUtil.ChannelConfig.Builder();
         builder.setChannelId("normal");
         builder.setChannelName("普通通知");
-        String channelId = NotificationUtil.createChannelId(this,builder.build());
+        String channelId = NotificationUtil.createChannelId(this, builder.build());
         // create and send notificaiton
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,channelId)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(getApplicationInfo().icon)
                 .setWhen(System.currentTimeMillis())
                 .setAutoCancel(true)//自己维护通知的消失
@@ -498,29 +498,29 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
         manager.notify(100, notification);
     }
 
-    private void testException(){
-        try{
+    private void testException() {
+        try {
             String xx = null;
             xx.length();
-        }catch (Throwable e){
+        } catch (Throwable e) {
             onError(e);
         }
     }
 
     private void onError(Throwable e) {
-        try{
+        try {
             acctep(e);
-        }catch (Throwable x){
-            LogUtil.e("zhang","error x");
+        } catch (Throwable x) {
+            LogUtil.e("zhang", "error x");
             x.printStackTrace();
         }
     }
 
-    private void acctep(Throwable e){
-        LogUtil.e("zhang","acctep e");
+    private void acctep(Throwable e) {
+        LogUtil.e("zhang", "acctep e");
     }
 
-    class MyHandlerThread extends HandlerThread{
+    class MyHandlerThread extends HandlerThread {
 
         public MyHandlerThread(String name) {
             super(name);
@@ -572,7 +572,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
             switch (requestCode) {
                 case 100:
                     if (newFile == null) {
-                        ToastUtil.show(this,"空的");
+                        ToastUtil.show(this, "空的");
                         return;
                     }
                     image.setImageURI(Uri.fromFile(newFile));
@@ -640,7 +640,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
 
     public static void start(Context context) {
         Intent starter = new Intent(context, TestDiffAndHandlerActivity.class);
-        starter.putExtra("content","我是intent内容");
+        starter.putExtra("content", "我是intent内容");
         sStr = "我是中国人";
         context.startActivity(starter);
     }
@@ -661,7 +661,7 @@ public class TestDiffAndHandlerActivity extends BaseActivity implements ITestDif
             }
         });
         //thread.start();
-        if(mDispose!=null){
+        if (mDispose != null) {
             mDispose.dispose();
         }
     }

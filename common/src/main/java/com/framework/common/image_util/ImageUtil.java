@@ -114,6 +114,7 @@ class ImageUtil {
             scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight,config);
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
+            pd.close();
             return null;
         }
 
@@ -148,10 +149,16 @@ class ImageUtil {
                     matrix.postRotate(270);
                 }
             }
-            scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(),
+            Bitmap old = scaledBitmap;
+            scaledBitmap = Bitmap.createBitmap(old, 0, 0, scaledBitmap.getWidth(),
                     scaledBitmap.getHeight(), matrix, true);
+            if(scaledBitmap!=old){
+                old.recycle();
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            pd.close();
         }
 
         return scaledBitmap;

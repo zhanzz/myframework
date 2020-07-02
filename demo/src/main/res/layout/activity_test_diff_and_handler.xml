@@ -19,6 +19,32 @@
 
         <include layout="@layout/test_include_merge" />
 
+        <LinearLayout
+            android:id="@+id/linear_width"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:showDividers="middle"
+            android:divider="@drawable/shape_w_1">
+            <View
+                android:id="@+id/v_line_width"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_w_1"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
         <EditText
             android:id="@+id/et_input"
             android:layout_width="match_parent"

@@ -6,4 +6,10 @@
         <attr name="xin_color" format="color"/>
         <attr name="xin_size" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="MyHeadView">
+        <attr name="mborder_color" format="color"/>
+        <attr name="msrc" format="reference"/>
+        <attr name="mborder_width" format="dimension"/>
+    </declare-styleable>
 </resources>

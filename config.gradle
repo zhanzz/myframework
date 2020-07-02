@@ -1,0 +1,10 @@
+//一些配制
+def preparation = [:]
+preparation.applicationId = "cn.weeget.youxuanlive"
+preparation.jpushAppKey = "4c1e2b9ea4c51c5f606df997"
+preparation.mapAppKey = "e43adead97f2ea22c13d8de48d40b305"
+preparation.wxAppKey = "wxd46532f88e292015"
+preparation.appCloudID = "gh_8e046a34a936"
+preparation.buglyAppId = "7645a08083"
+
+ext.preparation = preparation

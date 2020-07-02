@@ -86,18 +86,18 @@ dependencies {
     api "com.jakewharton:butterknife:$versions.butterknife"
     api 'com.squareup.okhttp3:okhttp:3.12.0'//3.14.1需要5.0以上手机支持
     //图片加载相关库
-    api 'com.facebook.fresco:fresco:2.0.0'
+    api 'com.facebook.fresco:fresco:2.1.0'
     //https://github.com/ongakuer/PhotoDraweeView
     api 'me.relex:photodraweeview:2.0.0' //图片缩放
-    api 'com.facebook.fresco:animated-gif:1.13.0'
-    api "com.facebook.fresco:imagepipeline-okhttp3:2.0.0"
+    api 'com.facebook.fresco:animated-gif:2.1.0'
+    api "com.facebook.fresco:imagepipeline-okhttp3:2.1.0"
     //上下拉刷新,SmartRefreshLayout 没有使用到：序列化、反序列化、JNI、反射，所以并不需要添加混淆过滤代码
     api 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-andx-14'
     api 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-andx-14'
     api 'androidx.legacy:legacy-support-v4:1.0.0'
     //recyclerView适配器
     //https://github.com/CymChad/BaseRecyclerViewAdapterHelper
-    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.49'
     api 'org.greenrobot:eventbus:3.1.1'
     //https://github.com/hackware1993/MagicIndicator 指示器库
     api 'com.github.hackware1993:magicIndicator:1.6.0'

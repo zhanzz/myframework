@@ -22,6 +22,8 @@ android {
             abiFilters "x86"
         }
         multiDexEnabled true
+        print("value ==============${preparation.wxAppKey}")
+        buildConfigField("String", "wxAppKey", "\"${preparation.wxAppKey}\"")
         def environment = project.NET_ENVIRONMENT
         switch (environment) {
             case "RELEASE":
@@ -96,6 +98,12 @@ android {
         }
     }
 }
+
+task ss(){
+    print("value ==============${rootProject.extensions.getByName('ext').preparation.wxAppKey}")
+    print("value ==============${rootProject.extensions.getByName('ext').xx}")
+}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

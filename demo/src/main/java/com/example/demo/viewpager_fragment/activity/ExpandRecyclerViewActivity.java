@@ -66,7 +66,6 @@ public class ExpandRecyclerViewActivity extends BaseActivity implements IExpandR
         //adapter.expandAll();
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(adapter);
-
         getLifecycle().addObserver(new LifecycleObserver() {
 
         });

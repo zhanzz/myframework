@@ -9,6 +9,7 @@ import com.framework.common.manager.Events;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.Observer;
@@ -63,6 +64,9 @@ public  abstract class ApiSubscriber<T> extends AtomicReference<Disposable> impl
                                 if(rawType != List.class){
                                     onFail(new ApiException(code,"data数据为空"));
                                     return;
+                                }else {
+                                    Type type2 = ((ParameterizedType)clazz).getActualTypeArguments()[0];
+                                    //model = (T) new ArrayList();//可以实例化
                                 }
                             }
                         }

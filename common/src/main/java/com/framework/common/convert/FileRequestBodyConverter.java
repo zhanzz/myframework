@@ -2,9 +2,11 @@ package com.framework.common.convert;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.webkit.URLUtil;
 
 import com.facebook.common.util.UriUtil;
 import com.framework.common.convert.CountingRequestBody;
+import com.framework.common.image_select.utils.FileManager;
 import com.framework.common.net.UploadOnSubscribe;
 import com.framework.common.utils.PictureUtils;
 import java.io.File;
@@ -41,11 +43,16 @@ public class FileRequestBodyConverter implements Converter<Map<String, Object>, 
             Object value = params.get(key);
             if(value instanceof Uri){
                 Uri uri = (Uri) value;
-                if(UriUtil.isLocalFileUri(uri) && !TextUtils.isEmpty(uri.getPath())){
-                    value = new File(uri.getPath());
+                String fileName = uri.getQueryParameter("fileName");
+                if(TextUtils.isEmpty(fileName)&& UriUtil.isLocalFileUri(uri) && !TextUtils.isEmpty(uri.getPath())){
+                    fileName = PictureUtils.getFilName(new File(uri.getPath()).getName());
                 }
-            }
-            if(value instanceof File){
+                if(TextUtils.isEmpty(fileName)){
+                    fileName = FileManager.createFileName();
+                }
+                RequestBody fileBody = UriRequestBody.create(MediaType.parse(guessMimeType(fileName)),uri);
+                builder.addFormDataPart(key, fileName, fileBody);
+            }else if(value instanceof File){
                 String fileName = PictureUtils.getFilName(((File)value).getName());
                 RequestBody fileBody = RequestBody.create(MediaType.parse(guessMimeType(fileName)),(File)value);
                 builder.addFormDataPart(key, fileName, fileBody);

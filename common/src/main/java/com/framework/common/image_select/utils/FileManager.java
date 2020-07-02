@@ -15,6 +15,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 import static android.os.Environment.MEDIA_MOUNTED;
 
@@ -88,6 +89,12 @@ public class FileManager {
         String fileName = "multi_image_" + timeStamp + "";
         File tmpFile = new File(pic, fileName + ".jpg");
         return tmpFile;
+    }
+
+    public static String createFileName(){
+        Random random = new Random();
+        int value = random.nextInt();
+        return new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA).format(new Date())+"_"+value;
     }
 
     public static void deleteAllFiles(File root) {

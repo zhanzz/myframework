@@ -123,18 +123,19 @@ public class ImageGridAdapter extends BaseMultiItemQuickAdapter<Image, BaseViewH
             helper.setGone(R.id.checkmark,false);
         }
         SimpleDraweeView simpleDraweeView = helper.getView(R.id.image);
-        try {
-            simpleDraweeView.setActualImageResource(R.drawable.default_error);//复用
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                Bitmap bitmap = mContext.getContentResolver().loadThumbnail(item.uri,new Size(mItemWidth,mItemHeight),null);
-                simpleDraweeView.setImageBitmap(bitmap);
-            }else {
-                FrescoUtils.showThumb("file://"+item.path,simpleDraweeView,mItemWidth,mItemHeight);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        simpleDraweeView.setImageURI(item.uri);
+//        try {
+//            simpleDraweeView.setActualImageResource(R.drawable.default_error);//复用
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//                Bitmap bitmap = mContext.getContentResolver().loadThumbnail(item.uri,new Size(mItemWidth,mItemHeight),null);
+//                simpleDraweeView.setImageBitmap(bitmap);
+//            }else {
+//                FrescoUtils.showThumb("file://"+item.path,simpleDraweeView,mItemWidth,mItemHeight);
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }

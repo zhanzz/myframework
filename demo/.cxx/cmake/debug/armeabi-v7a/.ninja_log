@@ -1,11 +1,11 @@
 # ninja log v5
-6	1379	0	CMakeFiles/bspatch.dir/bspatch.c.o	bf6be9a262322297
-4	1411	0	CMakeFiles/bspatch.dir/Patch.cpp.o	ae7b106991309754
-25	1411	0	CMakeFiles/bspatch.dir/bzip/crctable.c.o	3a7aa9c1edbf8496
-22	1412	0	CMakeFiles/bspatch.dir/bzip/randtable.c.o	ab241c96cb044598
-11	1412	0	CMakeFiles/bspatch.dir/bzip/huffman.c.o	46293b0c1a08d008
-13	1446	0	CMakeFiles/bspatch.dir/bzip/compress.c.o	fe69e7ffe3501063
-1	1451	0	CMakeFiles/bspatch.dir/bzip/blocksort.c.o	d95b1092b23100b3
-16	1454	0	CMakeFiles/bspatch.dir/bzip/decompress.c.o	e03ee28553e083cc
-8	1485	0	CMakeFiles/bspatch.dir/bzip/bzlib.c.o	daf1b0eb48d2380a
-1485	2319	0	E:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/jniLibs/armeabi-v7a/libbspatch.so	6e9aecab39a8467b
+34	411	0	CMakeFiles/bspatch.dir/bzip/crctable.c.o	3a7aa9c1edbf8496
+2	424	0	CMakeFiles/bspatch.dir/Patch.cpp.o	ae7b106991309754
+17	395	0	CMakeFiles/bspatch.dir/bzip/huffman.c.o	46293b0c1a08d008
+21	390	0	CMakeFiles/bspatch.dir/bzip/randtable.c.o	ab241c96cb044598
+9	412	0	CMakeFiles/bspatch.dir/bspatch.c.o	bf6be9a262322297
+25	468	0	CMakeFiles/bspatch.dir/bzip/decompress.c.o	e03ee28553e083cc
+12	479	0	CMakeFiles/bspatch.dir/bzip/bzlib.c.o	daf1b0eb48d2380a
+30	457	0	CMakeFiles/bspatch.dir/bzip/compress.c.o	fe69e7ffe3501063
+6	468	0	CMakeFiles/bspatch.dir/bzip/blocksort.c.o	d95b1092b23100b3
+479	586	0	E:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/jniLibs/armeabi-v7a/libbspatch.so	6e9aecab39a8467b

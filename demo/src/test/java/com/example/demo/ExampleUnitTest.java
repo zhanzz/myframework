@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.util.ArraySet;
 
 import com.alibaba.fastjson.JSON;
@@ -9,6 +10,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.serializer.StringCodec;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.framework.common.data.ActivityLifeCycleEvent;
@@ -20,6 +22,7 @@ import com.framework.model.VersionInfo;
 import com.google.gson.Gson;
 import com.google.zxing.common.StringUtils;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.junit.Test;
 
@@ -28,13 +31,18 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -44,6 +52,10 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 
 import io.reactivex.subjects.BehaviorSubject;
+import kotlin.collections.CollectionsKt;
+import kotlin.jvm.internal.Intrinsics;
+import kotlin.text.Regex;
+import kotlin.text.StringsKt;
 
 import static org.junit.Assert.*;
 
@@ -104,12 +116,12 @@ public class ExampleUnitTest {
     }
 
     private <T> T testInvoke(Class<T> clazz){
-        String content = "{'data':{'age':2.5,'daate':1568267088000},'code':1}";
-        JSONObject object = JSON.parseObject(content);
-        System.out.println(object.get("code"));
+        String content = "{'isGiveaway':true}";
+        //JSONObject object = JSON.parseObject(content);
+        //System.out.println(object.get("code"));
         Result<T> o = JSON.parseObject(content,new TypeReference<Result<T>>(clazz){}, Feature.InitStringFieldAsEmpty);
         //Gson gson = new Gson();
-        //Result<T> o = gson.fromJson(content,new TypeReference<Result<T>>(clazz){}.getType());
+//        Result<T> o = gson.fromJson(content,new TypeReference<Result<T>>(clazz){}.getType());
         return o.data;
     }
 
@@ -180,7 +192,9 @@ public class ExampleUnitTest {
     List<? extends Object> yy; //? extends Object 作为一种类型解理    T extends Object 表示泛型参数的边界
     public  void tUser(List<User> list){
         //yy = list;
-        //List<Object> xx = list;
+        List<? extends Object> xx = list;
+        //xx.add(new User());
+        //User x = xx.get(4);
         //Source<? extends Object> objects = list;
         list.add(new Student());
     }
@@ -274,7 +288,7 @@ public class ExampleUnitTest {
 
     @Test //测试泛型
     public void testClass(){
-        ApiSubscriber apiSubscriber = new ApiSubscriber<String>(){
+        ApiSubscriber apiSubscriber = new ApiSubscriber(){
 
             @Override
             protected void onFail(ApiException ex) {
@@ -282,13 +296,15 @@ public class ExampleUnitTest {
             }
 
             @Override
-            public void onSuccess(String data, int code, String msg) {
+            public void onSuccess(Object data, int code, String msg) {
                 System.out.println("onSuccess="+msg);
             }
         };
         com.framework.common.data.Result<String> result = new com.framework.common.data.Result<>();
-        apiSubscriber.onNext(result);
-        System.out.println(apiSubscriber.getClass().getSuperclass());
+        //apiSubscriber.onNext(result);
+        System.out.println(apiSubscriber.getClass());
+        System.out.println(apiSubscriber.getClass().getGenericSuperclass() instanceof ParameterizedType);
+        System.out.println(apiSubscriber.getClass().getGenericSuperclass().getTypeName());
 //        request(new CallBack<User>(){
 //            @Override
 //            public void haha() {
@@ -323,12 +339,15 @@ public class ExampleUnitTest {
         for (Object object:objects){
             System.out.println(object);
         }
-        Son son = new Son();
+        Fater son = new Son();
         son.setAge(15);
         System.out.println(son.getAge());
 
-        Son cson = son.clone();
-        System.out.println(cson instanceof Son);
+        //Son cson = son.clone();
+        System.out.println(UUID.randomUUID().toString().replaceAll("-",""));
+        double value = 0.30;
+        DecimalFormat format = new DecimalFormat("退款金额:#.##");
+        System.out.println(format.format(value));
     }
 
     @Test
@@ -389,5 +408,88 @@ public class ExampleUnitTest {
     }
 
     class B implements A<String, Integer> {
+    }
+
+    @Test
+    public void testReturnType(){
+        Method method = null;
+        try {
+            method = Result.class.getDeclaredMethod("getData", null);
+            //返回类型解析
+            Type returnType = method.getGenericReturnType();
+            if(returnType instanceof TypeVariable){
+                System.out.println (((TypeVariable) returnType).getName());
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testBoolean(){
+        String content = "{'giveaway':1,'result':null}";
+        ParserConfig.getGlobalInstance().putDeserializer(String.class, MyStringCodec.instance);
+        Result o = JSON.parseObject(content,Result.class);
+        System.out.println(o.isGiveaway());
+        String a = null;
+        System.out.println(a+"haha");
+
+        Map<String,Integer> map = new HashMap<>();
+        Set<String> keys = map.keySet();
+        List<String> list = new ArrayList<>(keys);
+        System.out.println(String.format(Locale.CHINA,"选择\"%s\"","aa"));
+    }
+
+    @Test
+    public void testUri() throws UnsupportedEncodingException {
+        //Uri uri = Uri.parse("content://media/external/images/media/294");
+        //uri = uri.buildUpon().appendQueryParameter("fileName","haha").build();
+        //System.out.println(uri.getPath());
+        //int x = 5/2;
+        //int realPosition = 5/2;
+//        String x = "格子小西装外套女220新款春季韩版修身0短款休闲网红西服上衣套装";
+//        int lenght=0;
+//        for(int y=0,count=x.length();y<count;y++){
+//            String string = new String(x.charAt(y)+"");
+//            lenght += string.getBytes("GBK").length;
+//        }
+//        System.out.println("slengh="+x.getBytes("GBK").length);
+//        System.out.println("lengh="+lenght);
+//        String[] strs = SubByteString.getSubedStrings(x,12);
+//        System.out.println(strs.length);
+//        for(int i=0,count=strs.length;i<count;i++){
+//            System.out.println(String.format("%d=",i)+strs[i].length());
+//            System.out.println(String.format("%d=",i)+strs[i]);
+//        }
+//        System.out.println(String.format("%s",1f));
+//        String value = "steps:1/8x";
+//        String result = value.replaceAll("[^\\d:]","");
+//        System.out.println(result);
+//        String test = "zz yy";
+//        String result2 = test.replaceAll("[^.]","");
+//        System.out.println(result2);
+//        //cleanSecondsString("steps:1/8x");
+//        System.out.println(String.format("%.100f", 0.0000001));
+//        Boolean xx = null;
+//        if(xx==Boolean.FALSE){
+//            System.out.println("false");
+//        }
+    }
+
+    @Test
+    public void cleanSecondsString() {
+//        CharSequence var2 = (CharSequence) seconds;
+//        Regex var3 = new Regex("[^\\d:.]");
+//        String var4 = "";
+//        boolean var5 = false;
+//        String filteredValue = var3.replace(var2, var4);
+//        System.out.println(filteredValue);
+//        String[] values = filteredValue.split(":");
+//        System.out.println(Integer.parseInt(values[0]));
+//        Son son = new Son();
+        //System.out.println(son.sex);
+        String path = "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2653344692,3688499604&fm=26&gp=0.jpg?xx=4";
+        File file = new File(path);
+        System.out.println(file.getName());
     }
 }

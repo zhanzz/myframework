@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Environment;
@@ -16,6 +17,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -80,6 +82,37 @@ public class AppTools {
             }
         }
         return false;
+    }
+
+    public static int getStatusBarHeight(Context context) {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }else {
+            Class c;
+            try {
+                c = Class.forName("com.android.internal.R$dimen");
+                Object obj = c.newInstance();
+                Field field = c.getField("status_bar_height");
+                int x = Integer.parseInt(field.get(obj).toString());
+                result = context.getResources().getDimensionPixelSize(x);
+            } catch (Exception e) {
+                e.printStackTrace();
+                result = UIHelper.dip2px(25);
+            }
+        }
+        return result;
+    }
+
+    public static int getNavigationBarHeight(Context context) {
+        Resources resources = context.getResources();
+        int resourceId=resources.getIdentifier("navigation_bar_height","dimen","android");
+        if(resourceId>0){
+            return resources.getDimensionPixelSize(resourceId);
+        }else {
+            return 0;
+        }
     }
 
     private void moveAppToFront(Context context) {

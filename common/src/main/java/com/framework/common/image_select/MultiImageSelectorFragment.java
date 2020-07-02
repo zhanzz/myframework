@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -32,6 +33,7 @@ import android.widget.ListPopupWindow;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.facebook.common.util.UriUtil;
 import com.framework.common.R;
 import com.framework.common.base_mvp.BaseFragment;
 import com.framework.common.base_mvp.BasePresenter;
@@ -365,6 +367,7 @@ public class MultiImageSelectorFragment extends BaseFragment {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             ContentValues values = new ContentValues();
                             values.put(MediaStore.Images.Media.IS_PENDING, 0);
+                            getContext().getContentResolver().update(mTmpUri, values, null, null);
                         } else {
                             //刷新该图片到图库,在数据库中加一条记录，收录
                             startScan();
@@ -373,10 +376,10 @@ public class MultiImageSelectorFragment extends BaseFragment {
                 }
             } else {
                 if (mTmpUri != null) {
-                    ContentValues contentValues = new ContentValues();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        contentValues.put(MediaStore.Images.Media.IS_PENDING, 1);
                         getContext().getContentResolver().delete(mTmpUri, null, null);
+                    }else if(UriUtil.isLocalFileUri(mTmpUri) && !TextUtils.isEmpty(mTmpUri.getPath())){
+                        new File(mTmpUri.getPath()).delete();
                     }
                 }
             }

@@ -4,15 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#456">
 
     <com.framework.common.widget.TitleView xmlns:title="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_bar_height"
         title:title_name="标题" />
 
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:switchMinWidth="20dp"
+        android:track="@drawable/switch_track"
+        android:thumb="@drawable/switch_thumb"
+        android:checked="false"/>
+
+    <ToggleButton
+        android:id="@+id/tb_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:textOff="关闭"
+        android:textOn="打开"
+        android:checked="true"
+        android:minWidth="0dp"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:background="#de3428"/>
+
+    <com.example.demo.window.MyScanView
+        android:visibility="gone"
+        android:id="@+id/scan_view"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"/>
+
     <Button
         android:id="@+id/btn_show_pop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="popwindow" />
+
+    <Button
+        android:id="@+id/btn_show_pop2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -33,6 +67,23 @@
         android:layout_gravity="center_horizontal"
         android:text="testClick" />
     <Button
+        android:id="@+id/btn_show_dialog_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal"
+        android:text="testDialogService" />
+
+    <com.example.demo.widget.MyTextView
+        android:id="@+id/text_show_dialog_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal"
+        android:text="testDialogService" />
+
+    <Button
+        android:visibility="gone"
         android:id="@+id/btn_show_test_click_down"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -40,4 +91,12 @@
         android:layout_marginTop="50dp"
         android:layout_gravity="center_horizontal"
         android:text="testClickDown" />
+
+    <com.example.demo.widget.MyHeadView
+        xmlns:head="http://schemas.android.com/apk/res-auto"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        head:msrc="@drawable/ic_updata_tip"
+        head:mborder_color="#de3428"
+        head:mborder_width="2dp"/>
 </LinearLayout>
