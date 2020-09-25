@@ -8,7 +8,9 @@ import com.framework.common.net.LoggerInterceptor;
 
 import java.net.Proxy;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -73,13 +75,24 @@ public class NetWorkManager{
         // 初始化Retrofit
         Retrofit retrofit = retrofitMap.get(hostName);
         if(retrofit==null){
-            retrofit = new Retrofit.Builder()
-                    .client(okHttpClient)
-                    .baseUrl(hostName)
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())//创建同步的转换工厂
-                    .addConverterFactory(FileConverterFactory.create())
-                    .addConverterFactory(FastJsonConverterFactory.create())
-                    .build();
+            if(retrofitMap.size()>0){
+                Set<String> keys = retrofitMap.keySet();
+                Iterator<String> iterator = keys.iterator();
+                if(iterator.hasNext()){
+                    retrofit = retrofitMap.get(iterator.next());
+                }
+            }
+            if(retrofit!=null){
+                retrofit = retrofit.newBuilder().baseUrl(hostName).build();
+            }else {
+                retrofit = new Retrofit.Builder()
+                        .client(okHttpClient)
+                        .baseUrl(hostName)
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())//创建同步的转换工厂
+                        .addConverterFactory(FileConverterFactory.create())
+                        .addConverterFactory(FastJsonConverterFactory.create())
+                        .build();
+            }
             retrofitMap.put(hostName,retrofit);
         }
         return retrofit;

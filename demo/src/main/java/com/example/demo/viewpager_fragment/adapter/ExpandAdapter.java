@@ -28,6 +28,7 @@ public class ExpandAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Ba
         addItemType(1, R.layout.item_section_content);
     }
 
+    //占整行
     @Override
     protected boolean isFixedViewType(int type) {
         return super.isFixedViewType(type) || type==0;

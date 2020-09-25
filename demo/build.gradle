@@ -90,4 +90,9 @@ dependencies {
     //implementation "androidx.work:work-gcm:$versions.work_version"//会导致主题问题
     // optional - Test helpers
     androidTestImplementation "androidx.work:work-testing:$versions.work_version"
+    //物理特性的支持库
+    implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+    //viewpager2
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+    api 'com.contrarywind:Android-PickerView:4.1.9'
 }

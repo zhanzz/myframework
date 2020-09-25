@@ -42,6 +42,7 @@ public class CoordinatorLayoutActivity extends BaseActivity implements ICoordina
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,DividerItemDecoration.VERTICAL);
         myList.addItemDecoration(dividerItemDecoration);
         myList.setAdapter(adapter);
+        myList.canScrollVertically(1);
     }
 
     @Override

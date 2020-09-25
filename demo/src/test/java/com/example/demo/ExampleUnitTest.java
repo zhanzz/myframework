@@ -427,7 +427,7 @@ public class ExampleUnitTest {
 
     @Test
     public void testBoolean(){
-        String content = "{'giveaway':1,'result':null}";
+        String content = "{'isGiveaway':1,'result':null}";
         ParserConfig.getGlobalInstance().putDeserializer(String.class, MyStringCodec.instance);
         Result o = JSON.parseObject(content,Result.class);
         System.out.println(o.isGiveaway());
@@ -488,8 +488,43 @@ public class ExampleUnitTest {
 //        System.out.println(Integer.parseInt(values[0]));
 //        Son son = new Son();
         //System.out.println(son.sex);
-        String path = "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2653344692,3688499604&fm=26&gp=0.jpg?xx=4";
-        File file = new File(path);
-        System.out.println(file.getName());
+//        String path = "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2653344692,3688499604&fm=26&gp=0.jpg?xx=4";
+//        File file = new File(path);
+//        System.out.println(file.getName());
+//            List<String> xx = new ArrayList<>();
+//            //xx.add("11");
+//            xx.add("22");
+//            //xx.add("33");
+//        Iterator<String> it = xx.iterator();
+//            while(it.hasNext()){
+//                String runnable = it.next();
+//                System.out.println(runnable);
+//                if(runnable.equalsIgnoreCase("22")){
+//                    it.remove();
+//                }
+//
+//            }
+//        ArrayList<Integer> list = new ArrayList<Integer>();
+//        list.add(2);
+//        Iterator<Integer> iterator = list.iterator();
+//        while(iterator.hasNext()){
+//            Integer integer = iterator.next();
+//            if(integer==2)
+//                iterator.remove();
+//        }
+//        ArrayList<Integer> list = new ArrayList<Integer>();
+//        list.add(2);
+//        Iterator<Integer> iterator = list.iterator();
+//        while(iterator.hasNext()){
+//            Integer integer = iterator.next();
+//            if(integer==2)
+//                list.remove(integer);
+//        }
+//        System.out.println(xx.size());
+//        float x = 0.01f;
+//        x++;
+//        System.out.println(x);
+        Integer a=5;
+        //System.out.println((Boolean)a);
     }
 }

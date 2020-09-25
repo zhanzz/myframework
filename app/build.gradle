@@ -4,7 +4,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.alibaba.arouter'
-apply plugin: 'com.mob.sdk'
 
 android {
     compileSdkVersion build_versions.compile_sdk

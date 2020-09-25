@@ -8,8 +8,17 @@ package com.example.demo;
 public class Result<T> {
    public String result="";
    public int code;
-   private String isGiveaway;
+   //is开头的要正确生成get set   boolean类型为setGiveaway  String 类型为setIsGiveaway
+   private boolean isGiveaway;
    public T data;
+
+   public boolean isGiveaway() {
+      return isGiveaway;
+   }
+
+   public void setGiveaway(boolean giveaway) {
+      isGiveaway = giveaway;
+   }
 
    public T getData() {
       return data;
@@ -17,14 +26,6 @@ public class Result<T> {
 
    public void setData(T data) {
       this.data = data;
-   }
-
-   public String isGiveaway() {
-      return isGiveaway;
-   }
-
-   public void setGiveaway(String giveaway) {
-      isGiveaway = giveaway;
    }
 
    public String getResult() {

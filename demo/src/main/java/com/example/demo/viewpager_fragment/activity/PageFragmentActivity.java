@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.transition.ChangeBounds;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.core.app.SharedElementCallback;
 import androidx.fragment.app.Fragment;
@@ -48,7 +49,7 @@ public class PageFragmentActivity extends BaseActivity implements IPageFragmentV
     private List<PresellBean.CategoryItem> mTitleDataList = new ArrayList<>();
     private ArrayList<PresellBean.PresellProduct> mFirstProductList;
     private RecyclerView.RecycledViewPool mRecyclerViewPool;
-
+    TextView view;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

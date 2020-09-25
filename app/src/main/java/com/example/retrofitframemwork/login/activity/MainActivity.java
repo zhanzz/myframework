@@ -44,7 +44,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.alipay.ShowHtmlActivity;
+import com.example.demo.anim.activity.AttrAnimActivity;
 import com.example.demo.anim.activity.ViewAnimActivity;
+import com.example.demo.anim.activity.activity.ViewPager2AnimActivity;
+import com.example.demo.anim.activity.activity.ViewPagerAnimActivity;
 import com.example.demo.contact.activity.PhoneListActivity;
 import com.example.demo.coordinator_layout.activity.CoordinatorLayoutActivity;
 import com.example.demo.coordinator_layout.activity.CoordinatorLayoutV2Activity;
@@ -52,6 +55,7 @@ import com.example.demo.db.activity.TestSqliteDataBaseActivity;
 import com.example.demo.incremental_updating.activity.PatchActivity;
 import com.example.demo.keybord.activity.TestInputActivity;
 import com.example.demo.pagelist.activity.PageListActivity;
+import com.example.demo.product_detail.activity.ProductDetailActivity;
 import com.example.demo.recyclerview.activity.CustomManagerActivity;
 import com.example.demo.some_test.activity.ActivityPermissionActivity;
 import com.example.demo.some_test.activity.TestDiffAndHandlerActivity;
@@ -157,7 +161,8 @@ public class MainActivity extends BaseActivity implements ILoginView {
             "reactNative", "scan", "testSome", "takePicture", "downloadApkAndInstall", "selectImage"
             , "phones", "testNetLink", "startOtherActivity", "SlidingPaneLayout", "testArouter", "sendBroadCast"
             , "blueTooth", "testSqliteDatabase", "studyWindow", "add_update", "permission", "pageList", "navigation"
-            , "coordinatorLayout", "coordinatorLayoutV2", "customManager", "alipay", "testError","viewAnim","showDialogFragment"};
+            , "coordinatorLayout", "coordinatorLayoutV2", "customManager", "alipay", "testError","viewAnim","AttrViewAnim"
+            ,"showDialogFragment","viewPagerAnim","productDetail"};
 
     @Override
     public void bindData() {
@@ -208,6 +213,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
                 int nHeight = AppTools.getNavigationBarHeight(MainActivity.this);
                 //root;height=1920;barHeight=63;navHeight=126
                 LogUtil.e("height",String.format("root;height=%d;barHeight=%d;navHeight=%d",height,barHeight,nHeight));
+                //getRealHeight = getDisplayHeight+barHeight+navHeight;
             }
         },1000);
     }
@@ -257,7 +263,8 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     requestNeedPermissions(121, Manifest.permission.CAMERA);
                     break;
                 case "downloadApkAndInstall":
-                    mPresenter.downLoadFile();
+                    //mPresenter.downLoadFile();
+                    getResources().getString(R.string.bukenen);
                     break;
                 case "selectImage":
                     MultiImageSelectorActivity.startMe(this, 5, 200);
@@ -384,9 +391,19 @@ public class MainActivity extends BaseActivity implements ILoginView {
                 case "viewAnim":
                     ViewAnimActivity.start(getContext());
                     break;
+                case "AttrViewAnim":
+                    AttrAnimActivity.start(getContext());
+                    break;
                 case "showDialogFragment":
                     //showFragment(4);
                     TestInputActivity.start(getContext());
+                    break;
+                case "viewPagerAnim":
+                    //ViewPagerAnimActivity.start(getContext());
+                    ViewPager2AnimActivity.start(getContext());
+                    break;
+                case "productDetail":
+                    ProductDetailActivity.start(getContext());
                     break;
             }
         });
@@ -410,6 +427,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
                 }
             }
         });
+        smartRefreshLayout.setEnableLoadMore(true);
 
         twoLevelHeader.setOnTwoLevelListener(new OnTwoLevelListener() {
             @Override
@@ -607,9 +625,10 @@ public class MainActivity extends BaseActivity implements ILoginView {
             //mPresenter.checkUpdate();
         }
         if (requestCode == 121 && permissions.contains(Manifest.permission.CAMERA)) {
+            showToast("通过了");
             //takePhoto();
             //uri = TakePhotoUtil.takePhotoV3(this, 1111);
-            uri = TakePhotoUtil.takePhotoV3(this,1111);
+            //uri = TakePhotoUtil.takePhotoV3(this,1111);
 //            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 //                File[] files = getExternalMediaDirs();
 //                getExternalCacheDir();
@@ -621,6 +640,14 @@ public class MainActivity extends BaseActivity implements ILoginView {
 //            opration.setCacheWithoutKeyAsy(content+i);
 //        }
 //        Log.e("zhang","userTime="+(System.currentTimeMillis()-start));
+    }
+
+    @Override
+    public void failPermission(@NonNull List<String> permissions, int requestCode) {
+        super.failPermission(permissions, requestCode);
+        if (requestCode == 121 && permissions.contains(Manifest.permission.CAMERA)) {
+            showToast("没有通过");
+        }
     }
 
     public void takePhoto() {

@@ -47,7 +47,7 @@ public class ForegroundService extends Service {
         Notification notification = builder.build();
 
         //设置为前台服务
-        startForeground(NOTIFICATION_DOWNLOAD_PROGRESS_ID,notification);
+        startForeground(100,notification);
     }
 
 

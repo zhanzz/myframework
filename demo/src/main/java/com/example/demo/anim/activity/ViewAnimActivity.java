@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.example.demo.R;
 import com.example.demo.R2;
+import com.example.demo.anim.SplashScreen;
 import com.example.demo.anim.presenter.ViewAnimPresenter;
 import com.example.demo.anim.view.IViewAnimView;
 import com.framework.common.base_mvp.BaseActivity;
@@ -57,6 +59,7 @@ public class ViewAnimActivity extends BaseActivity implements IViewAnimView {
         alpha.setStartOffset(3000);
         alphaPerson.startAnimation(alpha);
 
+        //fillBefore 一start就为这个值
         Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale_person);
         scale.setStartOffset(3000);
         scalePerson.startAnimation(scale);

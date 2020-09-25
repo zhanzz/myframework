@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- fragment_screen_slide_page.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <HorizontalScrollView
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:scrollbars="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="创建一个稍后将用于 Fragment 内容的布局文件。您还需要为 Fragment 的内容定义一个字符串。以下示例包含一个显示了一些文本的文本视图"/>
+    </HorizontalScrollView>
+    <TextView
+        android:id="@+id/text"
+        style="?android:textAppearanceMedium"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:lineSpacingMultiplier="1.2"
+        android:lines="3"
+        android:maxLines="3"
+        android:padding="16dp"
+        android:scrollbars="horizontal"
+        android:text="创建一个稍后将用于 Fragment 内容的布局文件。您还需要为 Fragment 的内容定义一个字符串。以下示例包含一个显示了一些文本的文本视图" />
+</LinearLayout>

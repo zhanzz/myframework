@@ -5,16 +5,18 @@ buildscript {
     apply from: 'config.gradle'
     apply from: 'version.gradle'
     repositories {
+        mavenLocal()
         // 添加本地maven地址配置
         maven {
             url uri("${rootProject.projectDir}/repo")
         }
-        google()
+        maven { url 'https://maven.aliyun.com/repository/google' }
         mavenCentral()
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.5.2'
         classpath "com.jakewharton:butterknife-gradle-plugin:$versions.butterknife"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin_version"
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
@@ -29,23 +31,26 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         // 添加本地maven地址配置
         maven {
             url uri("${rootProject.projectDir}/repo")
         }
-        maven {
-            url "http://tututech.f3322.net:8081/repository/zd-android-b2b/"
-            credentials {
-                username 'admin'
-                password 'android_dev'
-            }
-        }
+//        maven {
+//            url "http://tututech.f3322.net:8081/repository/zd-android-b2b/"
+//            credentials {
+//                username 'admin'
+//                password 'android_dev'
+//            }
+//        }
         maven { url "http://mvn.mob.com/android" }
-        google()
         mavenCentral()
-        jcenter()
+        //com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4需要
         maven { url "https://jitpack.io" }
         maven { url "$rootDir/../node_modules/react-native/android" }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        jcenter()
+        google()
     }
 }
 
