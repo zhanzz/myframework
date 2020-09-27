@@ -6,10 +6,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ScrollView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.demo.product_detail.adapter.TestAdapter;
 import com.example.demo.widget.CountDownButton;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.base_mvp.BaseActivity;
@@ -43,7 +49,27 @@ public class ProductDetailActivity extends BaseActivity implements IProductDetai
 
     @Override
     public void bindData() {
-
+        //此段代码可处理scrollView中焦点视图移动
+//        ScrollView scrollView = findViewById(R.id.scrollView);
+//        scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+//        scrollView.setFocusable(true);
+//        scrollView.setFocusableInTouchMode(true);
+//        scrollView.setOnTouchListener((v, event) -> {
+//            v.requestFocusFromTouch();
+//            return false;
+//        });
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        TestAdapter adapter = new TestAdapter();
+        recyclerView.setAdapter(adapter);
+        WebView webView = findViewById(R.id.webView);
+        webView.loadUrl("https://www.jianshu.com/p/3682dde60dbf");
+        webView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
+        webView.setLongClickable(false);
     }
 
     @Override

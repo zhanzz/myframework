@@ -4,14 +4,14 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.NestedScrollingParent2;
 import androidx.core.view.NestedScrollingParentHelper;
 import androidx.core.view.ViewCompat;
-import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.demo.anim.activity.ViewAnimActivity;
 
 /**
 * Description:NestedScrolling2机制下的嵌套滑动，实现NestedScrollingParent2接口下，处理fling效果的区别
@@ -46,10 +46,10 @@ public class NestedScrollingParent2Layout extends LinearLayout implements Nested
     */
    @Override
    public boolean onStartNestedScroll(@NonNull View child, @NonNull View target, int axes, int type) {
-       //mTopView.stopNestedScroll();
        boolean scroll = (axes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0 && isViewBoundary(target);
-       Log.e("zhang","canScroll="+scroll);
-       return scroll;
+       Log.e("zhang",String.format("canScroll=%b;isViewBoundary=%s;target.canScrollVertically(1)=%b;target.canScrollVertically(-1)=%b",
+               scroll,isViewBoundary(target),target.canScrollVertically(1),target.canScrollVertically(-1)));
+       return true;
    }
 
     /**
@@ -61,7 +61,13 @@ public class NestedScrollingParent2Layout extends LinearLayout implements Nested
        return  !view.canScrollVertically(1) || !view.canScrollVertically(-1);
    }
 
-
+   boolean isMiddle() {
+       int value = getScrollY()%getMeasuredHeight();
+       if(value>1&&value<getMeasuredHeight()-1){
+           return true;
+       }
+       return false;
+   }
    /**
     * 当onStartNestedScroll返回为true时，也就是父控件接受嵌套滑动时，该方法才会调用
     *
@@ -90,11 +96,11 @@ public class NestedScrollingParent2Layout extends LinearLayout implements Nested
    @Override
    public void onNestedPreScroll(@NonNull View target, int dx, int dy, @NonNull int[] consumed, int type) {
        //这里不管手势滚动还是fling都处理  canScrollVertically表示的是框的上下移动
-       boolean scrollUp = dy > 0 && !target.canScrollVertically(-1) && canScrollVertically(1);
-       boolean scrollDown = dy < 0 && !target.canScrollVertically(1)&& canScrollVertically(-1);
-       boolean cunsumed = scrollUp || scrollDown;
+       boolean scrollUp = dy > 0 && !target.canScrollVertically(1) && canScrollVertically(1) && type!=ViewCompat.TYPE_NON_TOUCH;
+       boolean scrollDown = dy < 0 && !target.canScrollVertically(-1)&& canScrollVertically(-1) && type!=ViewCompat.TYPE_NON_TOUCH;
+       boolean cunsumed = scrollUp || scrollDown || isMiddle();
 
-       Log.e("zhang",String.format("dy=%s;scrollup=%b;cunsumed=%b",dy,scrollUp,cunsumed));
+       Log.e("zhang",String.format("dy=%s;scrollup=%b;cunsumed=%b;isMiddle=%b",dy,scrollUp,cunsumed,isMiddle()));
        if (cunsumed) {
            scrollBy(0, dy);
            consumed[1] = dy;
@@ -119,8 +125,8 @@ public class NestedScrollingParent2Layout extends LinearLayout implements Nested
    @Override
    public void onNestedScroll(@NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type) {
        //这里不管手势滚动还是fling都处理
-       boolean scrollUp = dyUnconsumed > 0 && !target.canScrollVertically(-1) && canScrollVertically(-1);
-       boolean scrollDown = dyUnconsumed < 0 && !target.canScrollVertically(1)&& canScrollVertically(1);
+       boolean scrollUp = dyUnconsumed > 0 && !target.canScrollVertically(1) && canScrollVertically(1) && type!=ViewCompat.TYPE_NON_TOUCH;
+       boolean scrollDown = dyUnconsumed < 0 && !target.canScrollVertically(-1)&& canScrollVertically(-1) && type!=ViewCompat.TYPE_NON_TOUCH;
        boolean cunsumed = scrollUp || scrollDown;
 
        if (cunsumed) {
@@ -175,9 +181,31 @@ public class NestedScrollingParent2Layout extends LinearLayout implements Nested
        super.onSizeChanged(w, h, oldw, oldh);
    }
 
-   @Override
+    @Override
+    public void scrollBy(int x, int dy) {
+        int value = (getScrollY()+dy)%getMeasuredHeight();
+        if(value<dy){
+            dy = dy - value;
+        }else if(value>(getMeasuredHeight()-Math.abs(dy))){
+            dy = dy + (getMeasuredHeight()-value);
+        }
+        super.scrollBy(x, dy);
+    }
+
+    @Override
    public void scrollTo(int x, int y) {
-       Log.e("zhang","scrollTo:" + y);
+//       Log.e("zhang","scrollTo:" + y);
+       y = clamp(y,getHeight(),computeVerticalScrollRange());
        super.scrollTo(x, y);
    }
+
+    private static int clamp(int n, int my, int child) {
+        if (my >= child || n < 0) {
+            return 0;
+        }
+        if ((my+n) > child) {
+            return child-my;
+        }
+        return n;
+    }
 }

@@ -40,4 +40,22 @@
         <item name="android:windowCloseOnTouchOutside">true</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+    <style name="register_label">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#666666</item>
+        <item name="android:drawablePadding">3dp</item>
+    </style>
+
+    <dimen name="d48">48dp</dimen>
+    <dimen name="d15">15dp</dimen>
+    <dimen name="d16">16dp</dimen>
+    <color name="c_999999">#999999</color>
+    <dimen name="s14">14sp</dimen>
+    <dimen name="d24">24dp</dimen>
+    <dimen name="d38">38dp</dimen>
+    <color name="c_333333">#333333</color>
 </resources>

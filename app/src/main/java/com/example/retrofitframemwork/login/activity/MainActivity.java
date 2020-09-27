@@ -121,6 +121,7 @@ import io.reactivex.plugins.RxJavaPlugins;
 
 /**
  * 当代码改了没有反应要clean一下
+ * 1035964576@qq.com   wo1035964576
  */
 public class MainActivity extends BaseActivity implements ILoginView {
 
