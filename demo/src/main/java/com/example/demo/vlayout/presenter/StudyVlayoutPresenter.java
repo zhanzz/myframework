@@ -43,7 +43,7 @@ public class StudyVlayoutPresenter extends BasePresenter<IStudyVlayoutView> {
         if(mProductDispose!=null){
             mProductDispose.dispose();
         }
-        Map<String,String> params = new HashMap<>();
+        Map<String,Object> params = new HashMap<>();
         params.put("pageSize", String.valueOf(PAGE_SIZE));
         params.put("startPage", String.valueOf(mCurrentPage));
         params.put("urlType","2");

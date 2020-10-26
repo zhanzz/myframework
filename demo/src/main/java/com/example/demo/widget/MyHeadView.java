@@ -23,8 +23,7 @@ import com.example.demo.R;
 
 public class MyHeadView extends View {
     private Bitmap mBitmap;
-    private Paint mPaint,mBitmapPaint;
-
+    private Paint mPaint,mBitmapPaint,mWaterPaint;
     private int mWidth, mHeight;
 
     private int mRadius;
@@ -33,7 +32,7 @@ public class MyHeadView extends View {
     private int mBorderColor;
     private Paint mBorderPaint;
     private int mBorderWidth;
-    private PorterDuffXfermode mode = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
+    private PorterDuffXfermode mode = new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER);
     public MyHeadView(Context context) {
         super(context);
         init(context,null);
@@ -71,6 +70,10 @@ public class MyHeadView extends View {
         mBitmapPaint.setColor(0xffffff00);
         mBitmapPaint.setStyle(Paint.Style.FILL);
         mBorderWidth = type.getDimensionPixelSize(R.styleable.MyHeadView_mborder_width, 2);
+
+        mWaterPaint = new Paint();
+        mWaterPaint.setColor(0xff0000ff);
+        mWaterPaint.setStyle(Paint.Style.FILL);
     }
 
     @Override
@@ -149,16 +152,24 @@ public class MyHeadView extends View {
 //        int sc=canvas.saveLayer(0,0,mWidth,mHeight,null,Canvas.ALL_SAVE_FLAG);
 //        canvas.drawRect(0,0,mWidth/2f,mHeight/2.0f,mPaint);
 //        canvas.drawCircle(mCircleX, mCircleY, mRadius-20, mPaint);
-        canvas.drawCircle(mCircleX, mCircleY, mRadius, mBitmapPaint);
+////        canvas.drawCircle(mCircleX, mCircleY, mRadius, mBitmapPaint);
+//        mBitmapPaint.setXfermode(mode);
+//        canvas.drawBitmap(mBitmap,0,0,mBitmapPaint);
+//        //canvas.drawBitmap(makeCircle(),0,0,mBitmapPaint);
+////        mBitmapPaint.setXfermode(null);
+//        /**
+//         * 还原画布，与canvas.saveLayer配套使用
+//         */
+//        canvas.restoreToCount(sc);
+//        canvas.drawCircle(mCircleX, mCircleY, mRadius-20, mBorderPaint);
+
+        //类似于移动的加载动画效果 //SRC_OVER
+        int sc=canvas.saveLayer(0,0,mWidth,mHeight,null,Canvas.ALL_SAVE_FLAG);
+        canvas.drawRect(0,0,mWidth,mHeight,mWaterPaint);
         mBitmapPaint.setXfermode(mode);
         canvas.drawBitmap(mBitmap,0,0,mBitmapPaint);
-        //canvas.drawBitmap(makeCircle(),0,0,mBitmapPaint);
         mBitmapPaint.setXfermode(null);
-        /**
-         * 还原画布，与canvas.saveLayer配套使用
-         */
-//        canvas.restoreToCount(sc);
-        canvas.drawCircle(mCircleX, mCircleY, mRadius, mBorderPaint);
+        canvas.restoreToCount(sc);
     }
 
     /**

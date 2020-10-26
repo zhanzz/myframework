@@ -68,6 +68,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(':common')
     implementation project(':model')
+    implementation project(':study_gradle')
     annotationProcessor "com.jakewharton:butterknife-compiler:$versions.butterknife"
     implementation('com.alibaba.android:vlayout:1.2.8@aar') {
         transitive = true //Transitive用于自动处理子依赖项。默认为true
@@ -96,4 +97,6 @@ dependencies {
     //viewpager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     api 'com.contrarywind:Android-PickerView:4.1.9'
+    //不规则组件
+    implementation 'com.yxf:clippathlayout:1.0.+'
 }

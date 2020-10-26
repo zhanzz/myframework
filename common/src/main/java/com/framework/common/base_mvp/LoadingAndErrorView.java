@@ -1,10 +1,16 @@
 package com.framework.common.base_mvp;
 
 import android.content.Context;
+import android.os.Build;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.framework.common.R;
 
@@ -20,6 +26,22 @@ public class LoadingAndErrorView extends FrameLayout implements View.OnClickList
     private int mCount,mCountDialog;
     public LoadingAndErrorView(Context context) {
         super(context);
+        init();
+    }
+
+    public LoadingAndErrorView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public LoadingAndErrorView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public LoadingAndErrorView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 

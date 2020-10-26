@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -144,10 +145,19 @@ public class ExampleUnitTest {
 
     @Test
     public void testGsonv(){
-        String[] xx = new String[]{"44","45"};
-        String conent =  GsonUtils.parseToString(xx);
-        System.out.println(conent);
-        System.out.println(String.format(Locale.CHINA,"剩余%ss",2000/1000));
+//        String[] xx = new String[]{"44","45"};
+//        String conent =  GsonUtils.parseToString(xx);
+//        System.out.println(conent);
+//        System.out.println(String.format(Locale.CHINA,"剩余%ss",2000/1000));
+        //获取系统默认编码
+        System.out.println(System.getProperty("file.encoding"));
+
+        //获取系统默认的字符编码
+        System.out.println(Charset.defaultCharset());
+
+        //获取系统默认语言
+
+        System.out.println(System.getProperty("user.language"));
     }
 
     public <T> List<T> getList(){
@@ -442,9 +452,9 @@ public class ExampleUnitTest {
 
     @Test
     public void testUri() throws UnsupportedEncodingException {
-        //Uri uri = Uri.parse("content://media/external/images/media/294");
-        //uri = uri.buildUpon().appendQueryParameter("fileName","haha").build();
-        //System.out.println(uri.getPath());
+//        Uri uri = Uri.parse("content://media/external/images/media/294");
+//        uri = uri.buildUpon().appendQueryParameter("fileName","haha").build();
+//        System.out.println(uri.getPath());
         //int x = 5/2;
         //int realPosition = 5/2;
 //        String x = "格子小西装外套女220新款春季韩版修身0短款休闲网红西服上衣套装";

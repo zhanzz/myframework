@@ -55,6 +55,17 @@ public class AppTools {
         }
     }
 
+    public static void hideKeyBoard(Context context, Window window) {
+        if(context==null||window==null){
+            return;
+        }
+        View view = window.peekDecorView();
+        if (view != null) {
+            InputMethodManager inputmanger = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     //执行时间170ms
     public static int getApkCode(Context context, String apkPath) {
         if (!new File(apkPath).exists()) {

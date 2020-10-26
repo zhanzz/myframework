@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/tool_bar" />
+
+    <com.example.demo.coordinator_layout.widget.MoveTopView
+        android:background="#f88210"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.yxf.clippathlayout.impl.ClipPathFrameLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/clip_path_frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_accumulate_red_packet" />
+
+        </com.yxf.clippathlayout.impl.ClipPathFrameLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@id/view_need_move"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#de3428"
+            android:layout_marginTop="100dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="标题"
+                android:background="@color/white"/>
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="400dp"
+                        android:text="one"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="400dp"
+                        android:text="two"/>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+    </com.example.demo.coordinator_layout.widget.MoveTopView>
+</LinearLayout>

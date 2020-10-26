@@ -110,7 +110,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     annotationProcessor "com.jakewharton:butterknife-compiler:$versions.butterknife"
-    implementation 'com.kevin:common:1.1'
+    //implementation 'com.kevin:common:1.1'
     implementation project(':model')
     implementation project(':demo')
     implementation project(':reactnative')

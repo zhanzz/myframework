@@ -7,6 +7,14 @@
     android:orientation="vertical"
     tools:context="com.example.retrofitframemwork.login.activity.MainActivity">
 
+    <com.example.demo.widget.MyTextView
+        android:visibility="gone"
+        android:id="@+id/tstTtitle"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"/>
+
     <com.framework.common.widget.TitleView
         android:id="@+id/title_bar"
         xmlns:title="http://schemas.android.com/apk/res-auto"

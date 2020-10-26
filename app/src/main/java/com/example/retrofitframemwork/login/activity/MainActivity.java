@@ -18,6 +18,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.FileProvider;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,6 +53,7 @@ import com.example.demo.anim.activity.activity.ViewPagerAnimActivity;
 import com.example.demo.contact.activity.PhoneListActivity;
 import com.example.demo.coordinator_layout.activity.CoordinatorLayoutActivity;
 import com.example.demo.coordinator_layout.activity.CoordinatorLayoutV2Activity;
+import com.example.demo.coordinator_layout.activity.MoveTopActivity;
 import com.example.demo.db.activity.TestSqliteDataBaseActivity;
 import com.example.demo.incremental_updating.activity.PatchActivity;
 import com.example.demo.keybord.activity.TestInputActivity;
@@ -163,7 +166,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
             , "phones", "testNetLink", "startOtherActivity", "SlidingPaneLayout", "testArouter", "sendBroadCast"
             , "blueTooth", "testSqliteDatabase", "studyWindow", "add_update", "permission", "pageList", "navigation"
             , "coordinatorLayout", "coordinatorLayoutV2", "customManager", "alipay", "testError","viewAnim","AttrViewAnim"
-            ,"showDialogFragment","viewPagerAnim","productDetail"};
+            ,"showDialogFragment","viewPagerAnim","productDetail","moveTop"};
 
     @Override
     public void bindData() {
@@ -217,6 +220,17 @@ public class MainActivity extends BaseActivity implements ILoginView {
                 //getRealHeight = getDisplayHeight+barHeight+navHeight;
             }
         },1000);
+
+        //drawable目录相当于 （1.0x 基准）- 中密度 (mdpi)
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.ic_sha_lou,null);
+        Log.e("drawable",
+                String.format("width=%d;height=%d;density=%s;densityDpi=%s",
+                        drawable.getMinimumWidth(),drawable.getMinimumHeight(),UIHelper.getDensity(),UIHelper.getDeviceDpi()));
+        try{
+            getResources().getLayout(R.layout.test_layout);
+        }catch (Resources.NotFoundException e){
+            showToast("为空");
+        }
     }
 
     @Override
@@ -405,6 +419,9 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     break;
                 case "productDetail":
                     ProductDetailActivity.start(getContext());
+                    break;
+                case "moveTop":
+                    MoveTopActivity.start(getContext());
                     break;
             }
         });

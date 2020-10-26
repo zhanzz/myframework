@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:width="400dp"
+    android:height="550dp"
+    android:viewportHeight="550"
+    android:viewportWidth="400.0">
+    <group android:name="poker_diamond_a">
+        <path
+            android:name="border"
+            android:strokeWidth="7"
+            android:strokeColor="#96999c"
+            android:fillColor="@android:color/white"
+            android:pathData="M5 25a20 20 0 0 1 20 -20
+            h350a20 20 0 0 1 20 20v500a20 20 0 0 1 -20 20h-350a20 20 0 0 1 -20 -20v-500"/>
+        <path android:name="a"
+            android:strokeWidth="8"
+            android:strokeColor="#cc0000"
+            android:strokeLineJoin="bevel"
+            android:pathData="M40 120
+            l40 -90
+            l40 90
+            l-16-35
+            h-48"/>
+
+        <path android:name="small_diamond" android:fillColor="#cc0000" android:pathData="M80 130l41 41l-41 41l-41 -41z"/>
+        <path android:name="big_diamond" android:fillColor="#cc0000" android:pathData="M260 310l100 100l-100 100l-100 -100z"/>
+    </group>
+</vector>

@@ -137,6 +137,13 @@ public class UIHelper {
         return dis.densityDpi;
     }
 
+    public static float getDensity(){
+        if (BaseApplication.getApp() == null)
+            return 0;
+        DisplayMetrics dis= BaseApplication.getApp().getResources().getDisplayMetrics();
+        return dis.density;
+    }
+
     public static String getResolution() {
         StringBuilder builder = new StringBuilder(String.valueOf(getDisplayWidth()));
         builder.append("x").append(String.valueOf(getDisplayHeight()));

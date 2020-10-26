@@ -37,6 +37,7 @@ import com.framework.common.utils.UIHelper;
 import com.framework.common.widget.TitleView;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
@@ -53,6 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     private final BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
     private View mPartErrorView;
     private @Nullable Toolbar mToolbar;
+    private List<Runnable> mReloadRequest;
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,7 +196,14 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
      * 当点击错误页面重试时会调用此方法
      */
     public void loadPageData() {
-
+        if(!ListUtils.isEmpty(mReloadRequest)){
+            Iterator<Runnable> it = mReloadRequest.iterator();
+            while(it.hasNext()){
+                Runnable runnable = it.next();
+                runnable.run();
+                it.remove();
+            }
+        }
     }
 
     @Override
@@ -246,6 +255,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
                     apresenter.detachView();
                 }
             }
+        }
+        if(mReloadRequest!=null){
+            mReloadRequest.clear();
+            mReloadRequest=null;
         }
         super.onDestroy();
     }
@@ -465,5 +478,21 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
                 mPartErrorView.setVisibility(View.GONE);
             }
         });
+    }
+
+    @Override
+    public void addReloadRequest(Runnable runnable){
+        if(getWindow()!=null){
+            getWindow().getDecorView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(mReloadRequest == null){
+                        mReloadRequest = new ArrayList<>();
+                    }
+                    mReloadRequest.add(runnable);
+                    showErrorView();
+                }
+            },16);
+        }
     }
 }

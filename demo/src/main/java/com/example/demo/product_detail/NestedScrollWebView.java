@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.OverScroller;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ import androidx.core.view.MotionEventCompat;
 import androidx.core.view.NestedScrollingChild3;
 import androidx.core.view.NestedScrollingChildHelper;
 import androidx.core.view.ViewCompat;
+import androidx.core.widget.NestedScrollView;
 
 public class NestedScrollWebView extends WebView implements NestedScrollingChild3 {
 
@@ -57,6 +59,9 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     private int mMaximumVelocity;
     private int mLastScrollerY;
     private OverScroller mScroller;
+    //点击事件相关
+    private float downX,downY;
+    boolean hasConsumed = false;
 
     public NestedScrollWebView(Context context) {
         super(context);
@@ -98,8 +103,17 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                hasConsumed = false;
+                downX = event.getX();
+                downY = event.getY();
                 mLastMotionY = (int) event.getY();
                 mActivePointerId = event.getPointerId(0);
+                if ((mIsBeingDragged = !mScroller.isFinished())) {
+                    final ViewParent parent = getParent();
+                    if (parent != null) {
+                        parent.requestDisallowInterceptTouchEvent(true);
+                    }
+                }
                 if (!mScroller.isFinished()) {
                     abortAnimatedScroll();
                 }
@@ -120,6 +134,11 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                     deltaY -= mScrollConsumed[1];
                     mNestedYOffset += mScrollOffset[1];
                 }
+                if(Math.abs(deltaY) > mTouchSlop){
+                    hasConsumed = false;
+                }else {
+                    hasConsumed = true;
+                }
                 if (!mIsBeingDragged && Math.abs(deltaY) > mTouchSlop) {
                     final ViewParent parent = getParent();
                     if (parent != null) {
@@ -136,10 +155,11 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                     // Scroll to follow the motion event
                     mLastMotionY = y - mScrollOffset[1];
                     final int oldY = getScrollY();
+                    final int range = getScrollRange();
 
                     // Calling overScrollByCompat will call onOverScrolled, which
                     // calls onScrollChanged if applicable.
-                    if (overScrollByCompat(0, deltaY, 0, getScrollY(), 0, computeVerticalScrollRange(), 0,
+                    if (overScrollByCompat(0, deltaY, 0, getScrollY(), 0, range, 0,
                             0, true) && !hasNestedScrollingParent(ViewCompat.TYPE_TOUCH)) {
                         // Break our velocity if we hit a scroll barrier.
                         mVelocityTracker.clear();
@@ -169,8 +189,18 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                         fling(-initialVelocity);
                     }
                 } else if (mScroller.springBack(getScrollX(), getScrollY(), 0, 0, 0,
-                        computeVerticalScrollRange())) {
+                        getScrollRange())) {
                     ViewCompat.postInvalidateOnAnimation(this);
+                }
+                float dx = Math.abs(event.getX()-downX);
+                float dy = Math.abs(event.getY()-downY);
+                double distance = Math.sqrt(dx*dx+dy*dy);
+                if(distance<mTouchSlop && !hasConsumed){//模仿点击事件
+                    MotionEvent cEvent = MotionEvent.obtain(event);
+                    cEvent.setAction(MotionEvent.ACTION_DOWN);
+                    super.onTouchEvent(cEvent);
+                    super.onTouchEvent(event);
+                    cEvent.recycle();
                 }
             case MotionEvent.ACTION_CANCEL:
                 mActivePointerId = -1;
@@ -210,6 +240,10 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         ViewCompat.postInvalidateOnAnimation(this);
     }
 
+    int getScrollRange() {
+        return Math.max(0, computeVerticalScrollRange() - computeVerticalScrollExtent());
+    }
+
     private void abortAnimatedScroll() {
         mScroller.abortAnimation();
         stopNestedScroll(ViewCompat.TYPE_NON_TOUCH);
@@ -233,7 +267,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 ViewCompat.TYPE_NON_TOUCH);
         unconsumed -= mScrollConsumed[1];
 
-        final int range = computeVerticalScrollRange();
+        final int range = getScrollRange();
 
         if (unconsumed != 0) {
             // Internal Scroll
@@ -317,7 +351,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         }
 
         if (clampedY && !hasNestedScrollingParent(ViewCompat.TYPE_NON_TOUCH)) {
-            mScroller.springBack(newScrollX, newScrollY, 0, 0, 0, computeVerticalScrollRange());
+            mScroller.springBack(newScrollX, newScrollY, 0, 0, 0, getScrollRange());
         }
 
         onOverScrolled(newScrollX, newScrollY, clampedX, clampedY);

@@ -13,68 +13,23 @@
         android:layout_height="match_parent"
         android:visibility="visible">
 
-        <FrameLayout
+        <fragment
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:tag="product_detail"
+            class="com.example.demo.product_detail.fragment.ProductDetailFragment"/>
 
-            <com.example.demo.product_detail.MyScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#de3428"
-                        android:text="one_top" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="400dp"
-                        android:background="#ff0"
-                        android:text="one_one" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="400dp"
-                        android:background="#0ff"
-                        android:text="one_two" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="400dp"
-                        android:background="#0f0"
-                        android:text="one_three" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#de3428"
-                        android:text="one_bottom" />
-                </LinearLayout>
-            </com.example.demo.product_detail.MyScrollView>
-        </FrameLayout>
-
-        <FrameLayout
+        <fragment
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <com.example.demo.product_detail.NestedScrollWebView
-                android:id="@+id/webView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </FrameLayout>
+            android:layout_height="match_parent"
+            android:tag="web_product"
+            class="com.example.demo.product_detail.fragment.WebViewFragment"/>
 
-        <FrameLayout
+        <fragment
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-        </FrameLayout>
+            android:layout_height="match_parent"
+            android:tag="product_tui"
+            class="com.example.demo.product_detail.fragment.TuiProductFragment"/>
     </com.example.demo.product_detail.NestedScrollingParent2Layout>
 
     <ScrollView

@@ -85,6 +85,7 @@ dependencies {
     api 'com.alibaba:fastjson:1.2.48'//
     api "com.jakewharton:butterknife:$versions.butterknife"
     api 'com.squareup.okhttp3:okhttp:3.12.0'//3.14.1需要5.0以上手机支持
+    api 'com.squareup.okhttp3:logging-interceptor:3.5.0'
     //图片加载相关库
     api 'com.facebook.fresco:fresco:2.1.0'
     //https://github.com/ongakuer/PhotoDraweeView

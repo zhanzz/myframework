@@ -49,6 +49,7 @@ public class ProductDetailActivity extends BaseActivity implements IProductDetai
 
     @Override
     public void bindData() {
+        setTitle("商品详情");
         //此段代码可处理scrollView中焦点视图移动
 //        ScrollView scrollView = findViewById(R.id.scrollView);
 //        scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
@@ -58,18 +59,6 @@ public class ProductDetailActivity extends BaseActivity implements IProductDetai
 //            v.requestFocusFromTouch();
 //            return false;
 //        });
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        TestAdapter adapter = new TestAdapter();
-        recyclerView.setAdapter(adapter);
-        WebView webView = findViewById(R.id.webView);
-        webView.loadUrl("https://www.jianshu.com/p/3682dde60dbf");
-        webView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return true;
-            }
-        });
-        webView.setLongClickable(false);
     }
 
     @Override

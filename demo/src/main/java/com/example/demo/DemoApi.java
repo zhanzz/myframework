@@ -27,7 +27,7 @@ public interface DemoApi {
     Observable<Result<ActivityBean>> getHomeData();
 
     @POST("https://app.zhidianlife.com/life-mobile-mall/apis/v2/index/products")
-    Observable<Result<List<ProductBean>>> getHomeProducts(@Body Map<String,String> params);
+    Observable<Result<List<ProductBean>>> getHomeProducts(@Body Map<String,Object> params);
 
     @POST("https://app.zhidianlife.com/life-mobile-mall/apis/v2/index/products")
     Call<Result<List<ProductBean>>> getHomeProductsV2(@Body Map<String,String> params);

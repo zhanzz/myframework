@@ -100,7 +100,7 @@ public class NestedScrollingParent2Layout extends LinearLayout implements Nested
        boolean scrollDown = dy < 0 && !target.canScrollVertically(-1)&& canScrollVertically(-1) && type!=ViewCompat.TYPE_NON_TOUCH;
        boolean cunsumed = scrollUp || scrollDown || isMiddle();
 
-       Log.e("zhang",String.format("dy=%s;scrollup=%b;cunsumed=%b;isMiddle=%b",dy,scrollUp,cunsumed,isMiddle()));
+       //Log.e("zhang",String.format("dy=%s;scrollup=%b;cunsumed=%b;isMiddle=%b",dy,scrollUp,cunsumed,isMiddle()));
        if (cunsumed) {
            scrollBy(0, dy);
            consumed[1] = dy;
@@ -197,6 +197,9 @@ public class NestedScrollingParent2Layout extends LinearLayout implements Nested
 //       Log.e("zhang","scrollTo:" + y);
        y = clamp(y,getHeight(),computeVerticalScrollRange());
        super.scrollTo(x, y);
+       if(mListener!=null){
+           mListener.onScroll(getScrollY(),getScrollY()/(getMeasuredHeight()-1));
+       }
    }
 
     private static int clamp(int n, int my, int child) {
@@ -207,5 +210,15 @@ public class NestedScrollingParent2Layout extends LinearLayout implements Nested
             return child-my;
         }
         return n;
+    }
+
+    public interface ScrollChangeListener{
+       void onScroll(int scrollY,int index);
+    }
+
+    private ScrollChangeListener mListener;
+
+    public void setScrollChangeListener(ScrollChangeListener listener){
+        mListener = listener;
     }
 }

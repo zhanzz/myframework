@@ -1,1 +1,2 @@
+ninja: Entering directory `E:\rn_study\rxjava_retorfit\android\demo\.cxx\cmake\debug\armeabi'
 ninja: no work to do.

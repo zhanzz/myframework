@@ -6,11 +6,19 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+
 import com.framework.common.data.ActivityLifeCycleEvent;
+import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.ToastUtil;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
@@ -20,15 +28,17 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.BehaviorSubject;
+
 /**
  * @author zhangzhiqiang
  * @date 2019/9/11.
  * description：
  */
-public abstract class BaseViewGroup extends FrameLayout implements IBaseView,IStopAdd,View.OnClickListener{
+public abstract class BaseViewGroup extends FrameLayout implements IBaseView, IStopAdd, View.OnClickListener {
     private Unbinder unbinder;
     public final BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
     private CompositeDisposable mCompositeDisposable;
+    private List<Runnable> mReloadRequest;
 
     public BaseViewGroup(@NonNull Context context) {
         super(context);
@@ -52,7 +62,7 @@ public abstract class BaseViewGroup extends FrameLayout implements IBaseView,ISt
     }
 
     private void init() {
-        inflate(getContext(),getLayoutId(), this);
+        inflate(getContext(), getLayoutId(), this);
         unbinder = ButterKnife.bind(this, this);
         lifecycleSubject.onNext(ActivityLifeCycleEvent.CREATE);
         getPresenter();//初始化presenter
@@ -68,6 +78,10 @@ public abstract class BaseViewGroup extends FrameLayout implements IBaseView,ISt
         BasePresenter presenter = getPresenter();
         if (presenter != null) {
             presenter.detachView();
+        }
+        if (mReloadRequest != null) {
+            mReloadRequest.clear();
+            mReloadRequest = null;
         }
         //unbinder.unbind();
         super.onDetachedFromWindow();
@@ -86,7 +100,7 @@ public abstract class BaseViewGroup extends FrameLayout implements IBaseView,ISt
     }
 
     private void resetCompositeDisposable() {
-        if(mCompositeDisposable!=null){
+        if (mCompositeDisposable != null) {
             mCompositeDisposable.dispose();
             mCompositeDisposable = null;
         }
@@ -146,6 +160,14 @@ public abstract class BaseViewGroup extends FrameLayout implements IBaseView,ISt
      * 当点击错误页面重试时会调用此方法
      */
     public void loadPageData() {
+        if (!ListUtils.isEmpty(mReloadRequest)) {
+            Iterator<Runnable> it = mReloadRequest.iterator();
+            while (it.hasNext()) {
+                Runnable runnable = it.next();
+                runnable.run();
+                it.remove();
+            }
+        }
     }
 
     private LoadingAndErrorView mLoadingAndErrorView;
@@ -173,7 +195,7 @@ public abstract class BaseViewGroup extends FrameLayout implements IBaseView,ISt
                 Observable<ActivityLifeCycleEvent> compareLifecycleObservable =
                         lifecycleSubject.filter(new Predicate<ActivityLifeCycleEvent>() {
                             @Override
-                            public boolean test(ActivityLifeCycleEvent activityEvent){
+                            public boolean test(ActivityLifeCycleEvent activityEvent) {
                                 return activityEvent.equals(event);
                             }
                         });
@@ -215,4 +237,19 @@ public abstract class BaseViewGroup extends FrameLayout implements IBaseView,ISt
     @Override
     public void onClick(View v) {
     }
+
+    @Override
+    public void addReloadRequest(Runnable runnable) {
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mReloadRequest == null) {
+                    mReloadRequest = new ArrayList<>();
+                }
+                mReloadRequest.add(runnable);
+                showErrorView();
+            }
+        }, 16);
+    }
+
 }

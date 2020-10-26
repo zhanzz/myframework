@@ -1,5 +1,6 @@
 package com.framework.common.base_mvp;
 
+import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -14,8 +15,14 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import com.framework.common.R;
 import com.framework.common.data.ActivityLifeCycleEvent;
+import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
@@ -36,6 +43,7 @@ public abstract class BaseDialog extends DialogFragment implements IBaseView,ISt
     public final PublishSubject<ActivityLifeCycleEvent> lifecycleSubject = PublishSubject.create();
     private FrameLayout mContainer;
     private CompositeDisposable mCompositeDisposable;
+    private List<Runnable> mReloadRequest;
 
     @Nullable
     @Override
@@ -147,6 +155,14 @@ public abstract class BaseDialog extends DialogFragment implements IBaseView,ISt
      * 当点击错误页面重试时会调用此方法
      */
     public void loadPageData() {
+        if(!ListUtils.isEmpty(mReloadRequest)){
+            Iterator<Runnable> it = mReloadRequest.iterator();
+            while(it.hasNext()){
+                Runnable runnable = it.next();
+                runnable.run();
+                it.remove();
+            }
+        }
     }
 
     @Override
@@ -187,6 +203,10 @@ public abstract class BaseDialog extends DialogFragment implements IBaseView,ISt
             presenter.detachView();
         }
         unbinder.unbind();
+        if(mReloadRequest!=null){
+            mReloadRequest.clear();
+            mReloadRequest=null;
+        }
         super.onDestroyView();
     }
 
@@ -225,5 +245,28 @@ public abstract class BaseDialog extends DialogFragment implements IBaseView,ISt
     public Boolean addCompositeDisposable(Disposable disposable) {
         getCompositeDisposable().add(disposable);
         return true;
+    }
+
+    @Override
+    public void addReloadRequest(Runnable runnable){
+        if(mContainer!=null){
+            mContainer.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(mReloadRequest == null){
+                        mReloadRequest = new ArrayList<>();
+                    }
+                    mReloadRequest.add(runnable);
+                    showErrorView();
+                }
+            },16);
+        }
+    }
+
+    //@android:style/Theme.Dialog 会导致ProgressBar变粗
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        return new CloseSoftKeyDialog(requireContext(),R.style.dialog_style);
     }
 }

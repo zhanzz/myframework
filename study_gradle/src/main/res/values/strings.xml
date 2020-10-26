@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">study_gradle</string>
+    <item name="test_layout" type="layout"/>
 </resources>

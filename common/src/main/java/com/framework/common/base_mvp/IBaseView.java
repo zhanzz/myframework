@@ -46,4 +46,6 @@ public interface IBaseView {
      * @return 添加是否成功，如果为否说明页面已结束，需手动处理结束
      */
     @Nullable Boolean addCompositeDisposable(Disposable disposable);
+
+    void addReloadRequest(Runnable runnable);
 }

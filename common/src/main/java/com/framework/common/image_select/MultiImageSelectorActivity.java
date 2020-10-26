@@ -29,7 +29,7 @@ import java.util.List;
  * Created by Nereo on 2015/4/7.
  */
 public class MultiImageSelectorActivity extends BaseActivity implements MultiImageSelectorFragment.Callback{
-
+    //仅当访问其他应用的文件时
     private static final String[] LOCAL_PERMISSION = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
     };

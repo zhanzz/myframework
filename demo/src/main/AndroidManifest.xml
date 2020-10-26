@@ -24,6 +24,11 @@
 
     <application>
         <activity
+            android:name=".coordinator_layout.activity.MoveTopActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
             android:name=".product_detail.activity.ProductDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"

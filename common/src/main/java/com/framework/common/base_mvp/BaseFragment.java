@@ -16,6 +16,7 @@ import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.ToastUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -37,7 +38,7 @@ public abstract class BaseFragment extends Fragment implements IBaseView,IStopAd
     private final BehaviorSubject<ActivityLifeCycleEvent> lifecycleSubject = BehaviorSubject.create();
     private FrameLayout mContainer;
     private CompositeDisposable mCompositeDisposable;
-
+    private List<Runnable> mReloadRequest;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,6 +97,10 @@ public abstract class BaseFragment extends Fragment implements IBaseView,IStopAd
     public void getParamData(Bundle bundle) {
     }
 
+    public FrameLayout getContainer() {
+        return mContainer;
+    }
+
     @Override
     public void showLoading() {
         if (initLoadingAndErrorView() != null) {
@@ -142,6 +147,14 @@ public abstract class BaseFragment extends Fragment implements IBaseView,IStopAd
      * 当点击错误页面重试时会调用此方法
      */
     public void loadPageData() {
+        if(!ListUtils.isEmpty(mReloadRequest)){
+            Iterator<Runnable> it = mReloadRequest.iterator();
+            while(it.hasNext()){
+                Runnable runnable = it.next();
+                runnable.run();
+                it.remove();
+            }
+        }
     }
 
     @Override
@@ -186,6 +199,10 @@ public abstract class BaseFragment extends Fragment implements IBaseView,IStopAd
             presenter.detachView();
         }
         unbinder.unbind();
+        if(mReloadRequest!=null){
+            mReloadRequest.clear();
+            mReloadRequest=null;
+        }
         super.onDestroyView();
     }
 
@@ -288,5 +305,21 @@ public abstract class BaseFragment extends Fragment implements IBaseView,IStopAd
 
     public boolean getValid(){
         return false;
+    }
+
+    @Override
+    public void addReloadRequest(Runnable runnable){
+        if(mContainer!=null){
+            mContainer.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(mReloadRequest == null){
+                        mReloadRequest = new ArrayList<>();
+                    }
+                    mReloadRequest.add(runnable);
+                    showErrorView();
+                }
+            },16);
+        }
     }
 }

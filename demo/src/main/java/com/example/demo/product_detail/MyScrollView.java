@@ -32,6 +32,7 @@ public class MyScrollView extends NestedScrollView {
         }
 
         View child = getChildAt(0);
+        Log.e("scroll",String.format("top=%s;bottom=%s",child.getTop(),child.getBottom()));
         NestedScrollView.LayoutParams lp = (LayoutParams) child.getLayoutParams();
         int scrollRange = child.getBottom() + lp.bottomMargin;
         final int scrollY = getScrollY();
