@@ -24,41 +24,58 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.os.PersistableBundle;
 import android.os.Process;
 import android.provider.ContactsContract;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.demo.alipay.ShowHtmlActivity;
 import com.example.demo.anim.activity.AttrAnimActivity;
+import com.example.demo.anim.activity.PathAnimActivity;
 import com.example.demo.anim.activity.ViewAnimActivity;
 import com.example.demo.anim.activity.activity.ViewPager2AnimActivity;
 import com.example.demo.anim.activity.activity.ViewPagerAnimActivity;
+import com.example.demo.camera.CameraActivity;
+import com.example.demo.camera.activity.DarkCameraActivity;
 import com.example.demo.contact.activity.PhoneListActivity;
 import com.example.demo.coordinator_layout.activity.CoordinatorLayoutActivity;
 import com.example.demo.coordinator_layout.activity.CoordinatorLayoutV2Activity;
 import com.example.demo.coordinator_layout.activity.MoveTopActivity;
 import com.example.demo.db.activity.TestSqliteDataBaseActivity;
+import com.example.demo.glide.activity.StudyGlideActivity;
 import com.example.demo.incremental_updating.activity.PatchActivity;
 import com.example.demo.keybord.activity.TestInputActivity;
 import com.example.demo.pagelist.activity.PageListActivity;
+import com.example.demo.product_detail.activity.DragViewActivity;
 import com.example.demo.product_detail.activity.ProductDetailActivity;
+import com.example.demo.recyclerview.LooperManagerActivity;
 import com.example.demo.recyclerview.activity.CustomManagerActivity;
 import com.example.demo.some_test.activity.ActivityPermissionActivity;
 import com.example.demo.some_test.activity.TestDiffAndHandlerActivity;
@@ -82,6 +99,7 @@ import com.framework.common.base_mvp.BaseActivity;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.data.ConfigOperation;
 import com.framework.common.image_select.MultiImageSelectorActivity;
+import com.framework.common.image_select.utils.FileManager;
 import com.framework.common.manager.PermissionManager;
 import com.framework.common.utils.AppTools;
 import com.framework.common.utils.DeviceUtils;
@@ -103,6 +121,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener;
 import com.xys.libzxing.zxing.activity.CaptureActivity;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -110,6 +129,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -131,6 +151,8 @@ public class MainActivity extends BaseActivity implements ILoginView {
     LoginPresenter mPresenter;
 
     Random mRandom = new Random();
+    @BindView(R.id.title_bar)
+    View bar;
     @BindView(R.id.twoLevelHeader)
     TwoLevelHeader twoLevelHeader;
     @BindView(R.id.recyclerView)
@@ -141,6 +163,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
     SimpleDraweeView image;
     private HomeAdapter mAdapter;
     //storage/emulated/0/Android/data/下有.nomedia文件
+
 
     @Override
     public int getLayoutId() {
@@ -166,7 +189,14 @@ public class MainActivity extends BaseActivity implements ILoginView {
             , "phones", "testNetLink", "startOtherActivity", "SlidingPaneLayout", "testArouter", "sendBroadCast"
             , "blueTooth", "testSqliteDatabase", "studyWindow", "add_update", "permission", "pageList", "navigation"
             , "coordinatorLayout", "coordinatorLayoutV2", "customManager", "alipay", "testError","viewAnim","AttrViewAnim"
-            ,"showDialogFragment","viewPagerAnim","productDetail","moveTop"};
+            ,"showDialogFragment","viewPagerAnim","productDetail","moveTop","x5WebView","pathAnim",
+            "自定义拍照","darkPic","looper","move","studyGlide"};
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Log.e("zhang","y="+event.getRawY());
+        return super.onTouchEvent(event);
+    }
 
     @Override
     public void bindData() {
@@ -213,11 +243,16 @@ public class MainActivity extends BaseActivity implements ILoginView {
             @Override
             public void run() {
                 int height = recyclerView.getRootView().getMeasuredHeight();
+                int heightt = findViewById(android.R.id.content).getMeasuredHeight();
                 int barHeight = AppTools.getStatusBarHeight(MainActivity.this);
                 int nHeight = AppTools.getNavigationBarHeight(MainActivity.this);
                 //root;height=1920;barHeight=63;navHeight=126
-                LogUtil.e("height",String.format("root;height=%d;barHeight=%d;navHeight=%d",height,barHeight,nHeight));
+                LogUtil.e("height",String.format("root;height=%d;barHeight=%d;navHeight=%d;heightt=%d",height,barHeight,nHeight,heightt));
                 //getRealHeight = getDisplayHeight+barHeight+navHeight;
+
+                int[] outLocation = new int[2];
+                bar.getLocationOnScreen(outLocation);
+                Log.e("zhang","bar="+outLocation[1]);
             }
         },1000);
 
@@ -231,6 +266,53 @@ public class MainActivity extends BaseActivity implements ILoginView {
         }catch (Resources.NotFoundException e){
             showToast("为空");
         }
+
+        Log.e("zhang","result====="+getJson(this,"test/11.txt"));
+        //弹个pop
+        PopupWindow v = new PopupWindow();
+        v.setContentView(new TextView(this));
+        //v.showAsDropDown(recyclerView);
+
+//        AlertDialog.Builder b = new AlertDialog.Builder(this);
+//        b.setMessage("adfa");
+//        b.create().show();
+
+        //width=1080,height=2244
+        //two;width=1080,height=2029
+        //root;height=2244;barHeight=85;navHeight=130;heightt=2159
+        //有虚拟键盘后
+        //width=1080,height=2244
+        //two;width=1080,height=2029
+        //root;height=2244;barHeight=85;navHeight=130;heightt=2029
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+//        if(hasFocus){
+//            PopupWindow v = new PopupWindow();
+//            TextView tv = new TextView(this);
+//            tv.setText("我在这里");
+//            v.setContentView(tv);
+//            v.showAsDropDown(recyclerView);
+//        }
+    }
+
+    public String getJson(Context context, String fileName) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            AssetManager assetManager = context.getAssets();
+            BufferedReader bf = new BufferedReader(new InputStreamReader(
+                    assetManager.open(fileName)));
+            String line;
+            while ((line = bf.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
     }
 
     @Override
@@ -255,8 +337,8 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     PageFragmentActivity.start(getContext());
                     break;
                 case "versionUpdate":
-                    mPresenter.checkUpdate();
-                    //requestNeedPermissions(120, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    //mPresenter.checkUpdate();
+                    requestNeedPermissions(120, Manifest.permission.READ_EXTERNAL_STORAGE);
                     //requestNeedPermissions(120,Manifest.permission_group.STORAGE);
                     //false
                     //boolean value = ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CAMERA);
@@ -365,11 +447,11 @@ public class MainActivity extends BaseActivity implements ILoginView {
                     PageListActivity.start(getContext());
                     break;
                 case "navigation":
-                    com.example.jetpack.nvigation.MainActivity.Companion.startMe(getContext());
+                    //com.example.jetpack.nvigation.MainActivity.Companion.startMe(getContext());
                     //moveAppToFront(getContext());
                     //AppTools.isExternalStorageWritable();
                     //showBitmapOne();
-                    //createFile("application/vnd.android.package-archive","test.apk");
+                    createFile("application/vnd.android.package-archive","test.apk");
                     //showBitmapOne();
                     //mPresenter.login("13695157045","1");
                     break;
@@ -423,13 +505,35 @@ public class MainActivity extends BaseActivity implements ILoginView {
                 case "moveTop":
                     MoveTopActivity.start(getContext());
                     break;
+                case "x5WebView":
+                    FileManager.getDownLoadApkDir();
+                    //com.example.demo.x5webview.MainActivity.start(getContext());
+                    break;
+                case "pathAnim":
+                    PathAnimActivity.start(getContext());
+                    break;
+                case "自定义拍照":
+                    CameraActivity.start(getContext());
+                    break;
+                case "darkPic":
+                    DarkCameraActivity.start(getContext());
+                    break;
+                case "looper":
+                    LooperManagerActivity.start(getContext());
+                    break;
+                case "move":
+                    DragViewActivity.start(getContext());
+                    break;
+                case "studyGlide":
+                    StudyGlideActivity.start(getContext());
+                    break;
             }
         });
         smartRefreshLayout.setOnMultiPurposeListener(new SimpleMultiPurposeListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 Toast.makeText(getApplication(), "上拉加载", Toast.LENGTH_SHORT).show();
-                refreshLayout.finishLoadMore(2000);
+                refreshLayout.finishLoadMore(2000,true,true);
             }
 
             @Override
@@ -636,8 +740,14 @@ public class MainActivity extends BaseActivity implements ILoginView {
         /***
          * 如果请求WRITE_EXTERNAL_STORAGE权限通过会同时授予READ_EXTERNAL_STORAGE
          * 如果请求READ_EXTERNAL_STORAGE权限，8.0之下会同时授予WRITE_EXTERNAL_STORAGE，8.0及以上不会
+         * 例如，假设某个应用在其清单中列出 READ_EXTERNAL_STORAGE 和 WRITE_EXTERNAL_STORAGE。
+         * 应用请求 READ_EXTERNAL_STORAGE，并且用户授予了该权限。如果该应用针对的是 API 级别 24 或更低级别，
+         * 系统还会同时授予 WRITE_EXTERNAL_STORAGE，因为该权限也属于同一 STORAGE 权限组并且也在清单中注册过。
+         * 如果该应用针对的是 Android 8.0，则系统此时仅会授予 READ_EXTERNAL_STORAGE；
+         * 不过，如果该应用后来又请求 WRITE_EXTERNAL_STORAGE，则系统会立即授予该权限，而不会提示用户。(8.0以上还是会提示)
          */
         if (requestCode == 120 && permissions.contains(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            requestNeedPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             boolean ishas = PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             ToastUtil.show(this, ishas + "");
             //mPresenter.checkUpdate();
@@ -646,7 +756,7 @@ public class MainActivity extends BaseActivity implements ILoginView {
             showToast("通过了");
             //takePhoto();
             //uri = TakePhotoUtil.takePhotoV3(this, 1111);
-            //uri = TakePhotoUtil.takePhotoV3(this,1111);
+            uri = TakePhotoUtil.takePhotoV3(this,1111);
 //            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 //                File[] files = getExternalMediaDirs();
 //                getExternalCacheDir();
@@ -663,6 +773,9 @@ public class MainActivity extends BaseActivity implements ILoginView {
     @Override
     public void failPermission(@NonNull List<String> permissions, int requestCode) {
         super.failPermission(permissions, requestCode);
+        if (requestCode == 120 && permissions.contains(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            requestNeedPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
         if (requestCode == 121 && permissions.contains(Manifest.permission.CAMERA)) {
             showToast("没有通过");
         }
@@ -835,6 +948,9 @@ public class MainActivity extends BaseActivity implements ILoginView {
                 return procInfo.processName;
             }
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            String a =MediaStore.Video.Media.DURATION;
+        }
         return null;
     }
 
@@ -858,6 +974,12 @@ public class MainActivity extends BaseActivity implements ILoginView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        //不显示程序的标题栏
+//        requestWindowFeature( Window.FEATURE_NO_TITLE );
+//
+//        //不显示系统的标题栏
+//        getWindow().setFlags( WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN );
         super.onCreate(savedInstanceState);
         LogUtil.e("onCreate=" + getClass().getSimpleName());
     }
@@ -911,6 +1033,23 @@ public class MainActivity extends BaseActivity implements ILoginView {
         intent.setType(mimeType);
         intent.putExtra(Intent.EXTRA_TITLE, fileName);
         startActivityForResult(intent, WRITE_REQUEST_CODE);
+    }
+
+    // Request code for selecting a PDF document.
+    private static final int PICK_PDF_FILE = 2;
+
+    private void openFile(Uri pickerInitialUri) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/pdf");
+
+        // Optionally, specify a URI for the file that should appear in the
+        // system file picker when it loads.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+        }
+
+        startActivityForResult(intent, PICK_PDF_FILE);
     }
 
     public static void start(Context context) {

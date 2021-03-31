@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/tool_bar" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/menu_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_120"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+        android:orientation="horizontal"
+        app:spanCount="2"/>
+
+    <Button
+        android:id="@+id/btn_scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_80"
+        android:maxEms="2"
+        android:text="滚动到指定内容的菜单"/>
+
+    <com.example.demo.product_detail.DragView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/move_txt"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:background="@drawable/default_error"
+            android:gravity="center"
+            android:tag="move"
+            android:text="只居左" />
+    </com.example.demo.product_detail.DragView>
+</LinearLayout>

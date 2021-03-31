@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -35,20 +36,24 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.facebook.common.util.UriUtil;
 import com.framework.common.R;
+import com.framework.common.adapter.BaseAdapter;
 import com.framework.common.base_mvp.BaseFragment;
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.image_select.adapter.FolderAdapter;
 import com.framework.common.image_select.adapter.ImageGridAdapter;
 import com.framework.common.image_select.bean.Folder;
 import com.framework.common.image_select.bean.Image;
+import com.framework.common.image_select.bean.TakeBean;
 import com.framework.common.image_select.utils.TimeUtils;
 import com.framework.common.manager.PermissionManager;
 import com.framework.common.utils.AppTools;
 import com.framework.common.utils.FrescoUtils;
 import com.framework.common.item_decoration.GridSpaceItemDecoration;
+import com.framework.common.utils.ListUtils;
 import com.framework.common.utils.TakePhotoUtil;
 import com.framework.common.utils.ToastUtil;
 import com.framework.common.utils.UIHelper;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -101,6 +106,7 @@ public class MultiImageSelectorFragment extends BaseFragment {
 
     // 图片Grid
     private RecyclerView mRecyclerView;
+    private SmartRefreshLayout mSmartRefreshLayout;
     private Callback mCallback;
 
     private ImageGridAdapter mImageAdapter;
@@ -122,9 +128,15 @@ public class MultiImageSelectorFragment extends BaseFragment {
     private boolean hasFolderGened = false;
     private boolean mIsShowCamera = false;
 
-    private Uri mTmpUri;
+    private TakeBean mTmpUri;
     private int mMode;//多选还是单选
     private WeakReference<Cursor> mCursor;
+
+    private final String[] IMAGE_PROJECTION = {
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATE_ADDED,
+            MediaStore.Images.Media._ID};
 
     @Override
     public void onAttach(Activity activity) {
@@ -154,12 +166,12 @@ public class MultiImageSelectorFragment extends BaseFragment {
     public void passPermission(@NonNull List<String> permissions, int requestCode) {
         if (PermissionManager.CAMERA_CODE == requestCode
                 && permissions.contains(Manifest.permission.CAMERA)) {
-            if (AppTools.isQOrHigher()) {
+            //if (AppTools.isQOrHigher()) {
                 // 跳转到系统照相机
-                mTmpUri = TakePhotoUtil.takePhotoV3(this, REQUEST_CAMERA);
-            } else if (permissions.contains(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                mTmpUri = Uri.fromFile(TakePhotoUtil.takePhotoV2(this, REQUEST_CAMERA));
-            }
+                mTmpUri = TakePhotoUtil.takePhotoV4(this, REQUEST_CAMERA);
+            //} else if (permissions.contains(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+              //  mTmpUri = Uri.fromFile(TakePhotoUtil.takePhotoV2(this, REQUEST_CAMERA));
+            //}
         }
     }
 
@@ -187,7 +199,8 @@ public class MultiImageSelectorFragment extends BaseFragment {
                     public void run() {
                         mFolderPopupWindow.dismiss();
                         if (index == 0) {
-                            LoaderManager.getInstance(MultiImageSelectorFragment.this).restartLoader(LOADER_ALL, null, mLoaderCallback);
+                            mImageAdapter.setNewData(mAllImages);
+                            mRecyclerView.getLayoutManager().scrollToPosition(0);
                             mCategoryText.setText(R.string.folder_all);
                         } else {
                             Folder folder = (Folder) v.getAdapter().getItem(index);
@@ -250,6 +263,7 @@ public class MultiImageSelectorFragment extends BaseFragment {
         mCategoryText = view.findViewById(R.id.category_btn);
         mPreviewBtn = view.findViewById(R.id.preview);
         mRecyclerView = view.findViewById(R.id.recyclerView);
+        mSmartRefreshLayout = view.findViewById(R.id.smartRefreshLayout);
 
         // 初始化，按钮状态初始化
         if (resultList == null || resultList.size() <= 0) {
@@ -267,9 +281,10 @@ public class MultiImageSelectorFragment extends BaseFragment {
         GridSpaceItemDecoration dirver = new GridSpaceItemDecoration(UIHelper.dip2px(4), UIHelper.dip2px(4), 0);
         mRecyclerView.addItemDecoration(dirver);
         mRecyclerView.setAdapter(mImageAdapter);
+        mImageAdapter.setLoadEndText("无更多图片数据");
 
-        // 首次加载所有图片
-        LoaderManager.getInstance(this).initLoader(LOADER_ALL, null, mLoaderCallback);
+        showLoadingDialog();
+        loadDataByPage();
 
         mFolderAdapter = new FolderAdapter(getActivity());
     }
@@ -306,6 +321,21 @@ public class MultiImageSelectorFragment extends BaseFragment {
                         }
                     }
                 }
+            }
+        });
+
+        mImageAdapter.setSmartRefreshLayout(mSmartRefreshLayout);
+
+        mImageAdapter.setRefreshListener(new BaseAdapter.RefreshListener() {
+            @Override
+            public void onRefresh() {
+                currentPage=1;
+                loadDataByPage();
+            }
+
+            @Override
+            public void onLoadMore() {
+                loadDataByPage();
             }
         });
 
@@ -357,28 +387,21 @@ public class MultiImageSelectorFragment extends BaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
         // 相机拍照完成后，返回图片路径
         if (requestCode == REQUEST_CAMERA) {
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {//resultCode小米返回为0
                 if (mTmpUri != null) {
                     if (mMode == MODE_SINGLE) {
                         if (mCallback != null) {
-                            mCallback.onCameraShot(mTmpUri);
+                            mCallback.onCameraShot(mTmpUri.getUri());
                         }
                     } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            ContentValues values = new ContentValues();
-                            values.put(MediaStore.Images.Media.IS_PENDING, 0);
-                            getContext().getContentResolver().update(mTmpUri, values, null, null);
-                        } else {
-                            //刷新该图片到图库,在数据库中加一条记录，收录
-                            startScan();
-                        }
+                        currentPage=1;
+                        loadDataByPage();
                     }
                 }
             } else {
                 if (mTmpUri != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        getContext().getContentResolver().delete(mTmpUri, null, null);
-                    }else if(UriUtil.isLocalFileUri(mTmpUri) && !TextUtils.isEmpty(mTmpUri.getPath())){
+                    getContext().getContentResolver().delete(mTmpUri.getUri(), null, null);
+                    if(!TextUtils.isEmpty(mTmpUri.getPath())){
                         new File(mTmpUri.getPath()).delete();
                     }
                 }
@@ -441,132 +464,126 @@ public class MultiImageSelectorFragment extends BaseFragment {
         }
     }
 
-    private LoaderManager.LoaderCallbacks<Cursor> mLoaderCallback = new LoaderManager.LoaderCallbacks<Cursor>() {
+    private CursorLoader mCursorLoader;
+    private List<Image> mAllImages = new ArrayList<>();
+    private int currentPage = 1,pageSize=36;//从1开始
 
-        private final String[] IMAGE_PROJECTION = {
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_ADDED,
-                MediaStore.Images.Media._ID};
-
-        @Override
-        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            if (id == LOADER_ALL) {
-                CursorLoader cursorLoader = new CursorLoader(getActivity(),
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION,
-                        null, null, IMAGE_PROJECTION[2] + " DESC");
-                return cursorLoader;
-            } else if (id == LOADER_CATEGORY) {
-                CursorLoader cursorLoader = new CursorLoader(getActivity(),
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION,
-                        IMAGE_PROJECTION[0] + " like '%" + args.getString("path") + "%'", null, IMAGE_PROJECTION[2] + " DESC");
-                return cursorLoader;
-            }
-
-            return null;
+    private void loadDataByPage(){
+        if(mCursorLoader!=null){
+            mCursorLoader.stopLoading();
         }
+        mCursorLoader = new CursorLoader(getActivity(),
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION,
+                null, null, IMAGE_PROJECTION[2] +
+                String.format(" DESC limit %s offset %s",pageSize*currentPage,pageSize*(currentPage-1)));
+        mCursorLoader.registerListener(0, new Loader.OnLoadCompleteListener<Cursor>() {
+            @Override
+            public void onLoadComplete(@NonNull Loader<Cursor> loader, @Nullable Cursor data) {
+                hideLoadingDialog();
+                mCursorLoader.unregisterListener(this);
+                if (data != null) {
+                    List<Image> images = new ArrayList<Image>();
+                    if(currentPage==1){
+                        mResultFolder.clear();
+                        mAllImages.clear();
+                        mFolderAdapter.setSelectIndex(0);
+                        if (mIsShowCamera) {
+                            Image cimage = new Image();
+                            cimage.itemType = Image.TYPE_CAMERA;
+                            images.add(cimage);
+                        }
+                    }
+                    int count = data.getCount();
+                    if (count > 0) {
+                        data.moveToFirst();
+                        int pathColumn = data.getColumnIndexOrThrow(IMAGE_PROJECTION[0]);
+                        int nameColumn = data.getColumnIndexOrThrow(IMAGE_PROJECTION[1]);
+                        int timeColumn = data.getColumnIndexOrThrow(IMAGE_PROJECTION[2]);
+                        int idColumn = data.getColumnIndexOrThrow(IMAGE_PROJECTION[3]);
+                        do {
+                            String path = data.getString(pathColumn);
+                            String name = data.getString(nameColumn);
+                            long dateTime = data.getLong(timeColumn);
+                            long id = data.getLong(idColumn);
+                            Image image = new Image(path, name, dateTime);
+                            if(AppTools.isQOrHigher()){
+                                image.uri = ContentUris.withAppendedId(
+                                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+                            }else {
+                                image.uri = Uri.fromFile(new File(path));
+                            }
+                            File file = new File(path);
+                            if (!file.exists()) {
+                                continue;
+                            }
+                            images.add(image);
+                            if (!hasFolderGened) {
+                                // 获取文件夹名称
+                                File imageFile = new File(path);
+                                File folderFile = imageFile.getParentFile();
+                                Folder folder = new Folder();
+                                folder.name = folderFile.getName();
+                                folder.path = folderFile.getAbsolutePath();
+                                folder.cover = image;
+                                if (!mResultFolder.contains(folder)) {
+                                    List<Image> imageList = new ArrayList<Image>();
+                                    imageList.add(image);
+                                    folder.images = imageList;
+                                    mResultFolder.add(folder);
+                                } else {
+                                    // 更新
+                                    Folder f = mResultFolder.get(mResultFolder.indexOf(folder));
+                                    f.images.add(image);
+                                }
+                            }
 
-        @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            if (data != null) {
-                if (mCursor != null && mCursor.get() == data) {
-                    return;
-                }
-                mCursor = new WeakReference<>(data);
-                List<Image> images = new ArrayList<Image>();
-                if (mIsShowCamera) {
-                    Image cimage = new Image();
-                    cimage.itemType = Image.TYPE_CAMERA;
-                    images.add(cimage);
-                }
-                int count = data.getCount();
-                if (count > 0) {
-                    data.moveToFirst();
-                    int pathColumn = data.getColumnIndexOrThrow(IMAGE_PROJECTION[0]);
-                    int nameColumn = data.getColumnIndexOrThrow(IMAGE_PROJECTION[1]);
-                    int timeColumn = data.getColumnIndexOrThrow(IMAGE_PROJECTION[2]);
-                    int idColumn = data.getColumnIndexOrThrow(IMAGE_PROJECTION[3]);
-                    do {
-                        String path = data.getString(pathColumn);
-                        String name = data.getString(nameColumn);
-                        long dateTime = data.getLong(timeColumn);
-                        long id = data.getLong(idColumn);
-                        Image image = new Image(path, name, dateTime);
-                        if(AppTools.isQOrHigher()){
-                            image.uri = ContentUris.withAppendedId(
-                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-                        }else {
-                            image.uri = Uri.fromFile(new File(path));
+                        } while (data.moveToNext());
+
+                        // 设定默认选择
+                        if (resultList != null && resultList.size() > 0) {
+                            mImageAdapter.setDefaultSelected(resultList);
                         }
-                        File file = new File(path);
-                        if (!file.exists()) {
-                            continue;
-                        }
-                        images.add(image);
-                        if (!hasFolderGened) {
-                            // 获取文件夹名称
-                            File imageFile = new File(path);
-                            File folderFile = imageFile.getParentFile();
-                            Folder folder = new Folder();
-                            folder.name = folderFile.getName();
-                            folder.path = folderFile.getAbsolutePath();
-                            folder.cover = image;
-                            if (!mResultFolder.contains(folder)) {
-                                List<Image> imageList = new ArrayList<Image>();
-                                imageList.add(image);
-                                folder.images = imageList;
-                                mResultFolder.add(folder);
-                            } else {
-                                // 更新
-                                Folder f = mResultFolder.get(mResultFolder.indexOf(folder));
-                                f.images.add(image);
+                        mFolderAdapter.setData(mResultFolder);
+                        //hasFolderGened = true;
+                    }
+                    mAllImages.addAll(images);
+                    int index = mFolderAdapter.getSelectIndex();
+                    if (index == 0) {
+                        mImageAdapter.setOrAddData(images,currentPage,pageSize);
+                    } else {
+                        Folder folder = mFolderAdapter.getItem(index);
+                        if (null != folder) {
+                            mImageAdapter.setNewData(folder.images);
+                            mCategoryText.setText(folder.name);
+                            // 设定默认选择
+                            if (resultList != null && resultList.size() > 0) {
+                                mImageAdapter.setDefaultSelected(resultList);
                             }
                         }
-
-                    } while (data.moveToNext());
-
-                    // 设定默认选择
-                    if (resultList != null && resultList.size() > 0) {
-                        mImageAdapter.setDefaultSelected(resultList);
+                        int size = images.size();
+                        if(size<pageSize){
+                            mImageAdapter.loadMoreEnd();
+                        }else {
+                            mImageAdapter.loadMoreComplete();
+                        }
+                        if(mSmartRefreshLayout!=null){
+                            mSmartRefreshLayout.finishRefresh(true);
+                        }
                     }
-                    mFolderAdapter.setData(mResultFolder);
-                    hasFolderGened = true;
+
+                    currentPage++;
                 }
-                mImageAdapter.setNewData(images);
             }
+        });
+        mCursorLoader.startLoading();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if(mCursorLoader!=null){
+            mCursorLoader.stopLoading();
         }
-
-        @Override
-        public void onLoaderReset(Loader<Cursor> loader) {
-        }
-    };
-
-    MediaScannerConnection conn;
-
-    private void startScan() {
-        if (conn != null)
-            conn.disconnect();
-        if (conn == null)
-            conn = new MediaScannerConnection(getContext(), new MediaScannerConnection.MediaScannerConnectionClient() {
-                @Override
-                public void onMediaScannerConnected() {
-                    try {
-                        //必须指定好文件的名字才可以刷新，不能直接指定目录名，拍完照片之后直接刷新下
-                        conn.scanFile(mTmpUri.getPath(), "image/*");
-                    } catch (Exception e) {
-                    }
-                }
-
-                @Override
-                public void onScanCompleted(String path, Uri uri) {
-                    try {
-                        conn.disconnect();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        conn.connect();
+        super.onDestroyView();
     }
 
     /**

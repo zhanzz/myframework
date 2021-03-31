@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.viewbinding.ViewBinding;
 
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -39,6 +40,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.security.auth.login.LoginException;
+
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -60,7 +64,11 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lifecycleSubject.onNext(ActivityLifeCycleEvent.CREATE);
-        setContentView(getLayoutId());
+        if(isUseBinding()){
+            setContentView(getViewBinding().getRoot());
+        }else {
+            setContentView(getLayoutId());
+        }
         ButterKnife.bind(this);
         initSystemBar();
         BasePresenter presenter= getPresenter();
@@ -88,6 +96,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
             setSupportActionBar(mToolbar);
             mToolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
+    }
+
+    protected boolean isUseBinding(){
+        return false;
     }
 
     private void initSystemBar() {
@@ -125,6 +137,13 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     }
 
     public abstract int getLayoutId();
+
+    public ViewBinding getViewBinding(){
+        if(isUseBinding()){
+            throw new IllegalArgumentException("必须返回Binding");
+        }
+        return null;
+    }
 
     public void getParamData(Intent intent){
 
@@ -328,9 +347,16 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     }
 
     @Override
-    public Boolean addCompositeDisposable(Disposable disposable) {
+    public Boolean addDisposable(Disposable disposable) {
         getCompositeDisposable().add(disposable);
         return true;
+    }
+
+    @Override
+    public void removeDisposable(Disposable disposable) {
+        if(disposable!=null){
+            getCompositeDisposable().remove(disposable);
+        }
     }
 
     public boolean isDestroy(){
@@ -352,7 +378,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
     /**
      * @param isDark 状态栏文字是否深色
      */
-    private void setStatusDarkBar(boolean isDark) {
+    protected void setStatusDarkBar(boolean isDark) {
         //设置状态栏颜色为深色
         DeviceUtils.setStatusBarDarkMode(this, isDark);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

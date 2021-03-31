@@ -86,3 +86,12 @@ public static java.lang.String TABLENAME;
 -dontwarn org.greenrobot.greendao.database.**
 # If you do not use Rx:
 -dontwarn rx.**
+#-------------------------------------tencent-------------------------------------------------
+-dontwarn dalvik.**
+-dontwarn com.tencent.smtt.**
+-keep class com.tencent.smtt.** {
+    *;
+}
+-keep class com.tencent.tbs.** {
+    *;
+}

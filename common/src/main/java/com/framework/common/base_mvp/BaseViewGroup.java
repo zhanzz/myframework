@@ -229,9 +229,16 @@ public abstract class BaseViewGroup extends FrameLayout implements IBaseView, IS
 
     @Nullable
     @Override
-    public Boolean addCompositeDisposable(Disposable disposable) {
+    public Boolean addDisposable(Disposable disposable) {
         getCompositeDisposable().add(disposable);
         return true;
+    }
+
+    @Override
+    public void removeDisposable(Disposable disposable) {
+        if(disposable!=null){
+            getCompositeDisposable().remove(disposable);
+        }
     }
 
     @Override

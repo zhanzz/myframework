@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Path;
@@ -12,6 +13,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -135,6 +137,7 @@ public class AttrAnimActivity extends BaseActivity implements IAttrAnimView {
 
         // 步骤4：启动动画
         animSet.start();
+        animSet.cancel();
     }
 
     @OnClick({R2.id.one, R2.id.two, R2.id.thumb_button_1})
@@ -146,6 +149,7 @@ public class AttrAnimActivity extends BaseActivity implements IAttrAnimView {
             //circularReveal();
             //path();
             dynamic();
+            //testCloseAnim();
         } else if (view.getId() == R.id.two) {
             if (drawable != null) {
                 drawable.start();
@@ -158,6 +162,20 @@ public class AttrAnimActivity extends BaseActivity implements IAttrAnimView {
 //            linearContainer.addView(imageView);
             sceneV2();
         }
+    }
+
+    private void testCloseAnim() {
+        //结论： activity退出了，动画还是在执行
+        ValueAnimator animator = ObjectAnimator.ofFloat(cir,View.X,0,100);
+        animator.setIntValues(0,100);
+        animator.setDuration(20000);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                Log.e("zhang","我还在执行");
+            }
+        });
+        animator.start();
     }
 
     //放大缩小动画

@@ -73,26 +73,33 @@ public class ExampleUnitTest {
 
     @Test
     public void testGson(){
-        User o = testInvoke(User.class);
-        //JSON.parseObject(content,Result<User>.class);
-        System.out.println(o.age);
-        System.out.println(o.name==null);
-        System.out.println(JSON.toJSONString(o));
-        String aa = "{'data':[1,2,3],'code':1}";
-        Result<List<Integer>> xx = JSON.parseObject(aa,new TypeReference<Result<List<Integer>>>(){}, Feature.InitStringFieldAsEmpty);
-        System.out.println(xx.data);
+//        User o = testInvoke(User.class);
+//        //JSON.parseObject(content,Result<User>.class);
+//        System.out.println(o.age);
+//        System.out.println(o.name==null);
+//        System.out.println(JSON.toJSONString(o));
+//        String aa = "{'data':[1,2,3],'code':1}";
+//        Result<List<Integer>> xx = JSON.parseObject(aa,new TypeReference<Result<List<Integer>>>(){}, Feature.InitStringFieldAsEmpty);
+//        System.out.println(xx.data);
         //int[] arry = new int[-1];
+
+        //Result bean = new Result();
+        //bean.setGiveaway(true);
+        //序列化输出的字符串会把is去掉
+        //Result bean = GsonUtils.parseFromString("{\"code\":0,\"giveaway\":true,\"result\":\"\"}",Result.class);
+        //System.out.println(bean.isGiveaway());
     }
 
     @Test
     public void testUser(){
-        String aa = "{'data':[1,2,3],'isGiveaway':1}";
+        String aa = "{'data':[1,2,3],'isGiveaway':1,'code':''}";
         Result<Object> xx = JSON.parseObject(aa,new TypeReference<Result<Object>>(){}, Feature.InitStringFieldAsEmpty);
         System.out.println(xx.data instanceof Integer[]);
         System.out.println(xx.data.getClass().isArray());
         System.out.println(xx.data.getClass());//com.alibaba.fastjson.JSONArray
         System.out.println(MessageFormat.format("{0}{1}", "箱规：","4"));
         System.out.println(xx.isGiveaway());
+        System.out.println(xx.code);
     }
 
     @Test
@@ -145,6 +152,7 @@ public class ExampleUnitTest {
 
     @Test
     public void testGsonv(){
+        //clipRect不影响坐标
 //        String[] xx = new String[]{"44","45"};
 //        String conent =  GsonUtils.parseToString(xx);
 //        System.out.println(conent);
@@ -275,6 +283,7 @@ public class ExampleUnitTest {
             String final_str=new String(new_str.getBytes("gbk"),"utf-8");
             System.out.println(final_str);//中国
 
+            printHex(str.getBytes());
             printHex(str.getBytes("UNICODE"));
             printHex(str.getBytes("UTF-16"));
             printHex(str.getBytes("UTF-16BE"));

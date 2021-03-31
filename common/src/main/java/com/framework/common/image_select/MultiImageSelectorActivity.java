@@ -128,9 +128,19 @@ public class MultiImageSelectorActivity extends BaseActivity implements MultiIma
         bundle.putBoolean(MultiImageSelectorFragment.EXTRA_SHOW_CAMERA, isShow);
         bundle.putParcelableArrayList(MultiImageSelectorFragment.EXTRA_DEFAULT_SELECTED_LIST, resultList);
 
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("imageSelect");
+        if(fragment==null){
+            fragment=  getSupportFragmentManager().getFragmentFactory().instantiate(getClassLoader(),MultiImageSelectorFragment.class.getName());
+            fragment.setArguments(bundle);
+        }
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.image_grid, Fragment.instantiate(this, MultiImageSelectorFragment.class.getName(), bundle))
+                .replace(R.id.image_grid, fragment,"imageSelect")
                 .commitAllowingStateLoss();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override

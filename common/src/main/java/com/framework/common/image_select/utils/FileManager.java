@@ -127,4 +127,23 @@ public class FileManager {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 获取apk的下载目录
+     * @return
+     */
+    public static File getDownLoadApkDir(){
+        File file = null;
+        String apkDir = "apkDir";
+        if(MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+            file = BaseApplication.getApp().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+        }else {
+            file = BaseApplication.getApp().getFilesDir();
+        }
+        file = new File(file,apkDir);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        return file;
+    }
 }

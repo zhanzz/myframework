@@ -2,12 +2,15 @@ package com.example.demo.coordinator_layout.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 
 import com.framework.common.base_mvp.BasePresenter;
 import com.framework.common.base_mvp.BaseActivity;
 import com.example.demo.coordinator_layout.presenter.MoveTopPresenter;
 import com.example.demo.coordinator_layout.view.IMoveTopView;
 import com.example.demo.R;
+import com.yxf.clippathlayout.PathInfo;
+import com.yxf.clippathlayout.pathgenerator.CirclePathGenerator;
 
 public class MoveTopActivity extends BaseActivity implements IMoveTopView {
     private MoveTopPresenter mPresenter;
@@ -19,7 +22,13 @@ public class MoveTopActivity extends BaseActivity implements IMoveTopView {
 
     @Override
     public void bindData() {
-
+        View view = findViewById(R.id.image);
+        new PathInfo.Builder(new CirclePathGenerator(), view)
+                .setApplyFlag(PathInfo.APPLY_FLAG_DRAW_AND_TOUCH)
+                .setClipType(PathInfo.CLIP_TYPE_IN)
+                .setAntiAlias(false)
+                .create()
+                .apply();
     }
 
     @Override

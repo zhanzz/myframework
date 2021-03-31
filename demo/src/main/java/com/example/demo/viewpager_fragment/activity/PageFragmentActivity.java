@@ -134,7 +134,8 @@ public class PageFragmentActivity extends BaseActivity implements IPageFragmentV
         mPresenter.getCategory();
     }
 
-    private FragmentStatePagerAdapter mAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+    private FragmentStatePagerAdapter mAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager(),
+            FragmentStatePagerAdapter.BEHAVIOR_SET_USER_VISIBLE_HINT) {
         @Override
         public Fragment getItem(int position) {
             PagerFragment fragment;

@@ -10,7 +10,7 @@ public abstract class BaseLazyFragment extends BaseFragment {
     //是否用户可见
     protected boolean isVisible = false;
 
-    //是否加载过数据
+    //false为对用户可见时调用加载数据，true为不会再加载
     protected boolean isLoadData = false;
     //fragment是否已创建准备好
     private boolean isPrepared;
@@ -29,10 +29,30 @@ public abstract class BaseLazyFragment extends BaseFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        isVisible = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isVisible = true;
+        //只有用户可见时进行加载
+        lazyLoad();
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         isPrepared = true;
         lazyLoad();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        isPrepared = false;
     }
 
     protected abstract void loadLazyData();

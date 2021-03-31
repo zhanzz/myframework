@@ -21,7 +21,7 @@ ANDROID_ABI:UNINITIALIZED=armeabi-v7a
 ANDROID_NDK:UNINITIALIZED=E:\android_ndk\android-ndk-r16b-windows-x86_64\android-ndk-r16b
 
 //No help, variable specified on the command line.
-ANDROID_PLATFORM:UNINITIALIZED=android-16
+ANDROID_PLATFORM:UNINITIALIZED=android-21
 
 //No help, variable specified on the command line.
 CMAKE_ANDROID_ARCH_ABI:UNINITIALIZED=armeabi-v7a
@@ -199,7 +199,7 @@ CMAKE_STRIP:FILEPATH=E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-
 CMAKE_SYSTEM_NAME:UNINITIALIZED=Android
 
 //No help, variable specified on the command line.
-CMAKE_SYSTEM_VERSION:UNINITIALIZED=16
+CMAKE_SYSTEM_VERSION:UNINITIALIZED=21
 
 //The CMake toolchain file
 CMAKE_TOOLCHAIN_FILE:FILEPATH=E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/build/cmake/android.toolchain.cmake
@@ -217,10 +217,10 @@ Project_BINARY_DIR:STATIC=E:/rn_study/rxjava_retorfit/android/demo/.cxx/cmake/de
 Project_SOURCE_DIR:STATIC=E:/rn_study/rxjava_retorfit/android/demo/src/main/cpp
 
 //Dependencies for the target
-bspatch_LIB_DEPENDS:STATIC=general;E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/platforms/android-16/arch-arm/usr/lib/liblog.so;
+bspatch_LIB_DEPENDS:STATIC=general;E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/platforms/android-21/arch-arm/usr/lib/liblog.so;
 
 //Path to a library.
-log-lib:FILEPATH=E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/platforms/android-16/arch-arm/usr/lib/liblog.so
+log-lib:FILEPATH=E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/platforms/android-21/arch-arm/usr/lib/liblog.so
 
 
 ########################

@@ -20,6 +20,11 @@
         android:thumb="@drawable/switch_thumb"
         android:checked="false"/>
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        />
+
     <ToggleButton
         android:id="@+id/tb_switch"
         android:layout_width="wrap_content"
@@ -94,8 +99,8 @@
 
     <com.example.demo.widget.MyHeadView
         xmlns:head="http://schemas.android.com/apk/res-auto"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         head:msrc="@drawable/ic_updata_tip"
         head:mborder_color="#de3428"
         head:mborder_width="2dp"/>

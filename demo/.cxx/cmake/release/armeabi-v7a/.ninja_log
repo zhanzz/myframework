@@ -1,0 +1,12 @@
+# ninja log v5
+35	2255	637513428	CMakeFiles/bspatch.dir/bzip/crctable.c.o	7dc7d923213867
+77	2260	637513428	CMakeFiles/bspatch.dir/bzip/randtable.c.o	e1d5e6e07b49e8bc
+72	2263	637513428	CMakeFiles/bspatch.dir/bzip/huffman.c.o	cfe284a9d13401ba
+2	2265	637513428	CMakeFiles/bspatch.dir/bspatch.c.o	db36e1b463cf175c
+18	2272	637513428	CMakeFiles/bspatch.dir/Patch.cpp.o	d2cc12c7a3317e5
+65	2278	637513428	CMakeFiles/bspatch.dir/bzip/blocksort.c.o	30ac022d11a7bc54
+55	2284	637513428	CMakeFiles/bspatch.dir/bzip/decompress.c.o	7be8acd6519f0ffa
+25	2294	637513428	CMakeFiles/bspatch.dir/bzip/bzlib.c.o	ed7969678955c4de
+45	2298	637513428	CMakeFiles/bspatch.dir/bzip/compress.c.o	d21e9ab1f261a672
+2298	4703	637513430	E:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/jniLibs/armeabi-v7a/libbspatch.so	4242e2ae7be86f5
+1	12	0	clean	f63b4e4cd2f341eb

@@ -5,6 +5,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+
+import androidx.annotation.DimenRes;
+
 import com.framework.common.BaseApplication;
 import java.lang.reflect.Field;
 
@@ -61,6 +64,26 @@ public class UIHelper {
         }
         float scale = BaseApplication.getApp().getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
+    }
+
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     */
+    public static int dipRes2px(@DimenRes int resId) {
+        if(BaseApplication.getApp()==null){
+            return 0;
+        }
+        return BaseApplication.getApp().getResources().getDimensionPixelSize(resId);
+    }
+
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     */
+    public static int spRes2px(@DimenRes int resId) {
+        if(BaseApplication.getApp()==null){
+            return 0;
+        }
+        return BaseApplication.getApp().getResources().getDimensionPixelSize(resId);
     }
 
     /**

@@ -14,7 +14,7 @@ import com.framework.model.demo.User;
  */
 public class UserViewModel extends ViewModel {
     private String userId;
-    private LiveData<User> user;
+    private MutableLiveData<User> user;
 
     LiveData<String> userName = Transformations.map(user, user -> user.getFirstName() + " " + user.getLastName());
     //初始化传递uid进来
@@ -23,7 +23,7 @@ public class UserViewModel extends ViewModel {
         user = new MutableLiveData<>();
     }
     //提供完整的用户信息
-    public LiveData<User> getUser() {
+    public MutableLiveData<User> getUser() {
         return user;
     }
 

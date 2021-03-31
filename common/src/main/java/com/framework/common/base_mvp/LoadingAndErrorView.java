@@ -87,8 +87,8 @@ public class LoadingAndErrorView extends FrameLayout implements View.OnClickList
     }
 
     public void showError(){
-        mCount = 0;
-        mCountDialog = 0;
+        //mCount = 0;
+        //mCountDialog = 0;
         mProgressBar.setVisibility(View.INVISIBLE);
         mLinearRetry.setVisibility(View.VISIBLE);
     }

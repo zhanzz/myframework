@@ -11,6 +11,15 @@ public class Result<T> {
    //is开头的要正确生成get set   boolean类型为setGiveaway  String 类型为setIsGiveaway
    private boolean isGiveaway;
    public T data;
+   private String isX;
+
+   public String getIsX() {
+      return isX;
+   }
+
+   public void setIsX(String isX) {
+      this.isX = isX;
+   }
 
    public boolean isGiveaway() {
       return isGiveaway;

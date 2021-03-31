@@ -52,7 +52,6 @@ public class ViewPager2AnimActivity extends BaseActivity implements IViewPager2A
         pagerAdapter = new ScreenSlidePagerAdapter(this);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setPageTransformer(new ZoomOutPageTransformer());
-
         List<TestBean> list = new ArrayList<>();
         list.add(new TestBean("aaa"));
         list.add(new TestBean("bbb"));

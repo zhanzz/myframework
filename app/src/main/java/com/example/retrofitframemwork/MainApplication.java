@@ -8,7 +8,7 @@ import com.example.retrofitframemwork.interceptor.RequestInterceptor;
 import com.framework.common.BaseApplication;
 import com.framework.common.BuildConfig;
 import com.framework.common.manager.NetWorkManager;
-import com.tencent.bugly.crashreport.CrashReport;
+//import com.tencent.bugly.crashreport.CrashReport;
 
 /**
  * @author zhangzhiqiang
@@ -22,7 +22,7 @@ public class MainApplication extends BaseApplication{
         //让String类型的值初始化为空字符串(对象中的其它初始化值将会失效)
         JSON.DEFAULT_PARSER_FEATURE|= Feature.InitStringFieldAsEmpty.getMask();
         NetWorkManager.getInstance().init(new RequestInterceptor());
-        CrashReport.initCrashReport(getApplicationContext(), "dc45778196", BuildConfig.DEBUG_ENVIRONMENT);//bugly
+        //CrashReport.initCrashReport(getApplicationContext(), "dc45778196", BuildConfig.DEBUG_ENVIRONMENT);//bugly
         CrashHandler.getInstance().init();
         if (BuildConfig.DEBUG_ENVIRONMENT) {           // 这两行必须写在init之前，否则这些配置在init过程中将无效
             ARouter.openLog();     // 打印日志

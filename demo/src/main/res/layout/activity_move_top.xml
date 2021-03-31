@@ -9,15 +9,16 @@
     <include layout="@layout/tool_bar" />
 
     <com.example.demo.coordinator_layout.widget.MoveTopView
-        android:background="#f88210"
+        android:background="#fff"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.yxf.clippathlayout.impl.ClipPathFrameLayout
+            android:visibility="gone"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/clip_path_frame_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/image"
@@ -28,8 +29,14 @@
 
         </com.yxf.clippathlayout.impl.ClipPathFrameLayout>
 
-        <LinearLayout
+        <com.example.demo.widget.MyCheckBox
             android:visibility="gone"
+            android:layout_marginTop="300dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:button="@null"/>
+
+        <LinearLayout
             android:id="@id/view_need_move"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -53,12 +60,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="400dp"
                         android:text="one"/>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="400dp"
-                        android:text="two"/>
+                        android:text="two" />
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
         </LinearLayout>
+
     </com.example.demo.coordinator_layout.widget.MoveTopView>
 </LinearLayout>

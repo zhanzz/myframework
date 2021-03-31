@@ -10,7 +10,6 @@ import android.os.Build;
 import androidx.core.content.FileProvider;
 
 import android.os.Environment;
-import android.os.Looper;
 import android.util.Log;
 
 import com.example.retrofitframemwork.AppApi;
@@ -175,7 +174,7 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
                                         getMvpView().onShowUpdateDialog(versionBean);
                                     }
                                 });
-                        Boolean isOk = getMvpView().addCompositeDisposable(disposable);
+                        Boolean isOk = getMvpView().addDisposable(disposable);
                         if (isOk == null || !isOk) {
                             disposable.dispose();
                         }
@@ -289,9 +288,9 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
                         getMvpView().onShowUpdateDialog(data);
                     }
                 });
-        Boolean isOk = getMvpView().addCompositeDisposable(disposable);
-        if(!isOk){
-            disposable.dispose();
+        Boolean isOk = getMvpView().addDisposable(disposable);
+        if(isOk!=null && !isOk){
+            getMvpView().removeDisposable(disposable);
         }
     }
 }

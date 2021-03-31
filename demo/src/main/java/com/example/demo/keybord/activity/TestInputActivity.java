@@ -24,7 +24,7 @@ import butterknife.OnClick;
 
 public class TestInputActivity extends BaseActivity implements ITestInputView {
     @BindView(R2.id.scroll_view)
-    ScrollView scrollView;
+    View scrollView;
     @BindView(R2.id.linear_container)
     LinearLayout linearContainer;
     private TestInputPresenter mPresenter;
@@ -42,12 +42,33 @@ public class TestInputActivity extends BaseActivity implements ITestInputView {
     @Override
     public void initEvent() {
         //键盘弹出，DecorView的高度不会变，android.R.id.content内容的高度会变化
+        /**
+         * adjustResize (与上部下部、有无滚动视图无关)将android.R.id.content内容高度变少键盘高度，以容出键盘的展示
+         * 收起 getHeight=2244;linearLayout=2159;scrollView=1744;linear=2159
+         * 弹出 getHeight=2244;linearLayout=1144;scrollView=729;linear=1144
+         *
+         * adjustPan  (与上部下部、有无滚动视图无关)将window(windowTop)移动以输入框位置与被键盘挡住之差的距离，以容出键盘的展示
+         * 收起 getHeight=2244;linearLayout=2159;scrollView=1744;linear=2159
+         * 弹出 getHeight=2244;linearLayout=2159;scrollView=1744;linear=2159
+         * y=0;decorViewTransY=0.0;decorViewTop=0;out=-872
+         */
         getWindow().getDecorView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 String content = String.format("getHeight=%s;linearLayout=%s;scrollView=%s;linear=%s",getWindow().getDecorView().getHeight(),linearContainer.getHeight(),scrollView.getHeight(),
                         findViewById(android.R.id.content).getHeight());
                 Log.e("zhang", content);
+                View view = findViewById(android.R.id.content);
+                view.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        int[] out = new int[2];
+                        view.getLocationOnScreen(out);
+                        Log.e("zhang",String.format("y=%s;decorViewTransY=%s;decorViewTop=%s;out=%s",
+                                getWindow().getAttributes().y,linearContainer.getTranslationY(),linearContainer.getTop(),out[1]));
+                    }
+                },300);
+
             }
         });
     }

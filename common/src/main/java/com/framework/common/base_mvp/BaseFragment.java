@@ -239,9 +239,16 @@ public abstract class BaseFragment extends Fragment implements IBaseView,IStopAd
 
     @Nullable
     @Override
-    public Boolean addCompositeDisposable(Disposable disposable) {
+    public Boolean addDisposable(Disposable disposable) {
         getCompositeDisposable().add(disposable);
         return true;
+    }
+
+    @Override
+    public void removeDisposable(Disposable disposable) {
+        if(disposable!=null){
+            getCompositeDisposable().remove(disposable);
+        }
     }
 
     private void resetCompositeDisposable() {

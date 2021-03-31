@@ -49,56 +49,56 @@ build cmake_object_order_depends_target_bspatch: phony
 build CMakeFiles/bspatch.dir/bspatch.c.o: C_COMPILER__bspatch E$:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/bspatch.c || cmake_object_order_depends_target_bspatch
   DEFINES = -Dbspatch_EXPORTS
   DEP_FILE = CMakeFiles\bspatch.dir\bspatch.c.o.d
-  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=16 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
   OBJECT_DIR = CMakeFiles\bspatch.dir
   OBJECT_FILE_DIR = CMakeFiles\bspatch.dir
 build CMakeFiles/bspatch.dir/Patch.cpp.o: CXX_COMPILER__bspatch E$:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/Patch.cpp || cmake_object_order_depends_target_bspatch
   DEFINES = -Dbspatch_EXPORTS
   DEP_FILE = CMakeFiles\bspatch.dir\Patch.cpp.o.d
-  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=16 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -std=c++11 -O0 -fno-limit-debug-info  -fPIC
+  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -std=c++11 -O0 -fno-limit-debug-info  -fPIC
   INCLUDES = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sources/cxx-stl/gnu-libstdc++/4.9/include -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi-v7a/include -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sources/cxx-stl/gnu-libstdc++/4.9/include/backward
   OBJECT_DIR = CMakeFiles\bspatch.dir
   OBJECT_FILE_DIR = CMakeFiles\bspatch.dir
 build CMakeFiles/bspatch.dir/bzip/blocksort.c.o: C_COMPILER__bspatch E$:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/bzip/blocksort.c || cmake_object_order_depends_target_bspatch
   DEFINES = -Dbspatch_EXPORTS
   DEP_FILE = CMakeFiles\bspatch.dir\bzip\blocksort.c.o.d
-  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=16 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
   OBJECT_DIR = CMakeFiles\bspatch.dir
   OBJECT_FILE_DIR = CMakeFiles\bspatch.dir\bzip
 build CMakeFiles/bspatch.dir/bzip/bzlib.c.o: C_COMPILER__bspatch E$:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/bzip/bzlib.c || cmake_object_order_depends_target_bspatch
   DEFINES = -Dbspatch_EXPORTS
   DEP_FILE = CMakeFiles\bspatch.dir\bzip\bzlib.c.o.d
-  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=16 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
   OBJECT_DIR = CMakeFiles\bspatch.dir
   OBJECT_FILE_DIR = CMakeFiles\bspatch.dir\bzip
 build CMakeFiles/bspatch.dir/bzip/compress.c.o: C_COMPILER__bspatch E$:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/bzip/compress.c || cmake_object_order_depends_target_bspatch
   DEFINES = -Dbspatch_EXPORTS
   DEP_FILE = CMakeFiles\bspatch.dir\bzip\compress.c.o.d
-  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=16 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
   OBJECT_DIR = CMakeFiles\bspatch.dir
   OBJECT_FILE_DIR = CMakeFiles\bspatch.dir\bzip
 build CMakeFiles/bspatch.dir/bzip/crctable.c.o: C_COMPILER__bspatch E$:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/bzip/crctable.c || cmake_object_order_depends_target_bspatch
   DEFINES = -Dbspatch_EXPORTS
   DEP_FILE = CMakeFiles\bspatch.dir\bzip\crctable.c.o.d
-  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=16 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
   OBJECT_DIR = CMakeFiles\bspatch.dir
   OBJECT_FILE_DIR = CMakeFiles\bspatch.dir\bzip
 build CMakeFiles/bspatch.dir/bzip/decompress.c.o: C_COMPILER__bspatch E$:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/bzip/decompress.c || cmake_object_order_depends_target_bspatch
   DEFINES = -Dbspatch_EXPORTS
   DEP_FILE = CMakeFiles\bspatch.dir\bzip\decompress.c.o.d
-  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=16 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
   OBJECT_DIR = CMakeFiles\bspatch.dir
   OBJECT_FILE_DIR = CMakeFiles\bspatch.dir\bzip
 build CMakeFiles/bspatch.dir/bzip/huffman.c.o: C_COMPILER__bspatch E$:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/bzip/huffman.c || cmake_object_order_depends_target_bspatch
   DEFINES = -Dbspatch_EXPORTS
   DEP_FILE = CMakeFiles\bspatch.dir\bzip\huffman.c.o.d
-  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=16 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
   OBJECT_DIR = CMakeFiles\bspatch.dir
   OBJECT_FILE_DIR = CMakeFiles\bspatch.dir\bzip
 build CMakeFiles/bspatch.dir/bzip/randtable.c.o: C_COMPILER__bspatch E$:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/bzip/randtable.c || cmake_object_order_depends_target_bspatch
   DEFINES = -Dbspatch_EXPORTS
   DEP_FILE = CMakeFiles\bspatch.dir\bzip\randtable.c.o.d
-  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=16 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
+  FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC
   OBJECT_DIR = CMakeFiles\bspatch.dir
   OBJECT_FILE_DIR = CMakeFiles\bspatch.dir\bzip
 
@@ -109,9 +109,9 @@ build CMakeFiles/bspatch.dir/bzip/randtable.c.o: C_COMPILER__bspatch E$:/rn_stud
 #############################################
 # Link the shared library E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\jniLibs\armeabi-v7a\libbspatch.so
 
-build E$:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/jniLibs/armeabi-v7a/libbspatch.so: CXX_SHARED_LIBRARY_LINKER__bspatch CMakeFiles/bspatch.dir/bspatch.c.o CMakeFiles/bspatch.dir/Patch.cpp.o CMakeFiles/bspatch.dir/bzip/blocksort.c.o CMakeFiles/bspatch.dir/bzip/bzlib.c.o CMakeFiles/bspatch.dir/bzip/compress.c.o CMakeFiles/bspatch.dir/bzip/crctable.c.o CMakeFiles/bspatch.dir/bzip/decompress.c.o CMakeFiles/bspatch.dir/bzip/huffman.c.o CMakeFiles/bspatch.dir/bzip/randtable.c.o | E$:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/platforms/android-16/arch-arm/usr/lib/liblog.so
-  LANGUAGE_COMPILE_FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=16 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -std=c++11 -O0 -fno-limit-debug-info
-  LINK_FLAGS = -Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a --sysroot E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/platforms/android-16/arch-arm -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--fix-cortex-a8 -Wl,--no-undefined -Wl,-z,noexecstack -Qunused-arguments -Wl,-z,relro -Wl,-z,now
+build E$:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/jniLibs/armeabi-v7a/libbspatch.so: CXX_SHARED_LIBRARY_LINKER__bspatch CMakeFiles/bspatch.dir/bspatch.c.o CMakeFiles/bspatch.dir/Patch.cpp.o CMakeFiles/bspatch.dir/bzip/blocksort.c.o CMakeFiles/bspatch.dir/bzip/bzlib.c.o CMakeFiles/bspatch.dir/bzip/compress.c.o CMakeFiles/bspatch.dir/bzip/crctable.c.o CMakeFiles/bspatch.dir/bzip/decompress.c.o CMakeFiles/bspatch.dir/bzip/huffman.c.o CMakeFiles/bspatch.dir/bzip/randtable.c.o | E$:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/platforms/android-21/arch-arm/usr/lib/liblog.so
+  LANGUAGE_COMPILE_FLAGS = -isystem E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security  -std=c++11 -O0 -fno-limit-debug-info
+  LINK_FLAGS = -Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a --sysroot E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/platforms/android-21/arch-arm -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--fix-cortex-a8 -Wl,--no-undefined -Wl,-z,noexecstack -Qunused-arguments -Wl,-z,relro -Wl,-z,now
   LINK_LIBRARIES = -llog -latomic -lm "E:/android_ndk/android-ndk-r16b-windows-x86_64/android-ndk-r16b/sources/cxx-stl/gnu-libstdc++/4.9/libs/armeabi-v7a/libgnustl_static.a"
   OBJECT_DIR = CMakeFiles\bspatch.dir
   POST_BUILD = cd .

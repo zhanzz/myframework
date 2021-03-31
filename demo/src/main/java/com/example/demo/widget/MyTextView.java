@@ -57,7 +57,7 @@ public class MyTextView extends TextView {
                             name,attrs.getAttributeValue(i),attrs.getAttributeNameResource(i)));
             if(name.equals("id")){
                int id = Integer.parseInt(attrs.getAttributeValue(i).substring(1));
-               LogUtil.e("value",String.format("id=%d",id));
+               LogUtil.e("value",String.format("id=%d",id));//@656513132
                String resourceName =getResources().getResourceName(id);
                String entryName = getResources().getResourceEntryName(id);
                String packageName = getResources().getResourcePackageName(id);
@@ -68,17 +68,17 @@ public class MyTextView extends TextView {
                        String.format("resourceName=%s;entryName=%s;packageName=%s;typeName=%s;getAttributeResourceValue=%s;getAttributeValue=%s",
                        resourceName,entryName,packageName,typeName,value,getAttributeValue));
             }else if("textColor".equalsIgnoreCase(name)){
-                int id = Integer.parseInt(attrs.getAttributeValue(i).substring(1));
-                LogUtil.e("value",String.format("id=%d",id));
-                String resourceName =getResources().getResourceName(id);
-                String entryName = getResources().getResourceEntryName(id);
-                String packageName = getResources().getResourcePackageName(id);
-                String typeName = getResources().getResourceTypeName(id);
-                int value =  attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android", "id", 0);
-                String getAttributeValue =  attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "id");
-                LogUtil.e("value",
-                        String.format("resourceName=%s;entryName=%s;packageName=%s;typeName=%s;getAttributeResourceValue=%s;getAttributeValue=%s",
-                                resourceName,entryName,packageName,typeName,value,getAttributeValue));
+                String id = attrs.getAttributeValue(i).substring(1);
+                LogUtil.e("value",String.format("id=%s",id));//#ff333333
+                //String resourceName =getResources().getResourceName(id);
+                //String entryName = getResources().getResourceEntryName(id);
+                //String packageName = getResources().getResourcePackageName(id);
+                //String typeName = getResources().getResourceTypeName(id);
+//                int value =  attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android", "id", 0);
+//                String getAttributeValue =  attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "id");
+//                LogUtil.e("value",
+//                        String.format("resourceName=%s;entryName=%s;packageName=%s;typeName=%s;getAttributeResourceValue=%s;getAttributeValue=%s",
+//                                resourceName,entryName,packageName,typeName,value,getAttributeValue));
             }else if("layout_width".equalsIgnoreCase(name)){
                 int value =  attrs.getAttributeResourceValue("http://schemas.android.com/apk/res/android", "layout_width", 0);
                 String getAttributeValue =  attrs.getAttributeValue("http://schemas.android.com/apk/res/android", "layout_width");

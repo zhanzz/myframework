@@ -1,16 +1,28 @@
 package com.framework.common.utils;
 
+import android.Manifest;
+import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.framework.common.BaseApplication;
+import com.framework.common.manager.PermissionManager;
+import com.framework.common.retrofit.SchedulerProvider;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,6 +36,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 /**
  * File Utils
@@ -740,5 +758,76 @@ public class FileUtils {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA);
         String filename = prefix + dateFormat.format(new Date(System.currentTimeMillis())) + suffix;
         return new File(folder, filename);
+    }
+
+    public static Disposable saveImage(Bitmap bitmap){
+        //拍照存放路径
+        String fileName = "IMG_" + System.currentTimeMillis() + ".jpg";
+        //设置保存参数到ContentValues中
+        ContentValues contentValues = new ContentValues();
+        //设置文件名
+        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
+        //兼容Android Q和以下版本
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            //android Q中不再使用DATA字段，而用RELATIVE_PATH代替
+            //RELATIVE_PATH是相对路径不是绝对路径
+            //DCIM是系统文件夹，关于系统文件夹可以到系统自带的文件管理器中查看，不可以写没存在的名字
+            contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+            contentValues.put(MediaStore.Audio.Media.IS_PENDING, 1);
+        } else {
+            //Android Q以下版本
+            //为了适配Android Q版本以下
+            if(!PermissionManager.getInstance().hasPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                ToastUtil.show(BaseApplication.getApp(),"没有外部存储权限");
+                return null;
+            }
+            File fileDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            if (!fileDir.exists()) {
+                if(!fileDir.mkdir()){
+                    ToastUtil.show(BaseApplication.getApp(),"创建目录失败");
+                    return null;
+                }
+            }
+            String mFilePath = fileDir.getAbsolutePath()+File.separator+fileName;
+            contentValues.put(MediaStore.Images.Media.DATA, mFilePath);
+        }
+        //设置文件类型
+        contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/JPEG");
+        //执行insert操作，向系统文件夹中添加文件
+        //EXTERNAL_CONTENT_URI代表外部存储器，该值不变
+        Disposable disposable = Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                Uri uri = BaseApplication.getApp().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                try {
+                    ParcelFileDescriptor pfd =
+                            BaseApplication.getApp().getContentResolver().openFileDescriptor(uri, "w", null);
+                    if (pfd != null) {
+                        FileDescriptor fd = pfd.getFileDescriptor();
+                        FileOutputStream outputStream = new FileOutputStream(fd);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG,90,outputStream);
+                        outputStream.close();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            contentValues.put(MediaStore.Audio.Media.IS_PENDING, 0);
+                            BaseApplication.getApp().getContentResolver().update(uri, contentValues, null, null);
+                        }
+                        emitter.onNext(true);
+                        emitter.onComplete();
+                    }
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                emitter.onNext(false);
+            }
+        }).compose(SchedulerProvider.getInstance().applySchedulers())
+        .subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean o) throws Exception {
+
+            }
+        });
+        return disposable;
     }
 }

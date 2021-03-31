@@ -16,11 +16,11 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
-import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.framework.common.R;
 import com.framework.common.adapter.BaseAdapter;
+import com.framework.common.adapter.BaseMultiItemQuickAdapter;
 import com.framework.common.image_select.bean.Image;
 import com.framework.common.utils.FrescoUtils;
 import com.framework.common.utils.UIHelper;
@@ -123,15 +123,16 @@ public class ImageGridAdapter extends BaseMultiItemQuickAdapter<Image, BaseViewH
             helper.setGone(R.id.checkmark,false);
         }
         SimpleDraweeView simpleDraweeView = helper.getView(R.id.image);
-        simpleDraweeView.setImageURI(item.uri);
+        FrescoUtils.showThumb(item.uri,simpleDraweeView,mItemWidth,mItemHeight);
 //        try {
-//            simpleDraweeView.setActualImageResource(R.drawable.default_error);//复用
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                Bitmap bitmap = mContext.getContentResolver().loadThumbnail(item.uri,new Size(mItemWidth,mItemHeight),null);
-//                simpleDraweeView.setImageBitmap(bitmap);
-//            }else {
-//                FrescoUtils.showThumb("file://"+item.path,simpleDraweeView,mItemWidth,mItemHeight);
-//            }
+//
+////            simpleDraweeView.setActualImageResource(R.drawable.default_error);//复用
+////            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+////                Bitmap bitmap = mContext.getContentResolver().loadThumbnail(item.uri,new Size(mItemWidth,mItemHeight),null);
+////                simpleDraweeView.setImageBitmap(bitmap);
+////            }else {
+////                FrescoUtils.showThumb("file://"+item.path,simpleDraweeView,mItemWidth,mItemHeight);
+////            }
 //        } catch (FileNotFoundException e) {
 //            e.printStackTrace();
 //        } catch (IOException e) {

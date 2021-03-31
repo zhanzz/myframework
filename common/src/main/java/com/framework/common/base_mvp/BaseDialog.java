@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -242,9 +244,16 @@ public abstract class BaseDialog extends DialogFragment implements IBaseView,ISt
     }
 
     @Override
-    public Boolean addCompositeDisposable(Disposable disposable) {
+    public Boolean addDisposable(Disposable disposable) {
         getCompositeDisposable().add(disposable);
         return true;
+    }
+
+    @Override
+    public void removeDisposable(Disposable disposable) {
+        if(disposable!=null){
+            getCompositeDisposable().remove(disposable);
+        }
     }
 
     @Override
@@ -268,5 +277,46 @@ public abstract class BaseDialog extends DialogFragment implements IBaseView,ISt
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         return new CloseSoftKeyDialog(requireContext(),R.style.dialog_style);
+    }
+
+    /**
+     * 更安全的show
+     *
+     * @param manager
+     */
+    public void show(@NonNull FragmentManager manager) {
+        if (isAdded()) {
+            return;
+        }
+        try {
+            //在每个add事务前增加一个remove事务，防止连续的add
+            manager.beginTransaction().remove(this).commit();
+            super.show(manager, this.getClass().getSimpleName());
+        } catch (Exception e) {
+            //同一实例使用不同的tag会异常,这里捕获一下
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void show(@NonNull FragmentManager manager, @Nullable String tag) {
+        if (isAdded()) {
+            return;
+        }
+        //不能使用不同的tag
+        if (tag != null) {
+            if (getTag()!= null && !tag.equals(getTag())) {
+                showToast("同一fragment实例不能使用不同的tag");
+                return;
+            }
+        }
+        try {
+            //在每个add事务前增加一个remove事务，防止连续的add
+            manager.beginTransaction().remove(this).commit();
+            super.show(manager, tag);
+        } catch (Exception e) {
+            //同一实例使用不同的tag会异常,这里捕获一下
+            e.printStackTrace();
+        }
     }
 }

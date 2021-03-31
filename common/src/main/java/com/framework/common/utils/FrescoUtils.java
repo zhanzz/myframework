@@ -2,6 +2,7 @@ package com.framework.common.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.text.TextUtils;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
@@ -26,6 +27,7 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.facebook.imagepipeline.request.Postprocessor;
+import com.framework.common.BaseApplication;
 
 /**
  * Created by zhangzhiqiang on 2016/9/21.
@@ -52,6 +54,35 @@ public class FrescoUtils {
                     .setAutoPlayAnimations(true)
                     .setOldController(draweeView.getController())
                     //.setControllerListener(new BaseControllerListener<ImageInfo>())
+                    .build();
+            draweeView.setController(controller);
+        }else {
+            draweeView.setImageURI(Uri.EMPTY);
+        }
+    }
+
+    public static void showThumb(Uri uri, SimpleDraweeView draweeView, int width, int height){
+        if(uri!=null) {
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                    .setRotationOptions(RotationOptions.autoRotate())
+                    .setResizeOptions(new ResizeOptions(width, height))
+                    .build();
+
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setAutoPlayAnimations(true)
+                    .setOldController(draweeView.getController())
+                    .setControllerListener(new BaseControllerListener<ImageInfo>(){
+                        @Override
+                        public void onFailure(String id, Throwable throwable) {
+                            super.onFailure(id, throwable);
+                        }
+
+                        @Override
+                        public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+                            super.onFinalImageSet(id, imageInfo, animatable);
+                        }
+                    })
                     .build();
             draweeView.setController(controller);
         }else {

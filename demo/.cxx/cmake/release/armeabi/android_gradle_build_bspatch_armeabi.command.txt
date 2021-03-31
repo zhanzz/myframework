@@ -1,0 +1,7 @@
+Executable : D:\developer_tool\android_sdk\cmake\3.10.2.4988404\bin\ninja.exe
+arguments : 
+-C
+E:\rn_study\rxjava_retorfit\android\demo\.cxx\cmake\release\armeabi
+bspatch
+jvmArgs : 
+

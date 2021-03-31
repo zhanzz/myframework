@@ -74,6 +74,9 @@ public class RxNet {
                 }
             }
         };
+        if(view.<Result<T>>bindUntilEvent(ActivityLifeCycleEvent.DESTROY)==null){
+            return null;
+        }
         observable.compose(view.<Result<T>>bindUntilEvent(ActivityLifeCycleEvent.DESTROY))
                 .compose(SchedulerProvider.getInstance().<Result<T>>applySchedulers())
                 .subscribe(apiSubscriber);
@@ -130,10 +133,10 @@ public class RxNet {
             view.hideLoadingDialog();
         }
     }
+
     /**
      * 下载
      */
-
     public static Disposable downLoadFile(String url, final FileCallBack callBack) {
         DownLoadObserver observer = new DownLoadObserver<ResponseBody>(callBack) {
             @Override

@@ -24,6 +24,30 @@
 
     <application>
         <activity
+            android:name=".glide.activity.StudyGlideActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".product_detail.activity.DragViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".recyclerview.LooperManagerActivity" />
+        <activity
+            android:name=".camera.activity.DarkCameraActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".camera.CameraActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".anim.activity.PathAnimActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
             android:name=".coordinator_layout.activity.MoveTopActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
@@ -100,7 +124,7 @@
                     android:host="com.zhang.example"
                     android:scheme="zhang" />
             </intent-filter>
-        </activity> <!-- android:exported="true"其它应用启动时就不会有java.lang.SecurityException -->
+        </activity> <!-- android:exported="true"其它应用启动时就不会有java.lang.SecurityException,能否跳跟浏览器的支持有关 -->
         <!-- android:permission="com.zhang.one"其它应用要启动需要在清单文件中添加 <uses-permission android:name="com.zhang.one"/> -->
         <activity
             android:name=".some_test.activity.ActivityPermissionActivity"
@@ -153,7 +177,7 @@
             android:name=".keybord.activity.TestInputActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".viewpager_fragment.Main2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -200,6 +224,22 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <service android:name=".window.WindowService.DialogService" />
+
+        <activity
+            android:name=".x5webview.FullScreenActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".x5webview.FilechooserActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".x5webview.BrowserActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".x5webview.MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
     </application>
 
 </manifest>

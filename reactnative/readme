@@ -1,0 +1,12 @@
+TouchableOpacity，View  在column时会占满宽度，在row时不会
+
+<TouchableWithoutFeedback>
+  <View onStartShouldSetResponder={ev => {
+                    return true;
+                  }}>
+    <FlatList/>
+  </View>
+</TouchableWithoutFeedback>
+事件过程
+在冒泡开始触摸时问 FlatList是否需要捕获事件(false) ---> View(onStartShouldSetResponder)--->TouchableWithoutFeedback(true)
+在冒泡开始move时问  FlatList是否需要捕获事件(如果是让TouchableWithoutFeedback拿到了事件则在move时无法传回移动事件，View会回传)

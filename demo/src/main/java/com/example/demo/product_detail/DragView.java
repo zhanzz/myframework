@@ -18,6 +18,9 @@ import androidx.customview.widget.ViewDragHelper;
 
 import com.example.demo.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DragView extends FrameLayout {
     private ViewDragHelper viewDragHelper;
     public DragView(@NonNull Context context) {
@@ -47,7 +50,8 @@ public class DragView extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return viewDragHelper.shouldInterceptTouchEvent(ev);
+        boolean intercept = viewDragHelper.shouldInterceptTouchEvent(ev);
+        return intercept;
     }
 
     @Override
@@ -64,9 +68,14 @@ public class DragView extends FrameLayout {
 
         @Override
         public boolean tryCaptureView(@NonNull View child, int pointerId) {
-//            if(child.getId()== R.id.v_red_box){
-//                return true;
-//            }
+            if("move".equals(child.getTag())){
+                for(DragListener listener : mListeners){
+                    if(listener!=null){
+                        listener.startDrag(child);
+                    }
+                }
+                return true;
+            }
             return false;
         }
 
@@ -76,8 +85,8 @@ public class DragView extends FrameLayout {
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
             Log.e("zhang","left="+left);
-            //屏蔽掉水平方向
-            return 0;
+            int maxLeft = getWidth()-child.getWidth();
+            return Math.max(Math.min(left, maxLeft), 0);
         }
 
         /**
@@ -93,28 +102,44 @@ public class DragView extends FrameLayout {
 
         @Override
         public int getViewVerticalDragRange(@NonNull View child) {
-//            if(child.getId()== R.id.v_red_box){
-//                return getHeight()-child.getHeight();
-//            }
+            if("move".equals(child.getTag())){
+                return getHeight()-child.getHeight();
+            }
             return super.getViewVerticalDragRange(child);
+        }
+
+        @Override
+        public int getViewHorizontalDragRange(@NonNull View child) {
+            if("move".equals(child.getTag())){
+                return getWidth()-child.getWidth();
+            }
+            return super.getViewHorizontalDragRange(child);
         }
 
         @Override
         public void onViewReleased(@NonNull View releasedChild, float xvel, float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
             Log.e("zhang","xvel="+xvel+";yvel="+yvel);
+            //先只停在左边
 //            viewDragHelper.flingCapturedView(0,0,0,getHeight()-releasedChild.getHeight());
-            if((releasedChild.getTop()+releasedChild.getHeight()/2) > getHeight()/2){
+//            if((releasedChild.getLeft()+releasedChild.getWidth()/2) > getWidth()/2){
+//                if(viewDragHelper.smoothSlideViewTo(releasedChild,
+//                        getWidth()-releasedChild.getWidth(),releasedChild.getTop())){
+//                    ViewCompat.postInvalidateOnAnimation(DragView.this);
+//                }
+//            }else{
                 if(viewDragHelper.smoothSlideViewTo(releasedChild,
-                        0,getHeight()-releasedChild.getHeight())){
+                        0,releasedChild.getTop())){
                     ViewCompat.postInvalidateOnAnimation(DragView.this);
+                    FrameLayout.LayoutParams layoutParams = (LayoutParams) releasedChild.getLayoutParams();
+                    layoutParams.topMargin = releasedChild.getTop();
+                    layoutParams.leftMargin = 0;
                 }
-            }else{
-                if(viewDragHelper.smoothSlideViewTo(releasedChild,
-                        0,0)){
-                    ViewCompat.postInvalidateOnAnimation(DragView.this);
+//            }
+            for(DragListener listener : mListeners){
+                if(listener!=null){
+                    listener.endDrag(releasedChild);
                 }
-
             }
         }
     }
@@ -124,5 +149,20 @@ public class DragView extends FrameLayout {
         if (viewDragHelper.continueSettling(true)) {
             ViewCompat.postInvalidateOnAnimation(this);
         }
+    }
+
+    public interface DragListener{
+        void startDrag(View dragView);
+        void endDrag(View dragView);
+    }
+
+    private List<DragListener> mListeners = new ArrayList<>();
+
+    public void addViewDragListener(DragListener listener){
+        mListeners.add(listener);
+    }
+
+    public void removeViewDragListener(DragListener listener){
+        mListeners.remove(listener);
     }
 }

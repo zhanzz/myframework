@@ -1,0 +1,15 @@
+ninja: Entering directory `E:\rn_study\rxjava_retorfit\android\demo\.cxx\cmake\release\arm64-v8a'
+[1/10] Building C object CMakeFiles/bspatch.dir/bzip/crctable.c.o
+[2/10] Building C object CMakeFiles/bspatch.dir/bzip/randtable.c.o
+[3/10] Building C object CMakeFiles/bspatch.dir/bspatch.c.o
+[4/10] Building C object CMakeFiles/bspatch.dir/bzip/huffman.c.o
+[5/10] Building C object CMakeFiles/bspatch.dir/bzip/blocksort.c.o
+[6/10] Building C object CMakeFiles/bspatch.dir/bzip/bzlib.c.o
+[7/10] Building C object CMakeFiles/bspatch.dir/bzip/compress.c.o
+[8/10] Building CXX object CMakeFiles/bspatch.dir/Patch.cpp.o
+E:/rn_study/rxjava_retorfit/android/demo/src/main/cpp/Patch.cpp:19:21: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+    char *argv[] = {"", const_cast<char *>(oldApk), const_cast<char *>(output),
+                    ^
+1 warning generated.
+[9/10] Building C object CMakeFiles/bspatch.dir/bzip/decompress.c.o
+[10/10] Linking CXX shared library E:\rn_study\rxjava_retorfit\android\demo\src\main\cpp\jniLibs\arm64-v8a\libbspatch.so

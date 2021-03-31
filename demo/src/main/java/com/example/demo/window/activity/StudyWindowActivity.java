@@ -1,5 +1,6 @@
 package com.example.demo.window.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +13,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -120,7 +122,7 @@ public class StudyWindowActivity extends BaseActivity implements IStudyWindowVie
         tbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //listenerImageView.setVisibility(isChecked?View.VISIBLE:View.INVISIBLE);
+                listenerImageView.setVisibility(isChecked?View.VISIBLE:View.INVISIBLE);
                 listenerImageView.postDelayed(() -> {
                     if(isChecked){
                         boolean request = listenerImageView.requestFocus();
@@ -138,7 +140,17 @@ public class StudyWindowActivity extends BaseActivity implements IStudyWindowVie
 
     @Override
     public void initEvent() {
+    }
 
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if(event.getKeyCode()==KeyEvent.KEYCODE_ENTER){
+            Log.e("zhang","getContent"+builder.toString());
+            builder.delete(0,builder.length());
+        }else {
+            builder.append((char)event.getUnicodeChar());
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     @Override
@@ -155,11 +167,19 @@ public class StudyWindowActivity extends BaseActivity implements IStudyWindowVie
 //                Log.e("zhang", builder.toString());
 //            }
 //        }
+        Log.e("zhang","dispatchKeyEvent="+event.getKeyCode());
+        if(event.getKeyCode()==KeyEvent.KEYCODE_BACK){
+            return true;
+        }
         return super.dispatchKeyEvent(event);
     }
 
     private StringBuilder builder = new StringBuilder();
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return super.dispatchTouchEvent(ev);
+    }
 
     private void doPhotoPrint() {
         PrintHelper photoPrinter = new PrintHelper(this);
@@ -181,7 +201,8 @@ public class StudyWindowActivity extends BaseActivity implements IStudyWindowVie
     boolean change = false;
 
     @OnClick({R2.id.btn_show_pop, R2.id.btn_show_service_pop, R2.id.btn_show_test_click
-            , R2.id.btn_show_test_click_down, R2.id.btn_show_dialog_service})
+            , R2.id.btn_show_test_click_down, R2.id.btn_show_dialog_service
+    ,R2.id.text_show_dialog_service})
     public void onClick(View view) {
 
         if (view.getId() == R.id.btn_show_service_pop) {
@@ -208,7 +229,21 @@ public class StudyWindowActivity extends BaseActivity implements IStudyWindowVie
             }
             //
             //ToastUtil.show(this, "点击到我了");
-        } else {
+        } else if(view.getId()==R.id.text_show_dialog_service){
+            AlertDialog dialog = new AlertDialog.Builder(getContext()).setTitle("dialog").setMessage("我是dialog").create();
+            dialog.show();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    finish();
+                }
+            }).start();
+        }else {
             TextView tv = new TextView(this);
             tv.setText("我是自定义window");
             tv.setBackgroundColor(0xffff0000);

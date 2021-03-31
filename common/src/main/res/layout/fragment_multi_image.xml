@@ -6,12 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/smartRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="?android:attr/actionBarSize"
-        android:clipToPadding="false" />
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="?android:attr/actionBarSize"
+            android:clipToPadding="false" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     <TextView
         android:id="@+id/timeline_area"
@@ -49,7 +54,8 @@
             android:singleLine="true"
             android:ellipsize="end"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:textAllCaps="false"/>
 
         <View
             android:visibility="gone"

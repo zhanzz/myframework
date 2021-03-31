@@ -16,4 +16,133 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="开始增量更新"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.framework.widget.ZoomImageView
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:src="@drawable/test2"/>
+
+        <com.example.demo.widget.PathMeasureDemo
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_order"
+                android:layout_width="60dp"
+                android:layout_height="0dp"
+                android:text="订单号：546516"
+                android:textSize="@dimen/sp_10"
+                android:textStyle="bold"
+                android:textColor="#0D4BE6"
+                app:layout_constraintDimensionRatio="W,1:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_num"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_45"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_order"
+                android:layout_marginTop="@dimen/dp_10"
+                android:gravity="center"
+                android:textSize="@dimen/sp_10"
+                android:textColor="#666"
+                android:paddingHorizontal="@dimen/dp_5"
+                android:text="共计\n1件商品"
+                android:background="#F8F8F8"/>
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/sd_one"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_order"
+                app:layout_constraintRight_toLeftOf="@+id/sd_two"
+                android:layout_marginTop="@dimen/dp_10"
+                app:layout_constraintDimensionRatio="W,1:1"
+                app:layout_constraintWidth_percent="0.2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/sd_two"
+                app:layout_constraintLeft_toRightOf="@+id/sd_one"
+                app:layout_constraintTop_toTopOf="@+id/sd_one"
+                app:layout_constraintRight_toLeftOf="@+id/sd_three"
+                android:layout_marginLeft="@dimen/dp_8"
+                app:layout_constraintDimensionRatio="W,1:1"
+                app:layout_constraintWidth_percent="0.2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/sd_three"
+                app:layout_constraintLeft_toRightOf="@+id/sd_two"
+                app:layout_constraintRight_toLeftOf="@+id/sd_four"
+                app:layout_constraintTop_toTopOf="@+id/sd_one"
+                android:layout_marginLeft="@dimen/dp_8"
+                app:layout_constraintDimensionRatio="W,1:1"
+                app:layout_constraintWidth_percent="0.2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/sd_four"
+                app:layout_constraintLeft_toRightOf="@+id/sd_three"
+                app:layout_constraintRight_toLeftOf="@id/tv_num"
+                app:layout_constraintTop_toTopOf="@+id/sd_one"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                app:layout_constraintDimensionRatio="W,1:1"
+                app:layout_constraintWidth_percent="0.2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
+
+            <TextView
+                android:id="@+id/tv_order_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_13"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sd_one"
+                android:singleLine="true"
+                android:textColor="#666"
+                android:textSize="@dimen/sp_10"
+                android:text="下单时间：2020-10-15"/>
+
+            <TextView
+                android:id="@+id/tv_pay_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_order_time"
+                android:singleLine="true"
+                android:textColor="#666"
+                android:textSize="@dimen/sp_10"
+                android:text="下单时间：2020-10-15"/>
+
+            <TextView
+                android:id="@+id/tv_take_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_pay_time"
+                android:singleLine="true"
+                android:textColor="#666"
+                android:textSize="@dimen/sp_10"
+                android:text="下单时间：2020-10-15"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+
 </LinearLayout>

@@ -84,6 +84,7 @@
         </FrameLayout>
 
         <com.example.demo.widget.MySwipeRefreshLayout
+            android:visibility="gone"
             android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -100,6 +101,5 @@
             android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
     </com.example.demo.widget.MyLinearLayout>
 </com.example.demo.widget.MySwipeRefreshLayout>

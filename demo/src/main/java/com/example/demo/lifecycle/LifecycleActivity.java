@@ -48,5 +48,6 @@ public class LifecycleActivity extends AppCompatActivity {
                 binding.setUser(user);
             }
         });
+        //userViewModel.getUser().setValue();
     }
 }

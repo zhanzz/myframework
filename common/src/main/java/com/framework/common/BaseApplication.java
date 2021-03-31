@@ -50,6 +50,7 @@ import com.scwang.smartrefresh.layout.api.RefreshHeader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
+import com.tencent.smtt.sdk.QbSdk;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -96,6 +97,7 @@ public class BaseApplication extends Application {
                 }
             });
             initFresco();
+            initX5WebView();
             //配置eventbus 只在DEBUG模式下，抛出异常，便于自测，同时又不会导致release环境的app崩溃
             if (BuildConfig.DEBUG_ENVIRONMENT) {
                 EventBus.builder().throwSubscriberException(true).installDefaultEventBus();
@@ -151,6 +153,24 @@ public class BaseApplication extends Application {
         }
         ImagePipelineConfig config = builder1.build();
         Fresco.initialize(this, config);
+    }
+
+    private void initX5WebView(){
+        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
+            @Override
+            public void onViewInitFinished(boolean arg0) {
+                // TODO Auto-generated method stub
+                //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
+                Log.d("app", " onViewInitFinished is " + arg0);
+            }
+
+            @Override
+            public void onCoreInitFinished() {
+                // TODO Auto-generated method stub
+            }
+        };
+        //x5内核初始化接口
+        QbSdk.initX5Environment(getApplicationContext(),  cb);
     }
 
     public void init() {
